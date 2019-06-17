@@ -2,6 +2,8 @@
 
 #include "macro.h"
 
+#include <thread>
+
 // Windows-specific includes for sending keystrokes
 #ifdef _WIN64
 
@@ -356,4 +358,6 @@ void Key::fire(bool press) const
         xdo_send_keysequence_window_up(xdo, CURRENTWINDOW, text.c_str(), 0);
 
 #endif // _WIN64
+
+    std::this_thread::sleep_for(std::chrono::milliseconds(10));
 }

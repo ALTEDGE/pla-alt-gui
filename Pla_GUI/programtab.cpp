@@ -15,7 +15,7 @@ ProgramTab::ProgramTab(QWidget *parent) :
     useRightJoystick("RIGHT AUX JOYSTICK", this),
     usePrimaryJoystick("PRIMARY JOYSTICK", this),
     pgButtons(this),
-    useDiagonals("ENABLE DIAGONALS", this),
+    useDiagonals("ENABLE DIAGONAL\nMOVEMENT", this),
     useSequencer("ENABLE SEQUENCER", this),
     configSave("SAVE", this),
     configCancel("CANCEL", this),
@@ -198,9 +198,9 @@ void ProgramTab::setSequencer(bool enabled)
     }
 
     unsigned int inc = 1 + (enabled & diag);
-
-    for (unsigned int i = 8; i < 16; i += inc)
+    for (int i = 8; i < 16; i += inc)
         keySlots.button(i)->setVisible(enabled);
+
     lVector1.setVisible(enabled);
     lVector2.setVisible(enabled);
 }
@@ -221,8 +221,11 @@ void ProgramTab::setDiagonals(bool enabled)
     }
 
     // Hide diagonal key slots if diagonals are enabled
-    for (unsigned int i = 1; i < (seq ? 16u : 8u); i += 2)
+    for (int i = 1; i < (seq ? 16 : 8); i += 2) {
         keySlots.button(i)->setVisible(!enabled);
+        if (i < 8)
+            lKeySlots[i]->setVisible(!enabled);
+    }
 }
 
 void ProgramTab::assignSlot(int index)

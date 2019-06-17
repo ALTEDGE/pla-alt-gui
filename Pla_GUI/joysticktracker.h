@@ -89,6 +89,7 @@ public:
 class JoystickTracker : protected Joystick, public KeySender<16> {
 public:
     JoystickTracker(bool sequencer = false, bool diagonal = false);
+    virtual ~JoystickTracker(void) = default;
 
     /**
      * Enables or disables vector sequencing.

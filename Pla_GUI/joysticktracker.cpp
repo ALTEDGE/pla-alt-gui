@@ -10,7 +10,7 @@
  *
  * Note: Axes in SDL have a range of -32767 to +32767
  */
-constexpr float speedThreshold = 100;
+constexpr double speedThreshold = 100;
 
 constexpr int defaultShortThreshold = 10000;
 constexpr int defaultFarThreshold = 30000;
@@ -183,7 +183,7 @@ void JoystickTracker::update(int x, int y)
     auto dy = y - lastY;
     lastX = x;
     lastY = y;
-    float dist = std::sqrt(dx * dx + dy * dy);
+    auto dist = std::sqrt(dx * dx + dy * dy);
 
     // Don't act if we're moving too quick
     if (dist > speedThreshold)
@@ -199,7 +199,7 @@ void JoystickTracker::update(int x, int y)
         int bits = getActionBits(horz, vert);
 
         // Set bits get pressed, unset bits get released
-        for (int i = 0; i < 8; i++)
+        for (int i = 0; i < 16; i++)
             sendKey(i, bits & (1 << i));
     } else {
         int index = getActionIndex(horz, vert);
