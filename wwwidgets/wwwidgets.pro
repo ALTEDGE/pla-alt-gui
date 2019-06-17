@@ -26,3 +26,4 @@ flat_headers.files = $$INSTALL_HEADERS
 flat_headers.path = $$[QT_INSTALL_HEADERS]/wwWidgets
 INSTALLS += flat_headers
 
+CONFIG += staticlib

@@ -2,7 +2,7 @@
 
 // Include platform-specific libraries
 #ifdef _WIN64
-#include <windows.h>
+#include <Windows.h>
 #include <SetupAPI.h>
 #else
 #include <fcntl.h>
@@ -55,8 +55,8 @@ bool open(void)
         // Check if the ID matches the controller's
         // TODO need to change if controller gets a unique ID (using Arduino's
         // for now)
-        std::string hardwareId ((char *)data);
-        if (hardwareId.find("VID_2341&PID_8037") == std::string::npos)
+        std::string hardwareId (reinterpret_cast<char *>(data));
+        if (hardwareId.find("VID_1B4F&PID_9204") == std::string::npos)
             continue;
 
         // If we get to here, this should be our device.
@@ -66,7 +66,7 @@ bool open(void)
             continue;
 
         // Look for the COM number
-        std::string friendlyName ((char *)data);
+        std::string friendlyName (reinterpret_cast<char *>(data));
         auto comIndex = friendlyName.rfind("(COM");
         if (comIndex == std::string::npos)
             continue;
@@ -75,7 +75,7 @@ bool open(void)
         comPort = std::stoi(friendlyName.substr(comIndex + 4));
         break;
     }
-    delete data;
+    delete[] data;
     delete devInfo;
 
     if (comPort == -1)
@@ -84,8 +84,8 @@ bool open(void)
     // Attempt to open the serial port
     std::wstring comName (L"\\\\.\\COM");
     comName.append(std::to_wstring(comPort));
-    hComPort = CreateFile(comName.data(), GENERIC_READ | GENERIC_WRITE, 0, 0,
-        OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+    hComPort = CreateFile(comName.data(), GENERIC_READ | GENERIC_WRITE, 0, nullptr,
+        OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
 
     if (hComPort == INVALID_HANDLE_VALUE) {
         std::cout << "Failed to open serial connection (" << GetLastError() <<
@@ -102,6 +102,8 @@ bool open(void)
     params.StopBits = ONESTOPBIT;
     params.Parity = ODDPARITY;
     SetCommState(hComPort, &params);
+
+    std::cout << "using " << comName.c_str() << std::endl;
 
     // All set
     return true;

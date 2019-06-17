@@ -68,3 +68,4 @@ win32: RC_ICONS += icon.ico
 
 DISTFILES += \
     ../build-Pla_GUI-Desktop-Debug/stylesheet
+

@@ -19,7 +19,7 @@
 #include "colormodel.h"
 #include <QDir>
 #include <QFile>
-
+#include <QAction>
 
 ColorListEditor::ColorListEditor(QWidget* parent, Qt::WindowFlags fl)
         : QDialog( parent, fl ) {

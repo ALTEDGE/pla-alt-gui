@@ -1,0 +1,99 @@
+MainWindow {
+    background-image: url('banner.png');
+}
+
+QTabBar, QTabBar::tab {
+	background: #303030;
+	color: #cccccc;
+	width: 120px;
+	font-size: 12px;
+}
+
+QTabBar::tab:selected {
+	color: #ffffff;
+}
+
+QTabBar::tab:!selected {
+	margin-top: 0px;
+}
+
+QTabWidget::tab-bar {
+	alignment: center;
+}
+
+QTabWidget, QTabWidget::pane {
+	background: #000000;
+	border: none;
+}
+
+QDialog, QMessageBox {
+	background: #000000;
+}
+
+QComboBox, QLineEdit {
+	font-size: 12px;
+	background: #000000;
+	color: #cccccc;
+	border: 1px solid #444444;
+}
+
+QLabel, QPushButton, QRadioButton, QCheckBox {
+	font-size: 10px;
+}
+
+QLabel, QRadioButton, QCheckBox {
+	color: #ffffff;
+}
+
+QRadioButton::indicator, QCheckBox::indicator {
+	width: 10px;
+	height: 10px;
+}
+
+QwwHueSatPicker {
+	border: 1px solid #cccccc;
+}
+
+QwwListWidget {
+	background: #000000;
+	color: #cccccc;
+	border: 1px solid #cccccc;
+	font-size: 12px;
+}
+
+ProgramTab QPushButton, WheelTab QPushButton, MacroTab QPushButton,
+    ProfileTab QPushButton {
+    border: 1px solid #444444;
+    background: #333333;
+    color: #777777;
+    border-radius: 0px;
+}
+
+ProgramTab QPushButton:pressed, WheelTab QPushButton:pressed,
+    MacroTab QPushButton:pressed, ProgramTab QPushButton:checked,
+    ProfileTab QPushButton:pressed {
+    background: #000000;
+    color: #ffffff;
+}
+
+ColorTab QPushButton {
+	background: #222222;
+	color: #ffffff;
+}
+
+QRadioButton {
+    padding: 4px;
+    border: 1px solid #444444;
+}
+
+QRadioButton::indicator::unchecked, QCheckBox::indicator::unchecked {
+    background: #888888;
+}
+
+QRadioButton::indicator::unchecked:hover, QCheckBox::indicator::unchecked:hover {
+    background: #88cc88;
+}
+
+QRadioButton::indicator::checked, QCheckBox::indicator::checked {
+    background: #44aa44;
+}
