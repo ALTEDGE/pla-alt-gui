@@ -13,4 +13,4 @@ which may also be opened as a QtCreator project. The provided version of
 
 Building these projects on Linux can be simply done with the GNU compiler.
 
-On Windows, building should be done with MSVC 2015. You should also use a static Qt library; one is available [here](https://bitgloo.com/files/msvc2015--static.zip) (64-bit).
+On Windows, building should be done with MSVC 2015. You should also use a static Qt library; one is available [here](https://bitgloo.com/files/msvc2015--static.zip) (64-bit). The static library was made following [this](https://github.com/fpoussin/Qt5-MSVC-Static) guide.
