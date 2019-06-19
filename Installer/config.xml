@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Installer>
+    <Name>PLA GUI</Name>
+    <Version>0.2</Version>
+    <Title>PLA GUI Installer</Title>
+    <Publisher>PLA</Publisher>
+    <StartMenuDir>PLA GUI</StartMenuDir>
+    <TargetDir>@ApplicationsDirX64@/PLA GUI</TargetDir>
+</Installer>
