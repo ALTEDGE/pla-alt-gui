@@ -13,70 +13,127 @@
 #include <iostream>
 #include <string>
 
-namespace serial {
-
-// Platform-specific variables
 #ifdef _WIN64
-static HANDLE hComPort = INVALID_HANDLE_VALUE;
+HANDLE Serial::hComPort = INVALID_HANDLE_VALUE;
 #else
-static int comFd = -1;
+int Serial::comFd = -1;
 #endif
 
-void write(unsigned char *array, unsigned int count);
+bool Serial::open(void)
+{
+    if (auto port = nativeOpen(); !port.empty()) {
+        std::cout << "Controller on " << port << std::endl;
+        return true;
+    }
 
-bool open(void)
+    return false;
+}
+
+void Serial::close(void)
 {
 #ifdef _WIN64
+    // Release the COM port
+    if (hComPort != INVALID_HANDLE_VALUE) {
+        CloseHandle(hComPort);
+        hComPort = INVALID_HANDLE_VALUE;
+    }
+#else
+    if (comFd != -1) {
+        ::close(comFd);
+        comFd = -1;
+    }
+#endif
+}
+
+bool Serial::connected(void)
+{
+#ifdef _WIN64
+    return hComPort != INVALID_HANDLE_VALUE;
+#else
+    return comFd != -1;
+#endif // _WIN64
+}
+
+void Serial::sendColor(unsigned char r, unsigned char g, unsigned char b)
+{
+    // A single 'c' character puts the controller into a color-receiving state
+    // Expects a byte of red, green, and blue each
+    // (500ms timeout to send the data)
+    unsigned char buf[4] = {
+        'c', r, g, b
+    };
+
+    nativeWrite(buf, 4);
+}
+
+void Serial::nativeWrite(unsigned char *array, unsigned int count)
+{
+#ifdef _WIN64
+    if (hComPort != INVALID_HANDLE_VALUE) {
+        DWORD written = 0;
+        WriteFile(hComPort, array, count, &written, nullptr);
+    }
+#else
+    if (comFd != -1)
+        ::write(comFd, array, count);
+#endif
+}
+
+std::string Serial::nativeOpen(void)
+{
+#ifdef _WIN64
+    auto findController = []() {
+        auto *devInfo = new SP_DEVINFO_DATA();
+        std::string data (1024, '\0');
+
+        std::memset(devInfo, 0, sizeof(SP_DEVINFO_DATA));
+        devInfo->cbSize = sizeof(SP_DEVINFO_DATA);
+
+        // Enumerate each device, to search for the connected controller
+        DWORD index = 0;
+        while (SetupDiEnumDeviceInfo(hDevInfo, index, devInfo)) {
+            index++;
+
+            auto getProperty = [&](DWORD property) {
+                return SetupDiGetDeviceRegistryPropertyA(hDevInfo, devInfo,
+                    property, nullptr, &data[0], data.size(), nullptr);
+            };
+
+            // Attempt to load the device's hardware ID
+            // and check if the ID matches the controller's
+            // TODO ID is hard-coded...
+            if (!getProperty(SPDRP_HARDWAREID) ||
+                data.find("VID_1B4F&PID_9204") == std::string::npos)
+                continue;
+
+            // If we get to here, this should be our device.
+            // Attempt to load the device's friendly name (should contain COM port number)
+            if (!getProperty(SPDRP_FRIENDLYNAME))
+                continue;
+
+            // Look for the COM number
+            if (auto comIndex = data.rfind("(COM"); comIndex != std::string::npos) {
+                // Device and port found
+                comPort = std::stoi(data.substr(comIndex + 4));
+                break;
+            }
+        }
+
+        delete[] data;
+        delete devInfo;
+    };
+
+
+
     // Load a handle to access all connected devices
-    auto hDevInfo = SetupDiGetClassDevs(nullptr, nullptr, nullptr, DIGCF_ALLCLASSES |
-        DIGCF_PRESENT);
+    auto hDevInfo = SetupDiGetClassDevs(nullptr, nullptr, nullptr,
+        DIGCF_ALLCLASSES | DIGCF_PRESENT);
 
     if (hDevInfo == INVALID_HANDLE_VALUE)
         return false;
 
     int comPort = -1;
     DWORD index = 0;
-
-    auto *devInfo = new SP_DEVINFO_DATA();
-    ZeroMemory(devInfo, sizeof(SP_DEVINFO_DATA));
-    devInfo->cbSize = sizeof(SP_DEVINFO_DATA);
-
-    auto *data = new BYTE[1024];
-
-    // Enumerate each device, to search for the connected controller
-    while (SetupDiEnumDeviceInfo(hDevInfo, index, devInfo)) {
-        index++;
-
-        // Attempt to load the device's hardware ID
-        if (!SetupDiGetDeviceRegistryPropertyA(hDevInfo, devInfo, SPDRP_HARDWAREID,
-            nullptr, data, sizeof(BYTE) * 1024, nullptr))
-            continue;
-
-        // Check if the ID matches the controller's
-        // TODO need to change if controller gets a unique ID (using Arduino's
-        // for now)
-        std::string hardwareId (reinterpret_cast<char *>(data));
-        if (hardwareId.find("VID_1B4F&PID_9204") == std::string::npos)
-            continue;
-
-        // If we get to here, this should be our device.
-        // Attempt to load the device's friendly name (should contain COM port number)
-        if (!SetupDiGetDeviceRegistryPropertyA(hDevInfo, devInfo, SPDRP_FRIENDLYNAME,
-            nullptr, data, 1024, nullptr))
-            continue;
-
-        // Look for the COM number
-        std::string friendlyName (reinterpret_cast<char *>(data));
-        auto comIndex = friendlyName.rfind("(COM");
-        if (comIndex == std::string::npos)
-            continue;
-
-        // Device and port found
-        comPort = std::stoi(friendlyName.substr(comIndex + 4));
-        break;
-    }
-    delete[] data;
-    delete devInfo;
 
     if (comPort == -1)
         return false;
@@ -108,69 +165,24 @@ bool open(void)
     // All set
     return true;
 #else
-    char portBuffer[16];
+    char portBuffer[13] = "/dev/ttyACM\0";
 
-    for (int i = 0; comFd == -1 && i < 8; i++) {
-        snprintf(portBuffer, 16, "/dev/ttyACM%d", i);
+    for (char i = '0'; i <= '9'; i++) {
+        portBuffer[11] = i;
         comFd = ::open(portBuffer, O_RDWR | O_NOCTTY);
 
-        if (comFd == -1)
-            continue;
-
-        char buf[4];
-        int w = ::write(comFd, "i", 1);
-        int r = ::read(comFd, buf, 4);
-        if (w == 1 && r == 4 && strncmp(buf, "PLA\n", 4)) {
-            ::close(comFd);
-            comFd = -1;
-            continue;
+        if (comFd != -1) {
+            char buf[4];
+            auto w = ::write(comFd, "i", 1);
+            auto r = ::read(comFd, buf, 4);
+            if (w == 1 && r == 4 && strncmp(buf, "PLA\n", 4) == 0)
+                break;
+            else
+                ::close(comFd);
         }
     }
 
-    std::cout << "using " << portBuffer << std::endl;
-
-    return comFd != -1;
+    return connected() ? portBuffer : "";
 #endif
+
 }
-
-void close(void)
-{
-#ifdef _WIN64
-    // Release the COM port
-    if (hComPort != INVALID_HANDLE_VALUE)
-        CloseHandle(hComPort);
-#else
-    if (comFd != -1)
-        ::close(comFd);
-#endif
-}
-
-void sendColor(unsigned char r, unsigned char g, unsigned char b)
-{
-    // A single 'c' character puts the controller into a color-receiving state
-    // Expects a byte of red, green, and blue each
-    // (500ms timeout to send the data)
-    unsigned char buf[4] = {
-        'c', r, g, b
-    };
-
-    write(buf, 4);
-}
-
-void write(unsigned char *array, unsigned int count)
-{
-#ifdef _WIN64
-    if (hComPort == INVALID_HANDLE_VALUE)
-        return;
-
-    DWORD written = 0;
-    WriteFile(hComPort, array, count, &written, nullptr);
-#else
-    if (comFd == -1)
-        return;
-
-    ::write(comFd, array, count);
-#endif
-}
-
-} // namespace serial

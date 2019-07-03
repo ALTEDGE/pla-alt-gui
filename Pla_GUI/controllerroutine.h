@@ -6,7 +6,9 @@
 #include <QSettings>
 
 #include <SDL2/SDL.h>
+#include <atomic>
 #include <iostream>
+#include <thread>
 
 #include "joysticktracker.h"
 
@@ -46,7 +48,7 @@ public:
      * Tests if ControllerRoutine has been successfully initialized.
      * @return True if connected
      */
-    static bool good(void);
+    static bool connected(void);
 
     /**
      * Saves all settings to the given settings handler.
@@ -72,7 +74,15 @@ private:
      */
     static unsigned int currentPG;
 
-    static SDL_Joystick *joystick;
+    static std::atomic<SDL_Joystick *> joystick;
+    static std::atomic_bool runThreads;
+    static std::thread connectionThread;
+    static std::thread controllerThread;
+
+    static void handleConnections(void);
+    static void handleController(void);
+
+    static bool checkGUID(int id);
 };
 
 #endif // CONTROLLERROUTINE_H

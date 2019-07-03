@@ -347,7 +347,7 @@ void Key::fire(bool press) const
         text += "F12";
         break;
     default:
-        text += (mod & Qt::ShiftModifier) ? (char)key : (char)tolower(key);
+        text += static_cast<char>((mod & Qt::ShiftModifier) ? key : tolower(key));
         break;
     }
 
