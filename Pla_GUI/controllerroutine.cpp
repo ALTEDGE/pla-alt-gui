@@ -2,9 +2,11 @@
 
 #include "mainwindow.h"
 #include "serial.h"
+#include "traymessage.h"
 
 #include <chrono>
 #include <QKeyEvent>
+#include <QThread>
 
 using namespace std::chrono_literals;
 
@@ -145,19 +147,23 @@ void Controller::handleController(void)
 
 void Controller::handleConnections(void)
 {
+    TrayMessage tray;
+
     while (runThreads.load()) {
         for (SDL_Event event; SDL_PollEvent(&event);) {
             switch (event.type) {
             case SDL_JOYDEVICEADDED:
-                std::cout << "Joystick added: " << event.jdevice.which << std::endl;
+                //std::cout << "Joystick added: " << event.jdevice.which << std::endl;
                 if (joystick.load() == nullptr && checkGUID(event.jdevice.which)) {
+                    tray.show("PLA", "Controller connected!");
                     Serial::open();
                     joystick.store(SDL_JoystickOpen(event.jdevice.which));
                 }
                 break;
             case SDL_JOYDEVICEREMOVED:
-                std::cout << "Joystick removed: " << event.jdevice.which << std::endl;
+                //std::cout << "Joystick removed: " << event.jdevice.which << std::endl;
                 if (joystick.load() != nullptr) {
+                    tray.show("PLA", "Controller disconnected.");
                     SDL_JoystickClose(joystick);
                     joystick.store(nullptr);
                 }

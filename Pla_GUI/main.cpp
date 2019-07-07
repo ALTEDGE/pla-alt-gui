@@ -22,7 +22,15 @@
 int main(int argc, char *argv[])
 {
     QApplication a (argc, argv);
-    std::thread updateThread;
+
+    // Load GUI stylesheet
+    QFile styleSheet ("stylesheet");
+    styleSheet.open(QFile::ReadOnly);
+    a.setStyleSheet(QLatin1String(styleSheet.readAll()));
+
+    // Show the main window
+    // Construct before controller init so tray icon exists
+    MainWindow w;
 
     // Attempt to connect to the controller
     if (!Controller::init()) {
@@ -32,13 +40,6 @@ controller. The program will not work with the controller unless it is connected
 start.", QMessageBox::Ok);
     }
 
-    // Load GUI stylesheet
-    QFile styleSheet ("stylesheet");
-    styleSheet.open(QFile::ReadOnly);
-    a.setStyleSheet(QLatin1String(styleSheet.readAll()));
-
-    // Show the main window
-    MainWindow w;
     w.show();
     auto ret = a.exec();
 

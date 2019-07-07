@@ -58,7 +58,8 @@ HEADERS += \
     savabletab.h \
     editing.h \
     profiletab.h \
-    profile.h
+    profile.h \
+    traymessage.h
 
 FORMS +=
 

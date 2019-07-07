@@ -12,15 +12,18 @@
 
 #include <QMessageBox>
 
+QSystemTrayIcon *MainWindow::trayIcon;
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
-    trayIcon(QIcon("icon.png")),
     tabs(this),
     profileMenu(nullptr),
     profileActionGroup(nullptr),
     lastTabIndex(0),
     done(false)
 {
+    trayIcon = new QSystemTrayIcon(QIcon("icon.png"));
+
     // Keep the window at a fixed size.
     setFixedSize(640, 460);
 
@@ -36,10 +39,10 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(profileMenu, SIGNAL(aboutToShow()), this, SLOT(updateProfilesMenu()));
 
     // Prepare and show the icon
-    connect(&trayIcon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)),
+    connect(trayIcon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)),
         this, SLOT(handleTray(QSystemTrayIcon::ActivationReason)));
-    trayIcon.setContextMenu(systemTrayMenu);
-    trayIcon.show();
+    trayIcon->setContextMenu(systemTrayMenu);
+    trayIcon->show();
 
     // Tab widget starts with a Y of 80px, so a banner can be at the top of the window
     tabs.setGeometry(0, 80, 640, 380);
@@ -65,7 +68,7 @@ void MainWindow::closeEvent(QCloseEvent *event)
 #ifdef KEEP_OPEN_IN_TRAY
     if (!done) {
         event->ignore();
-        trayIcon.showMessage("GUI Hidden", "Re-open PLA GUI by clicking the tray icon.",
+        trayIcon->showMessage("GUI Hidden", "Re-open PLA GUI by clicking the tray icon.",
             QSystemTrayIcon::Information, 4000);
         hide();
     } else {
