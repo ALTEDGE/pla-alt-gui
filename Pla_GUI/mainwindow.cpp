@@ -65,9 +65,9 @@ void MainWindow::closeEvent(QCloseEvent *event)
 #ifdef KEEP_OPEN_IN_TRAY
     if (!done) {
         event->ignore();
-        hide();
         trayIcon.showMessage("GUI Hidden", "Re-open PLA GUI by clicking the tray icon.",
             QSystemTrayIcon::Information, 4000);
+        hide();
     } else {
 #endif
         event->accept();

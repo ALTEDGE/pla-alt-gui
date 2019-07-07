@@ -65,6 +65,7 @@ FORMS +=
 unix:!macx: LIBS += -lwwwidgets5 -lxdo -lSDL2main -lSDL2
 win32: LIBS += -lwwwidgets5 -lSDL2 -lSDL2main -luser32 -lSetupAPI
 win32: RC_ICONS += icon.ico
+win32: QMAKE_CXXFLAGS += /std:c++latest
 
 DISTFILES += \
     ../build-Pla_GUI-Desktop-Debug/stylesheet

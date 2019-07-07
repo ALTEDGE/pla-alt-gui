@@ -21,7 +21,8 @@ int Serial::comFd = -1;
 
 bool Serial::open(void)
 {
-    if (auto port = nativeOpen(); !port.empty()) {
+    auto port = nativeOpen();
+    if (!port.empty()) {
         std::cout << "Controller on " << port << std::endl;
         return true;
     }
@@ -82,49 +83,6 @@ void Serial::nativeWrite(unsigned char *array, unsigned int count)
 std::string Serial::nativeOpen(void)
 {
 #ifdef _WIN64
-    auto findController = []() {
-        auto *devInfo = new SP_DEVINFO_DATA();
-        std::string data (1024, '\0');
-
-        std::memset(devInfo, 0, sizeof(SP_DEVINFO_DATA));
-        devInfo->cbSize = sizeof(SP_DEVINFO_DATA);
-
-        // Enumerate each device, to search for the connected controller
-        DWORD index = 0;
-        while (SetupDiEnumDeviceInfo(hDevInfo, index, devInfo)) {
-            index++;
-
-            auto getProperty = [&](DWORD property) {
-                return SetupDiGetDeviceRegistryPropertyA(hDevInfo, devInfo,
-                    property, nullptr, &data[0], data.size(), nullptr);
-            };
-
-            // Attempt to load the device's hardware ID
-            // and check if the ID matches the controller's
-            // TODO ID is hard-coded...
-            if (!getProperty(SPDRP_HARDWAREID) ||
-                data.find("VID_1B4F&PID_9204") == std::string::npos)
-                continue;
-
-            // If we get to here, this should be our device.
-            // Attempt to load the device's friendly name (should contain COM port number)
-            if (!getProperty(SPDRP_FRIENDLYNAME))
-                continue;
-
-            // Look for the COM number
-            if (auto comIndex = data.rfind("(COM"); comIndex != std::string::npos) {
-                // Device and port found
-                comPort = std::stoi(data.substr(comIndex + 4));
-                break;
-            }
-        }
-
-        delete[] data;
-        delete devInfo;
-    };
-
-
-
     // Load a handle to access all connected devices
     auto hDevInfo = SetupDiGetClassDevs(nullptr, nullptr, nullptr,
         DIGCF_ALLCLASSES | DIGCF_PRESENT);
@@ -132,23 +90,59 @@ std::string Serial::nativeOpen(void)
     if (hDevInfo == INVALID_HANDLE_VALUE)
         return false;
 
+    auto *devInfo = new SP_DEVINFO_DATA();
+    std::string data (1024, '\0');
     int comPort = -1;
+
+    std::memset(devInfo, 0, sizeof(SP_DEVINFO_DATA));
+    devInfo->cbSize = sizeof(SP_DEVINFO_DATA);
+
+    // Enumerate each device, to search for the connected controller
     DWORD index = 0;
+    while (SetupDiEnumDeviceInfo(hDevInfo, index, devInfo)) {
+        index++;
+
+        auto getProperty = [&](DWORD property) {
+            return SetupDiGetDeviceRegistryPropertyA(hDevInfo, devInfo,
+                property, nullptr, reinterpret_cast<unsigned char *>(&data[0]),
+                data.size(), nullptr);
+        };
+
+        // Attempt to load the device's hardware ID
+        // and check if the ID matches the controller's
+        // TODO ID is hard-coded...
+        if (!getProperty(SPDRP_HARDWAREID) ||
+            data.find("VID_1B4F&PID_9204") == std::string::npos)
+            continue;
+
+        // If we get to here, this should be our device.
+        // Attempt to load the device's friendly name (should contain COM port number)
+        if (!getProperty(SPDRP_FRIENDLYNAME))
+            continue;
+
+        // Look for the COM number
+        auto comIndex = data.rfind("(COM");
+        if (comIndex != std::string::npos) {
+            // Device and port found
+            comPort = std::stoi(data.substr(comIndex + 4));
+            break;
+        }
+    }
+
+    delete devInfo;
 
     if (comPort == -1)
-        return false;
+        return "";
 
     // Attempt to open the serial port
-    std::wstring comName (L"\\\\.\\COM");
-    comName.append(std::to_wstring(comPort));
-    hComPort = CreateFile(comName.data(), GENERIC_READ | GENERIC_WRITE, 0, nullptr,
+    std::string comName ("\\\\.\\COM");
+    comName += std::to_string(comPort);
+    hComPort = CreateFileA(comName.data(), GENERIC_READ | GENERIC_WRITE, 0, nullptr,
         OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
 
-    if (hComPort == INVALID_HANDLE_VALUE) {
-        std::cout << "Failed to open serial connection (" << GetLastError() <<
-            ")." << std::endl;
-        return false;
-    }
+    // TODO could check error with GetLastError()
+    if (hComPort == INVALID_HANDLE_VALUE)
+        return "";
 
     // Set connection parameters to what we need
     DCB params = { 0 };
@@ -160,10 +154,8 @@ std::string Serial::nativeOpen(void)
     params.Parity = ODDPARITY;
     SetCommState(hComPort, &params);
 
-    std::cout << "using " << comName.c_str() << std::endl;
-
     // All set
-    return true;
+    return comName;
 #else
     char portBuffer[13] = "/dev/ttyACM\0";
 

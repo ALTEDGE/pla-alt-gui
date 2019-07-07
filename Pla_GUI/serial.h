@@ -1,6 +1,10 @@
 #ifndef SERIAL_H
 #define SERIAL_H
 
+#ifdef _WIN64
+#include <Windows.h>
+#endif
+
 #include <string>
 
 /**
