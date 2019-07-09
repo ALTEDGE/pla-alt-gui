@@ -19,6 +19,8 @@ HANDLE Serial::hComPort = INVALID_HANDLE_VALUE;
 int Serial::comFd = -1;
 #endif
 
+unsigned char Serial::colorBuffer[4] = "c";
+
 bool Serial::open(void)
 {
     auto port = nativeOpen();
@@ -60,11 +62,16 @@ void Serial::sendColor(unsigned char r, unsigned char g, unsigned char b)
     // A single 'c' character puts the controller into a color-receiving state
     // Expects a byte of red, green, and blue each
     // (500ms timeout to send the data)
-    unsigned char buf[4] = {
-        'c', r, g, b
-    };
+    colorBuffer[1] = r;
+    colorBuffer[2] = g;
+    colorBuffer[3] = b;
 
-    nativeWrite(buf, 4);
+    sendColor();
+}
+
+void Serial::sendColor(void)
+{
+    nativeWrite(colorBuffer, 4);
 }
 
 void Serial::nativeWrite(unsigned char *array, unsigned int count)

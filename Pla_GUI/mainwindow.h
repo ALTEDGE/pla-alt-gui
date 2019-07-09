@@ -24,8 +24,8 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = nullptr);
 
-    static inline QSystemTrayIcon& getTrayIcon(void) {
-        return *trayIcon;
+    static inline QSystemTrayIcon* getTrayIcon(void) {
+        return trayIcon;
     }
 
 private slots:

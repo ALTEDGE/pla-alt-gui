@@ -34,6 +34,7 @@ public:
      * @param b Blue value, 0-255
      */
     static void sendColor(unsigned char r, unsigned char g, unsigned char b);
+    static void sendColor(void);
 
 private:
 #ifdef _WIN64
@@ -41,6 +42,7 @@ private:
 #else
     static int comFd;
 #endif // _WIN64
+    static unsigned char colorBuffer[4];
 
     static std::string nativeOpen(void);
 

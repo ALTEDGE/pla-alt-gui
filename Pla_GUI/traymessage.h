@@ -9,6 +9,8 @@ class TrayMessage : public QThread
 {
     Q_OBJECT
 
+    constexpr static unsigned int msecs = 1000;
+
 public:
     void show(QString _title, QString _msg) {
         title = _title;
@@ -18,8 +20,10 @@ public:
 
 private:
     void run(void) override {
-        MainWindow::getTrayIcon().showMessage(title, msg,
-            QSystemTrayIcon::Information, 1000);
+        auto* icon = MainWindow::getTrayIcon();
+        if (icon != nullptr)
+            icon->showMessage(title, msg, QSystemTrayIcon::Information, msecs);
+
     }
 
     QString title;

@@ -118,7 +118,7 @@ void Controller::handleController(void)
         // Only update if a joystick is connected
         auto* js = joystick.load();
         if (js == nullptr) {
-            std::this_thread::sleep_for(500ms);
+            std::this_thread::sleep_for(1s);
         } else {
             SDL_JoystickUpdate();
 
@@ -155,15 +155,16 @@ void Controller::handleConnections(void)
             case SDL_JOYDEVICEADDED:
                 //std::cout << "Joystick added: " << event.jdevice.which << std::endl;
                 if (joystick.load() == nullptr && checkGUID(event.jdevice.which)) {
-                    tray.show("PLA", "Controller connected!");
-                    Serial::open();
+                    //tray.show("PLA", "Controller connected!");
                     joystick.store(SDL_JoystickOpen(event.jdevice.which));
+                    Serial::open();
+                    Serial::sendColor();
                 }
                 break;
             case SDL_JOYDEVICEREMOVED:
                 //std::cout << "Joystick removed: " << event.jdevice.which << std::endl;
                 if (joystick.load() != nullptr) {
-                    tray.show("PLA", "Controller disconnected.");
+                    //tray.show("PLA", "Controller disconnected.");
                     SDL_JoystickClose(joystick);
                     joystick.store(nullptr);
                 }
