@@ -122,8 +122,10 @@ void MainWindow::handleQuit(bool unused)
 void MainWindow::handleTray(QSystemTrayIcon::ActivationReason reason)
 {
     // On left click, show the main window (this)
-    if (reason == QSystemTrayIcon::ActivationReason::Trigger)
+    if (reason == QSystemTrayIcon::ActivationReason::Trigger) {
         show();
+        activateWindow();
+    }
 }
 
 void MainWindow::updateProfilesMenu(void)
