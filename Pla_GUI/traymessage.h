@@ -21,9 +21,11 @@ public:
 private:
     void run(void) override {
         auto* icon = MainWindow::getTrayIcon();
-        if (icon != nullptr)
-            icon->showMessage(title, msg, QSystemTrayIcon::Information, msecs);
-
+        if (icon != nullptr) {
+            QMetaObject::invokeMethod(icon, "showMessage", Qt::QueuedConnection,
+                Q_ARG(QString, title),
+                Q_ARG(QString, msg));
+        }
     }
 
     QString title;
