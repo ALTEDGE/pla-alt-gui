@@ -1,11 +1,20 @@
 #include "controllerroutine.h"
 
 #include "mainwindow.h"
+#include "serial.h"
+#include "traymessage.h"
 
+#include <chrono>
 #include <QKeyEvent>
+#include <QThread>
+
+using namespace std::chrono_literals;
 
 unsigned int Controller::currentPG = 0;
-SDL_Joystick *Controller::joystick = nullptr;
+std::atomic<SDL_Joystick *> Controller::joystick;
+std::atomic_bool Controller::runThreads;
+std::thread Controller::connectionThread;
+std::thread Controller::controllerThread;
 
 JoystickTracker Controller::Left;
 JoystickTracker Controller::Right;
@@ -18,38 +27,29 @@ bool Controller::init(void)
     if (SDL_Init(SDL_INIT_JOYSTICK) != 0)
         return false;
 
-    // Search for a matching GUID
-    int id;
-    int devCount = SDL_NumJoysticks();
-    for (id = 0; id < devCount; id++) {
-        auto guid = SDL_JoystickGetDeviceGUID(id);
-        if (guid.data[4] == deviceGUID[0] &&
-            guid.data[5] == deviceGUID[1] &&
-            guid.data[8] == deviceGUID[2] &&
-            guid.data[9] == deviceGUID[3])
-            break;
-    }
+    joystick.store(nullptr);
+    runThreads.store(true);
+    connectionThread = std::thread(handleConnections);
+    controllerThread = std::thread(handleController);
 
-    if (id == devCount)
-        return false;
+    // Allow time to find connected joystick
+    std::this_thread::sleep_for(2s);
 
-    // Open a connection to the controller
-    joystick = SDL_JoystickOpen(id);
-
-    return joystick != nullptr;
+    return connected();
 }
 
 void Controller::end(void)
 {
-    SDL_JoystickClose(joystick);
-    joystick = nullptr;
+    runThreads.store(false);
+    controllerThread.join();
+    connectionThread.join();
 
     SDL_Quit();
 }
 
-bool Controller::good(void)
+bool Controller::connected(void)
 {
-    return joystick != nullptr;
+    return joystick.load() != nullptr;
 }
 
 void Controller::save(QSettings& settings)
@@ -112,27 +112,82 @@ void Controller::load(QSettings& settings)
     Joystick::loadThresholds(settings);
 }
 
-void Controller::update(void)
+void Controller::handleController(void)
 {
-    // Only update if properly initialized
-    if (joystick == nullptr)
-        return;
+    while (runThreads.load()) {
+        // Only update if a joystick is connected
+        auto* js = joystick.load();
+        if (js == nullptr) {
+            std::this_thread::sleep_for(1s);
+        } else {
+            SDL_JoystickUpdate();
 
-    SDL_JoystickUpdate();
+            // Check for PG button presses
+            for (unsigned int i = 3; i <= 10; i++) {
+                if (SDL_JoystickGetButton(js, static_cast<int>(i))) {
+                    if (currentPG != i - 3) {
+                        currentPG = i - 3;
+                        Primary.setPG(currentPG);
+                    }
+                    break;
+                }
+            }
 
-    // Check for PG button presses
-    for (unsigned int i = 3; i <= 10; i++) {
-        if (SDL_JoystickGetButton(joystick, i) && currentPG != i - 3) {
-            currentPG = i - 3;
-            Primary.setPG(currentPG);
-            break;
+            // Update the joystick objects with their respective axes
+            // Y-axis is inverted because joysticks on prototype are upside-down
+            Left.update(SDL_JoystickGetAxis(js, 3), -SDL_JoystickGetAxis(js, 4));
+            Right.update(SDL_JoystickGetAxis(js, 2), -SDL_JoystickGetAxis(js, 5));
+            Primary.update(SDL_JoystickGetAxis(js, 0), -SDL_JoystickGetAxis(js, 1));
+            Steering.update(SDL_JoystickGetAxis(js, 6));
+
+            std::this_thread::sleep_for(10ms);
         }
     }
+}
 
-    // Update the joystick objects with their respective axes
-    // Y-axis is inverted because joysticks on prototype are upside-down
-    Left.update(SDL_JoystickGetAxis(joystick, 3), -SDL_JoystickGetAxis(joystick, 4));
-    Right.update(SDL_JoystickGetAxis(joystick, 2), -SDL_JoystickGetAxis(joystick, 5));
-    Primary.update(SDL_JoystickGetAxis(joystick, 0), -SDL_JoystickGetAxis(joystick, 1));
-    Steering.update(SDL_JoystickGetAxis(joystick, 6));
+void Controller::handleConnections(void)
+{
+    auto *tray = new TrayMessage();
+
+    while (runThreads.load()) {
+        for (SDL_Event event; SDL_PollEvent(&event);) {
+            switch (event.type) {
+            case SDL_JOYDEVICEADDED:
+                if (joystick.load() == nullptr && checkGUID(event.jdevice.which)) {
+                    tray->show("PLA", "Controller connected!");
+                    joystick.store(SDL_JoystickOpen(event.jdevice.which));
+                    Serial::open();
+                    Serial::sendColor();
+                }
+                break;
+            case SDL_JOYDEVICEREMOVED:
+                if (joystick.load() != nullptr) {
+                    tray->show("PLA", "Controller disconnected.");
+                    SDL_JoystickClose(joystick);
+                    joystick.store(nullptr);
+                }
+                break;
+            default:
+                break;
+            }
+        }
+
+        std::this_thread::sleep_for(1s);
+    }
+
+    delete tray;
+    auto js = joystick.load();
+    if (js != nullptr) {
+        SDL_JoystickClose(js);
+        Serial::close();
+    }
+}
+
+bool Controller::checkGUID(int id)
+{
+        auto guid = SDL_JoystickGetDeviceGUID(id);
+        return (guid.data[4] == deviceGUID[0] &&
+            guid.data[5] == deviceGUID[1] &&
+            guid.data[8] == deviceGUID[2] &&
+            guid.data[9] == deviceGUID[3]);
 }

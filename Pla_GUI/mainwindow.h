@@ -22,7 +22,11 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit MainWindow(QWidget *parent = 0);
+    explicit MainWindow(QWidget *parent = nullptr);
+
+    static inline QSystemTrayIcon* getTrayIcon(void) {
+        return trayIcon;
+    }
 
 private slots:
     /**
@@ -51,9 +55,9 @@ private:
      */
     void closeEvent(QCloseEvent *event);
 
-    QSystemTrayIcon trayIcon;
-    QTabWidget tabs;
+    static QSystemTrayIcon *trayIcon;
 
+    QTabWidget tabs;
     QMenu *profileMenu;
     QActionGroup *profileActionGroup;
 

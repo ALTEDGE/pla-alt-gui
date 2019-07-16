@@ -48,12 +48,12 @@ void Profile::open(const QString &name)
     settingsName = name;
     settings = profileObject(settingsName);
 
-    if (Controller::good()) {
+    if (Controller::connected()) {
         auto brght = settings->value("color/brightness", 20).toInt();
         auto red = settings->value("color/red", 255).toInt();
         auto green = settings->value("color/green", 0).toInt();
         auto blue = settings->value("color/blue", 0).toInt();
-        serial::sendColor(red * brght / 100, green * brght / 100,
+        Serial::sendColor(red * brght / 100, green * brght / 100,
             blue  * brght / 100);
     }
 

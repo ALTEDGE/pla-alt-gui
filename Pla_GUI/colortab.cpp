@@ -53,7 +53,7 @@ void ColorTab::setColor(QColor color)
 {
     currentColor = color;
     if (outputEnable) {
-        serial::sendColor(currentColor.red() * currentBrightness / 100, currentColor.green() *
+        Serial::sendColor(currentColor.red() * currentBrightness / 100, currentColor.green() *
             currentBrightness / 100, currentColor.blue()  * currentBrightness / 100);
     }
 
@@ -74,14 +74,14 @@ void ColorTab::disableLeds(void)
 {
     outputEnable = false;
     // Send "black" to turn off the lights
-    serial::sendColor(0, 0, 0);
+    Serial::sendColor(0, 0, 0);
 }
 
 void ColorTab::updateBrightness(int level)
 {
     currentBrightness = level;
     if (outputEnable) {
-        serial::sendColor(currentColor.red() * currentBrightness / 100, currentColor.green() *
+        Serial::sendColor(currentColor.red() * currentBrightness / 100, currentColor.green() *
             currentBrightness / 100, currentColor.blue()  * currentBrightness / 100);
     }
 
