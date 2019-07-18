@@ -2,13 +2,12 @@
 
 #include "colortab.h"
 #include "macrotab.h"
+#include "profile.h"
 #include "profiletab.h"
 #include "programtab.h"
 #include "wheeltab.h"
 
 #include "controllerroutine.h"
-#include "macro.h"
-#include "profile.h"
 
 #include <QMessageBox>
 
@@ -46,11 +45,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // Tab widget starts with a Y of 80px, so a banner can be at the top of the window
     tabs.setGeometry(0, 80, 640, 380);
-
-    // Load controller settings
-    Profile::openFirst();
-    Macro::load(Profile::current());
-    Controller::load(Profile::current());
 
     // Add tabs
     tabs.addTab(new ProfileTab(this), "Profiles");

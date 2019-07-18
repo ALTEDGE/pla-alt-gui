@@ -65,10 +65,14 @@ void ProfileTab::openProfile(const QString &name)
 
 void ProfileTab::saveProfile(void)
 {
-    auto& profile = Profile::current();
-    profile.sync();
-    Controller::save(profile);
-    Macro::save(profile);
+    if (Profile::name() != profileName.text()) {
+        renameProfile();
+    } else {
+        auto& profile = Profile::current();
+        profile.sync();
+        Controller::save(profile);
+        Macro::save(profile);
+    }
 }
 
 void ProfileTab::deleteProfile(void)

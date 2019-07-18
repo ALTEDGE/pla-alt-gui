@@ -20,6 +20,9 @@ JoystickTracker Controller::Left;
 JoystickTracker Controller::Right;
 PrimaryJoystickTracker Controller::Primary;
 SteeringTracker Controller::Steering;
+QColor Controller::Color;
+int Controller::ColorBrightness;
+bool Controller::ColorEnable;
 
 bool Controller::init(void)
 {
@@ -34,7 +37,6 @@ bool Controller::init(void)
 
     // Allow time to find connected joystick
     std::this_thread::sleep_for(2s);
-
     return connected();
 }
 
@@ -77,6 +79,16 @@ void Controller::save(QSettings& settings)
     settings.endGroup();
 
     settings.endGroup();
+    settings.beginGroup("color");
+
+    // Load colors
+    settings.setValue("red", Color.red());
+    settings.setValue("green", Color.green());
+    settings.setValue("blue", Color.blue());
+    settings.setValue("brightness", ColorBrightness);
+    settings.setValue("enabled", ColorEnable);
+
+    settings.endGroup();
 
     // Save threshold values
     Joystick::saveThresholds(settings);
@@ -107,9 +119,33 @@ void Controller::load(QSettings& settings)
     settings.endGroup();
 
     settings.endGroup();
+    settings.beginGroup("color");
+
+    // Load colors
+    Color.setRed(settings.value("red", 255).toInt());
+    Color.setGreen(settings.value("green", 255).toInt());
+    Color.setBlue(settings.value("blue", 255).toInt());
+    ColorBrightness = settings.value("brightness", 20).toInt();
+    ColorEnable = settings.value("enabled", true).toBool();
+
+    settings.endGroup();
 
     // Load threshold values
     Joystick::loadThresholds(settings);
+}
+
+void Controller::updateColor(void)
+{
+    if (connected()) {
+        if (ColorEnable) {
+            unsigned char r = Color.red() * ColorBrightness / 100;
+            unsigned char g = Color.green() * ColorBrightness / 100;
+            unsigned char b = Color.blue() * ColorBrightness / 100;
+            Serial::sendColor(r, g, b);
+        } else {
+            Serial::sendColor(0, 0, 0);
+        }
+    }
 }
 
 void Controller::handleController(void)
@@ -157,7 +193,7 @@ void Controller::handleConnections(void)
                     tray->show("PLA", "Controller connected!");
                     joystick.store(SDL_JoystickOpen(event.jdevice.which));
                     Serial::open();
-                    Serial::sendColor();
+                    updateColor();
                 }
                 break;
             case SDL_JOYDEVICEREMOVED:

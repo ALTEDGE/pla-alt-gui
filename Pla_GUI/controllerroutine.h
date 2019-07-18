@@ -32,6 +32,9 @@ public:
     static JoystickTracker Right;
     static PrimaryJoystickTracker Primary;
     static SteeringTracker Steering;
+    static QColor Color;
+    static int ColorBrightness;
+    static bool ColorEnable;
 
     /**
      * Initializes SDL and searches for a connected controller.
@@ -62,11 +65,7 @@ public:
      */
     static void load(QSettings& settings);
 
-    /**
-     * Updates controller input and fires joystick or button actions as necessary.
-     * Should be called in a loop to continuously update.
-     */
-    static void update(void);
+    static void updateColor(void);
 
 private:
     /**

@@ -145,7 +145,7 @@ std::string Serial::nativeOpen(void)
     std::string comName ("\\\\.\\COM");
     comName += std::to_string(comPort);
     hComPort = CreateFileA(comName.data(), GENERIC_READ | GENERIC_WRITE, 0, nullptr,
-        OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
+        OPEN_EXISTING, FILE_FLAG_WRITE_THROUGH, nullptr);
 
     // TODO could check error with GetLastError()
     if (hComPort == INVALID_HANDLE_VALUE)
@@ -168,7 +168,7 @@ std::string Serial::nativeOpen(void)
 
     for (char i = '0'; i <= '9'; i++) {
         portBuffer[11] = i;
-        comFd = ::open(portBuffer, O_RDWR | O_NOCTTY);
+        comFd = ::open(portBuffer, O_RDWR | O_NOCTTY | O_SYNC);
 
         if (comFd != -1) {
             char buf[4];

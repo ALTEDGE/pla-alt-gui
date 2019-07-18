@@ -5,6 +5,7 @@
 #include <QLabel>
 #include <QShowEvent>
 #include <QSlider>
+#include <QTimer>
 #include <QPushButton>
 #include <wwWidgets/QwwHueSatPicker>
 
@@ -44,6 +45,8 @@ private slots:
      */
     void updateBrightness(int level);
 
+    void updateColor(void);
+
 private:
     void showEvent(QShowEvent *event);
 
@@ -58,13 +61,7 @@ private:
     QPushButton ledOn;
     QPushButton ledOff;
 
-    /**
-     * If true, setting changes will be immediately sent to the controller.
-     */
-    bool outputEnable;
-
-    int currentBrightness;
-    QColor currentColor;
+    QTimer updateTimer;
 };
 
 #endif // COLORTAB_H

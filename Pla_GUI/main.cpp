@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "controllerroutine.h"
+#include "macro.h"
 #include "profile.h"
 #include "serial.h"
 
@@ -26,7 +27,12 @@ int main(int argc, char *argv[])
     // Load GUI stylesheet
     QFile styleSheet ("stylesheet");
     styleSheet.open(QFile::ReadOnly);
-    a.setStyleSheet(QLatin1String(styleSheet.readAll()));
+    a.setStyleSheet(QString(styleSheet.readAll()));
+
+    // Load controller settings
+    Profile::openFirst();
+    Macro::load(Profile::current());
+    Controller::load(Profile::current());
 
     // Show the main window
     // Construct before controller init so tray icon exists

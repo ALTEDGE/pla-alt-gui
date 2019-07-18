@@ -1,6 +1,9 @@
 #include "colortab.h"
+#include "controllerroutine.h"
 #include "profile.h"
 #include "serial.h"
+
+#include <QThread>
 
 ColorTab::ColorTab(QWidget *parent) :
     QWidget(parent),
@@ -10,7 +13,7 @@ ColorTab::ColorTab(QWidget *parent) :
     colorBrightness(this),
     ledOn("ON", this),
     ledOff("OFF", this),
-    outputEnable(true)
+    updateTimer(this)
 {
     // Set control positions
     lColorPicker.setGeometry(0, 10, 640, 20);
@@ -27,63 +30,53 @@ ColorTab::ColorTab(QWidget *parent) :
     // Brightness range from 0 to 100
     colorBrightness.setRange(0, 50);
 
+    updateTimer.setSingleShot(true);
+
     // Connect signals/slots
     connect(&colorPicker, SIGNAL(colorPicked(QColor)), this, SLOT(setColor(QColor)));
     connect(&ledOn, SIGNAL(released()), this, SLOT(enableLeds()));
     connect(&ledOff, SIGNAL(released()), this, SLOT(disableLeds()));
     connect(&colorBrightness, SIGNAL(sliderMoved(int)), this, SLOT(updateBrightness(int)));
+    connect(&updateTimer, SIGNAL(timeout()), this, SLOT(updateColor()));
+}
+
+void ColorTab::updateColor(void)
+{
+    Controller::updateColor();
 }
 
 void ColorTab::showEvent(QShowEvent *event)
 {
-    // Load settings from config file
-    auto& settings = Profile::current();
-    currentBrightness = settings.value("color/brightness", 20).toInt();
-    auto red = settings.value("color/red", 255).toInt();
-    auto green = settings.value("color/green", 0).toInt();
-    auto blue = settings.value("color/blue", 0).toInt();
-
-    colorBrightness.setValue(currentBrightness);
-    colorPicker.setColor(QColor(red, green, blue));
+    colorBrightness.setValue(Controller::ColorBrightness);
+    colorPicker.setColor(Controller::Color);
 
     event->accept();
 }
 
 void ColorTab::setColor(QColor color)
 {
-    currentColor = color;
-    if (outputEnable) {
-        Serial::sendColor(currentColor.red() * currentBrightness / 100, currentColor.green() *
-            currentBrightness / 100, currentColor.blue()  * currentBrightness / 100);
-    }
-
-    // Save new color
-    auto& settings = Profile::current();
-    settings.setValue("color/red", color.red());
-    settings.setValue("color/green", color.green());
-    settings.setValue("color/blue", color.blue());
+    Controller::Color = color;
+    if (!updateTimer.isActive())
+        updateTimer.start(100);
 }
 
 void ColorTab::enableLeds(void)
 {
-    outputEnable = true;
-    setColor(currentColor);
+    Controller::ColorEnable = true;
+    if (!updateTimer.isActive())
+        updateTimer.start(100);
 }
 
 void ColorTab::disableLeds(void)
 {
-    outputEnable = false;
-    // Send "black" to turn off the lights
-    Serial::sendColor(0, 0, 0);
+    Controller::ColorEnable = false;
+    if (!updateTimer.isActive())
+        updateTimer.start(100);
 }
 
 void ColorTab::updateBrightness(int level)
 {
-    currentBrightness = level;
-    if (outputEnable) {
-        Serial::sendColor(currentColor.red() * currentBrightness / 100, currentColor.green() *
-            currentBrightness / 100, currentColor.blue()  * currentBrightness / 100);
-    }
-
-    Profile::current().setValue("color/brightness", currentBrightness);
+    Controller::ColorBrightness = level;
+    if (!updateTimer.isActive())
+        updateTimer.start(100);
 }
