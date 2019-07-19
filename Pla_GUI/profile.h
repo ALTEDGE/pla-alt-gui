@@ -11,6 +11,9 @@ public:
 
     static void remove(void);
     static void rename(const QString& newName);
+    static void copy(const QString& newName);
+
+    static void save(void);
 
     static QSettings& current(void);
     static const QString& name(void);

@@ -127,6 +127,7 @@ void Controller::load(QSettings& settings)
     Color.setBlue(settings.value("blue", 255).toInt());
     ColorBrightness = settings.value("brightness", 20).toInt();
     ColorEnable = settings.value("enabled", true).toBool();
+    updateColor();
 
     settings.endGroup();
 

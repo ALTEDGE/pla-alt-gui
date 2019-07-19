@@ -48,15 +48,6 @@ void Profile::open(const QString &name)
     settingsName = name;
     settings = profileObject(settingsName);
 
-    if (Controller::connected()) {
-        auto brght = settings->value("color/brightness", 20).toInt();
-        auto red = settings->value("color/red", 255).toInt();
-        auto green = settings->value("color/green", 0).toInt();
-        auto blue = settings->value("color/blue", 0).toInt();
-        Serial::sendColor(red * brght / 100, green * brght / 100,
-            blue  * brght / 100);
-    }
-
     Controller::load(*settings);
     Macro::load(*settings);
 }
@@ -91,6 +82,26 @@ void Profile::rename(const QString &newName)
     QFile file (profilePath(settingsName));
     file.rename(profilePath(newName));
     open(newName);
+}
+
+void Profile::copy(const QString& newName)
+{
+    auto oldPath = profilePath(settingsName);
+
+    {
+        QFile file (oldPath);
+        file.copy(oldPath + ".bak");
+    }
+
+    rename(newName);
+
+    QFile oldFile (oldPath + ".bak");
+    oldFile.rename(oldPath);
+}
+
+void Profile::save(void)
+{
+    settings->sync();
 }
 
 QSettings& Profile::current(void)
