@@ -1,4 +1,5 @@
 #include "serial.h"
+#include "config.h"
 
 // Include platform-specific libraries
 #ifdef _WIN64
@@ -119,7 +120,7 @@ std::string Serial::nativeOpen(void)
         // and check if the ID matches the controller's
         // TODO ID is hard-coded...
         if (!getProperty(SPDRP_HARDWAREID) ||
-            data.find("VID_1B4F&PID_9204") == std::string::npos)
+            data.find(config::WindowsDeviceGUID) == std::string::npos)
             continue;
 
         // If we get to here, this should be our device.

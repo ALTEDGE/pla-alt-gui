@@ -1,5 +1,5 @@
 #include "colortab.h"
-#include "controllerroutine.h"
+#include "controller.h"
 #include "profile.h"
 #include "serial.h"
 

@@ -1,6 +1,6 @@
 #include "thresholdsetter.h"
 
-#include "controllerroutine.h"
+#include "controller.h"
 #include "joysticktracker.h"
 #include "profile.h"
 

@@ -1,4 +1,5 @@
 #include "macro.h"
+#include "config.h"
 
 #include <chrono>
 #include <thread>
@@ -80,7 +81,8 @@ void Macro::fire(const std::string& name)
     // Loop through all Actions
     for (const auto& a : (*macro).second) {
         a.key.fire(a.press);
-        std::this_thread::sleep_for(std::chrono::milliseconds(std::max(a.delay, 5u)));
+        std::this_thread::sleep_for(std::chrono::milliseconds(
+            std::max(a.delay, config::MinimumMacroDelay)));
     }
 }
 
@@ -97,9 +99,9 @@ void Macro::load(QSettings& settings)
         actions.setDelayType(settings.value("delayType").toInt());
 
         // Load all keys
-        unsigned int count = settings.childGroups().count();
+        int count = settings.childGroups().count();
         QString key ("key");
-        for (unsigned int i = 0; i < count; i++) {
+        for (int i = 0; i < count; i++) {
             settings.beginGroup(key + std::to_string(i).c_str());
 
             // Load key data

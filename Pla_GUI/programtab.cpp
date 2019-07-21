@@ -1,6 +1,6 @@
 #include "programtab.h"
 
-#include "controllerroutine.h"
+#include "controller.h"
 #include "profile.h"
 #include "thresholdsetter.h"
 

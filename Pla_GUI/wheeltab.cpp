@@ -1,5 +1,5 @@
 #include "wheeltab.h"
-#include "controllerroutine.h"
+#include "controller.h"
 #include "profile.h"
 
 WheelTab::WheelTab(QWidget *parent) :

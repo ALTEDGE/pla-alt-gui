@@ -8,12 +8,6 @@
 #include <QTabWidget>
 
 /**
- * Uncomment to let the program run in the background, minimized to the system
- * tray area on the start bar.
- */
-#define KEEP_OPEN_IN_TRAY
- 
-/**
  * @class MainWindow
  * @brief The main window, contains all controls/content
  */

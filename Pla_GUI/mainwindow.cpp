@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 
+#include "config.h"
 #include "colortab.h"
 #include "macrotab.h"
 #include "profile.h"
@@ -7,7 +8,7 @@
 #include "programtab.h"
 #include "wheeltab.h"
 
-#include "controllerroutine.h"
+#include "controller.h"
 
 #include <QMessageBox>
 

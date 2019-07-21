@@ -11,7 +11,7 @@
 
 #include "editing.h"
 #include "joysticktracker.h"
-#include "controllerroutine.h"
+#include "controller.h"
 #include "keygrabber.h"
 #include "savabletab.h"
 #include "thresholdsetter.h"

@@ -7,7 +7,7 @@
 #ifndef JOYSTICKTRACKER_H
 #define JOYSTICKTRACKER_H
 
-#include "key.h"
+#include "keysender.h"
 
 /**
  * @class Joystick
@@ -86,7 +86,8 @@ public:
  *         5   4   3
  *     13     12      11
  */
-class JoystickTracker : protected Joystick, public KeySender<16> {
+class JoystickTracker : protected Joystick, public KeySender<16>
+{
 public:
     JoystickTracker(bool sequencer = false, bool diagonal = false);
     virtual ~JoystickTracker(void) = default;

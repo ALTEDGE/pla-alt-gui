@@ -1,4 +1,5 @@
-#include "controllerroutine.h"
+#include "controller.h"
+#include "config.h"
 
 #include "mainwindow.h"
 #include "serial.h"
@@ -155,7 +156,7 @@ void Controller::handleController(void)
         // Only update if a joystick is connected
         auto* js = joystick.load();
         if (js == nullptr) {
-            std::this_thread::sleep_for(1s);
+            std::this_thread::sleep_for(config::ConnectionCheckFrequency);
         } else {
             SDL_JoystickUpdate();
 
@@ -177,7 +178,7 @@ void Controller::handleController(void)
             Primary.update(SDL_JoystickGetAxis(js, 0), -SDL_JoystickGetAxis(js, 1));
             Steering.update(SDL_JoystickGetAxis(js, 6));
 
-            std::this_thread::sleep_for(10ms);
+            std::this_thread::sleep_for(config::InputUpdateFrequency);
         }
     }
 }
@@ -209,7 +210,7 @@ void Controller::handleConnections(void)
             }
         }
 
-        std::this_thread::sleep_for(1s);
+        std::this_thread::sleep_for(config::ConnectionCheckFrequency);
     }
 
     delete tray;
@@ -223,6 +224,7 @@ void Controller::handleConnections(void)
 bool Controller::checkGUID(int id)
 {
         auto guid = SDL_JoystickGetDeviceGUID(id);
+        constexpr auto deviceGUID = config::DeviceGUID;
         return (guid.data[4] == deviceGUID[0] &&
             guid.data[5] == deviceGUID[1] &&
             guid.data[8] == deviceGUID[2] &&

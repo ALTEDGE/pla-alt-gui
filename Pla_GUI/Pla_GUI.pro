@@ -31,7 +31,6 @@ SOURCES += \
     wheeltab.cpp \
     macrotab.cpp \
     keygrabber.cpp \
-    controllerroutine.cpp \
     joysticktracker.cpp \
     key.cpp \
     serial.cpp \
@@ -39,7 +38,8 @@ SOURCES += \
     programtab.cpp \
     macrorecorder.cpp \
     profiletab.cpp \
-    profile.cpp
+    profile.cpp \
+    controller.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -48,7 +48,6 @@ HEADERS += \
     wheeltab.h \
     macrotab.h \
     keygrabber.h \
-    controllerroutine.h \
     joysticktracker.h \
     key.h \
     serial.h \
@@ -59,7 +58,10 @@ HEADERS += \
     editing.h \
     profiletab.h \
     profile.h \
-    traymessage.h
+    traymessage.h \
+    keysender.h \
+    controller.h \
+    config.h
 
 FORMS +=
 

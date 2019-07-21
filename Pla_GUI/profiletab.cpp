@@ -1,7 +1,7 @@
 #include "profiletab.h"
 #include "mainwindow.h"
 #include "profile.h"
-#include "controllerroutine.h"
+#include "controller.h"
 #include "macro.h"
 
 #include <QDir>

@@ -1,5 +1,5 @@
 #include "mainwindow.h"
-#include "controllerroutine.h"
+#include "controller.h"
 #include "macro.h"
 #include "profile.h"
 #include "serial.h"

@@ -17,15 +17,6 @@
  * @brief Handles all non-serial communication with the controller.
  */
 class Controller {
-private:
-    /**
-     * Defines the USB vendor/product ID of the controller. Initialization will
-     * fail if SDL does not find a controller matching this ID.
-     */
-    constexpr static unsigned char deviceGUID[4] = {
-        0x4F, 0x1B, 0x04, 0x92
-    };
-
 public:
     // Objects to manage controller joysticks & wheel
     static JoystickTracker Left;

@@ -1,22 +1,12 @@
 #include "joysticktracker.h"
+#include "config.h"
 
 #include <cmath> // sqrt()
 #include <chrono>
 #include <thread>
 
-/**
- * Defines the minimum rate-of-change in a joystick to be considered movement.
- * Actions will not be fired unless the joystick is moving at a lesser speed.
- *
- * Note: Axes in SDL have a range of -32767 to +32767
- */
-constexpr double speedThreshold = 100;
-
-constexpr int defaultShortThreshold = 10000;
-constexpr int defaultFarThreshold = 30000;
-
-int Joystick::shortThreshold = defaultShortThreshold;
-int Joystick::farThreshold = defaultFarThreshold;
+int Joystick::shortThreshold = config::JoystickDefaultShortThreshold;
+int Joystick::farThreshold = config::JoystickDefaultFarThreshold;
 
 int Joystick::getShortThreshold(void)
 {
@@ -41,8 +31,8 @@ void Joystick::setFarThreshold(int value)
 void Joystick::loadThresholds(QSettings& config)
 {
     config.beginGroup("thresholds");
-    shortThreshold = config.value("short", defaultShortThreshold).toInt();
-    farThreshold = config.value("far", defaultFarThreshold).toInt();
+    shortThreshold = config.value("short", config::JoystickDefaultShortThreshold).toInt();
+    farThreshold = config.value("far", config::JoystickDefaultFarThreshold).toInt();
     config.endGroup();
 }
 
@@ -186,7 +176,7 @@ void JoystickTracker::update(int x, int y)
     auto dist = std::sqrt(dx * dx + dy * dy);
 
     // Don't act if we're moving too quick
-    if (dist > speedThreshold)
+    if (dist > config::JoystickSpeedThreshold)
         return;
 
     // Get the current action index and fire that action

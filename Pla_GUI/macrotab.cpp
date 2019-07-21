@@ -1,5 +1,5 @@
 #include "macrotab.h"
-#include "controllerroutine.h"
+#include "controller.h"
 #include "mainwindow.h"
 #include "macrorecorder.h"
 #include "profile.h"
