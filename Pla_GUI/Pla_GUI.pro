@@ -24,48 +24,61 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 
 SOURCES += \
-        main.cpp \
-        mainwindow.cpp \
-    thresholdsetter.cpp \
-    colortab.cpp \
     wheeltab.cpp \
-    macrotab.cpp \
-    keygrabber.cpp \
-    joysticktracker.cpp \
-    key.cpp \
+    thresholdsetter.cpp \
     serial.cpp \
-    macro.cpp \
+    sequencertab.cpp \
     programtab.cpp \
-    macrorecorder.cpp \
     profiletab.cpp \
     profile.cpp \
-    controller.cpp
+    mainwindow.cpp \
+    main.cpp \
+    macrotab.cpp \
+    macrorecorder.cpp \
+    macro.cpp \
+    keygrabber.cpp \
+    colortab.cpp \
+    key.cpp \
+    axisselector.cpp \
+    input/controller.cpp \
+    input/joystick.cpp \
+    input/joysticktracker.cpp \
+    input/primaryjoysticktracker.cpp \
+    input/steeringtracker.cpp
 
 HEADERS += \
-        mainwindow.h \
-    thresholdsetter.h \
+    axisselector.h \
     colortab.h \
-    wheeltab.h \
-    macrotab.h \
-    keygrabber.h \
-    joysticktracker.h \
-    key.h \
-    serial.h \
-    macro.h \
-    programtab.h \
-    macrorecorder.h \
-    savabletab.h \
+    config.h \
     editing.h \
-    profiletab.h \
-    profile.h \
-    traymessage.h \
+    key.h \
+    keygrabber.h \
     keysender.h \
-    controller.h \
-    config.h
+    macro.h \
+    macrorecorder.h \
+    macrotab.h \
+    mainwindow.h \
+    profile.h \
+    profiletab.h \
+    programtab.h \
+    savabletab.h \
+    sequencertab.h \
+    serial.h \
+    thresholdsetter.h \
+    traymessage.h \
+    wheeltab.h \
+    input/controller.h \
+    input/joystick.h \
+    input/joysticktracker.h \
+    input/primaryjoysticktracker.h \
+    input/steeringtracker.h
+
+INCLUDEPATH += input
 
 FORMS +=
 
 unix:!macx: LIBS += -lwwwidgets5 -lxdo -lSDL2main -lSDL2
+unix:!macx: QMAKE_CXXFLAGS += -Wall -Wextra -Werror -pedantic
 win32: LIBS += -lwwwidgets5 -lSDL2 -lSDL2main -luser32 -lSetupAPI
 win32: RC_ICONS += icon.ico
 win32: QMAKE_CXXFLAGS += /std:c++latest

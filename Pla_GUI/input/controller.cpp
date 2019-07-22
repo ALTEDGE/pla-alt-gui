@@ -11,7 +11,7 @@
 
 using namespace std::chrono_literals;
 
-unsigned int Controller::currentPG = 0;
+int Controller::currentPG = 0;
 std::atomic<SDL_Joystick *> Controller::joystick;
 std::atomic_bool Controller::runThreads;
 std::thread Controller::connectionThread;
@@ -136,13 +136,20 @@ void Controller::load(QSettings& settings)
     Joystick::loadThresholds(settings);
 }
 
+void Controller::setSequencing(bool enable)
+{
+    Left.setSequencing(enable);
+    Primary.setSequencing(enable);
+    Right.setSequencing(enable);
+}
+
 void Controller::updateColor(void)
 {
     if (connected()) {
         if (ColorEnable) {
-            unsigned char r = Color.red() * ColorBrightness / 100;
-            unsigned char g = Color.green() * ColorBrightness / 100;
-            unsigned char b = Color.blue() * ColorBrightness / 100;
+            auto r = static_cast<unsigned char>(Color.red() * ColorBrightness / 100);
+            auto g = static_cast<unsigned char>(Color.green() * ColorBrightness / 100);
+            auto b = static_cast<unsigned char>(Color.blue() * ColorBrightness / 100);
             Serial::sendColor(r, g, b);
         } else {
             Serial::sendColor(0, 0, 0);
@@ -161,8 +168,8 @@ void Controller::handleController(void)
             SDL_JoystickUpdate();
 
             // Check for PG button presses
-            for (unsigned int i = 3; i <= 10; i++) {
-                if (SDL_JoystickGetButton(js, static_cast<int>(i))) {
+            for (int i = 3; i <= 10; i++) {
+                if (SDL_JoystickGetButton(js, i)) {
                     if (currentPG != i - 3) {
                         currentPG = i - 3;
                         Primary.setPG(currentPG);

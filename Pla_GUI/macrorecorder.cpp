@@ -50,9 +50,7 @@ bool MacroRecorder::eventFilter(QObject *watched, QEvent *event)
 
         // Measure delay
         auto now = std::chrono::system_clock::now();
-        unsigned int delay = static_cast<unsigned int>(
-            std::chrono::duration_cast<std::chrono::milliseconds>
-            (now - lastTime).count());
+        auto delay = std::chrono::duration_cast<std::chrono::milliseconds>(now - lastTime);
 
         // Store data
         keys.emplace_back(key, press, delay);
@@ -67,7 +65,7 @@ void MacroRecorder::stopRecording(void)
     // Shift delays back one
     for (unsigned int i = 0; i < keys.size() - 1; i++)
         keys[i].delay = keys[i + 1].delay;
-    keys.back().delay = 0;
+    keys.back().delay = std::chrono::milliseconds::zero();
 
     emit recordFinished(keys);
     hide();

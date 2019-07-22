@@ -69,7 +69,11 @@ void Macro::rename(const std::string& oldName, const std::string& newName)
 
 void Macro::replace(const std::string& name, ActionList& keys)
 {
-    macros[name] = keys;
+    auto macro = macros.find(name);
+    if (macro == macros.end())
+        macros.emplace(name, keys);
+    else
+        macros.at(name) = keys;
 }
 
 void Macro::fire(const std::string& name)
@@ -81,8 +85,7 @@ void Macro::fire(const std::string& name)
     // Loop through all Actions
     for (const auto& a : (*macro).second) {
         a.key.fire(a.press);
-        std::this_thread::sleep_for(std::chrono::milliseconds(
-            std::max(a.delay, config::MinimumMacroDelay)));
+        std::this_thread::sleep_for(std::max(config::MinimumMacroDelay, a.delay));
     }
 }
 
@@ -109,7 +112,7 @@ void Macro::load(QSettings& settings)
 
             // Store key data, press/release, and delay
             actions.emplace_back(k, settings.value("press").toBool(),
-                settings.value("delay").toUInt());
+                std::chrono::milliseconds(settings.value("delay").toUInt()));
             settings.endGroup();
         }
         settings.endGroup();
@@ -142,7 +145,7 @@ void Macro::save(QSettings& settings)
 
             vec[i].key.save(settings);
             settings.setValue("press", vec[i].press);
-            settings.setValue("delay", vec[i].delay);
+            settings.setValue("delay", static_cast<long long>(vec[i].delay.count()));
 
             settings.endGroup();
         }
@@ -151,4 +154,5 @@ void Macro::save(QSettings& settings)
     }
 
     settings.endGroup();
+    settings.sync();
 }

@@ -1,5 +1,6 @@
+#include "controller.h"
+#include "profile.h"
 #include "sequencertab.h"
-#include "controllerroutine.h"
 
 SequencerTab::SequencerTab(QWidget *parent) :
     QWidget(parent),
@@ -14,7 +15,7 @@ SequencerTab::SequencerTab(QWidget *parent) :
     activeAction(nullptr)
 {
     // Setup the action assigning buttons
-    for (unsigned int i = 0; i < 16; i++) {
+    for (int i = 0; i < 16; i++) {
         actions[i] = new QPushButton("", this);
         actions[i]->setGeometry(i < 8 ? 300 : 450, 80 + 22 * (i < 8 ? i : i - 8), 140, 20);
         actions[i]->setStyleSheet("text-align: left; padding: 2px");
@@ -34,8 +35,6 @@ SequencerTab::SequencerTab(QWidget *parent) :
 
     // TODO load state from setting
     enableSequencer.setChecked(false);
-
-    currentPG = 0;
     setPG(currentPG);
 
     // Connect signals/slots
@@ -69,37 +68,37 @@ void SequencerTab::keyPressed(Key key)
 
     // Set action for the enabled joystick
     if (axisSel.left()) {
-        Controller::Left(i, key);
+        Controller::Left.setKey(i, key);
         activeAction->setText(key.toString());
     } else if (axisSel.primary()) {
-        Controller::setPrimaryAction(currentPG, i, key);
+        Controller::Primary.setPGKey(currentPG, i, key);
         activeAction->setText(key.toString());
     } else if (axisSel.right()) {
-        Controller::setRightAuxAction(i, key);
+        Controller::Right.setKey(i, key);
         activeAction->setText(key.toString());
     }
     activeAction->setToolTip(activeAction->text());
 
     // Save current stuff
-    ControllerRoutine::save();
+    Controller::save(Profile::current());
 }
 
 void SequencerTab::updateActionButtons(int n)
 {
     currentPG = n;
     if (axisSel.left()) {
-        for (unsigned int i = 0; i < 16; i++) {
-            actions[i]->setText(ControllerRoutine::getLeftAuxActionText(i));
+        for (int i = 0; i < 16; i++) {
+            actions[i]->setText(Controller::Left.getText(i));
             actions[i]->setToolTip(actions[i]->text());
         }
     } else if (axisSel.primary()) {
-        for (unsigned int i = 0; i < 16; i++) {
-            actions[i]->setText(ControllerRoutine::getPrimaryActionText(currentPG, i));
+        for (int i = 0; i < 16; i++) {
+            actions[i]->setText(Controller::Primary.getText(currentPG, i));
             actions[i]->setToolTip(actions[i]->text());
         }
     } else if (axisSel.right()) {
-        for (unsigned int i = 0; i < 16; i++) {
-            actions[i]->setText(ControllerRoutine::getRightAuxActionText(i));
+        for (int i = 0; i < 16; i++) {
+            actions[i]->setText(Controller::Right.getText(i));
             actions[i]->setToolTip(actions[i]->text());
         }
     }

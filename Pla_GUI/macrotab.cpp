@@ -66,7 +66,6 @@ MacroTab::MacroTab(QWidget *parent) :
     connect(&actionEdit, SIGNAL(released()), this, SLOT(editKey()));
     connect(&actionList, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(editKey()));
     connect(&macroList, SIGNAL(currentTextChanged(QString)), this, SLOT(changeCurrentMacro(QString)));
-    connect(&macroName, SIGNAL(editingFinished()), this, SLOT(changeName()));
     connect(&macroName, SIGNAL(returnPressed()), this, SLOT(changeName()));
 
     connect(&delayBeginRecord, SIGNAL(released()), this, SLOT(beginRecord()));
@@ -109,8 +108,8 @@ bool MacroTab::isModified(void) const
 
 void MacroTab::saveSettings(void)
 {
-    Macro::replace(currentName.toStdString(), currentMacro);
-    Macro::setDelayType(currentName.toStdString(), currentDelay);
+    Macro::replace(macroName.text().toStdString(), currentMacro);
+    Macro::setDelayType(macroName.text().toStdString(), currentDelay);
 
     Macro::save(Profile::current());
 }
@@ -193,7 +192,7 @@ void MacroTab::loadMacro(const QString& name)
 
     // Load fixed delay value
     if (currentDelay == Macro::FixedDelay)
-        delayValue.setText(std::to_string(currentMacro.front().delay).c_str());
+        delayValue.setText(std::to_string(currentMacro.front().delay.count()).c_str());
 
     macroName.setText(name);
     macroList.setCurrentText(name);
@@ -208,7 +207,7 @@ void MacroTab::reloadMacro(void)
     for (auto &k : currentMacro) {
         QString text (k.press ? "Prs. " : "Rel. ");
         text += k.key.toString();
-        text += QString(" (") + std::to_string(k.delay).c_str() + "ms)";
+        text += QString(" (") + std::to_string(k.delay.count()).c_str() + "ms)";
         actionList.addItem(text);
     }
 }
@@ -231,9 +230,10 @@ void MacroTab::createNewMacro(void)
 void MacroTab::moveKeyUp(void)
 {
     // Move data
-    unsigned int idx = actionList.currentIndex().row();
-    if (idx > 0)
-        std::swap(currentMacro[idx], currentMacro[idx - 1]);
+    auto row = getCurrentActionListRow();
+    if (row.second)
+        std::swap(currentMacro[row.first],
+                  currentMacro[row.first - 1]);
 
     actionList.moveCurrentUp();
 }
@@ -241,9 +241,9 @@ void MacroTab::moveKeyUp(void)
 void MacroTab::moveKeyDown(void)
 {
     // Move data
-    unsigned int idx = actionList.currentIndex().row();
-    if (idx < currentMacro.size())
-        std::swap(currentMacro[idx], currentMacro[idx + 1]);
+    auto row = getCurrentActionListRow().first;
+    if (row < currentMacro.size())
+        std::swap(currentMacro[row], currentMacro[row + 1]);
 
     actionList.moveCurrentDown();
 }
@@ -251,16 +251,18 @@ void MacroTab::moveKeyDown(void)
 void MacroTab::insertKey(void)
 {
     // Get the macro's key list
-    auto row = std::max(actionList.currentIndex().row(), 0);
+    auto row = getCurrentActionListRow();
+    auto index = row.second ? row.first : 0u;
+    int srow = static_cast<int>(index);
 
     // Add a new key
-    currentMacro.emplace(currentMacro.begin() + row);
-    actionList.insertItem(row, currentMacro[row].key.toString());
+    currentMacro.emplace(currentMacro.begin() + index);
+    actionList.insertItem(srow, currentMacro[index].key.toString());
 }
 
 void MacroTab::removeKey(void)
 {
-    unsigned int row = actionList.currentIndex().row();
+    auto row = getCurrentActionListRow().first;
     if (row < currentMacro.size())
         currentMacro.erase(currentMacro.begin() + row);
 
@@ -275,10 +277,11 @@ void MacroTab::editKey(void)
 
 void MacroTab::keyPressed(Key key)
 {
-    auto row = actionList.currentIndex().row();
+    auto row = getCurrentActionListRow().first;
+    int srow = static_cast<int>(row);
 
     currentMacro[row].key = key;
-    actionList.item(row)->setText(key.toString());
+    actionList.item(srow)->setText(key.toString());
 
     reloadMacro();
 }
@@ -293,7 +296,8 @@ void MacroTab::delayChange(void)
     delayValue.setVisible(delayFixed.isChecked());
 
     if (!delayRecord.isChecked()) {
-        auto delay = delayFixed.isChecked() ? delayValue.text().toInt() : 0;
+        auto delay = std::chrono::milliseconds(
+            delayFixed.isChecked() ? delayValue.text().toInt() : 0);
         for (auto& k : currentMacro)
             k.delay = delay;
     }
@@ -305,7 +309,7 @@ void MacroTab::applyDelayValue(void)
 {
     if (delayFixed.isChecked()) {
         for (auto& k : currentMacro)
-            k.delay = delayValue.text().toInt();
+            k.delay = std::chrono::milliseconds(delayValue.text().toInt());
     }
 
     reloadMacro();

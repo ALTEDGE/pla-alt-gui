@@ -18,6 +18,11 @@ namespace config
      */
     constexpr auto InputUpdateFrequency = 10ms;
     /**
+     * Delay after sending each key event.
+     * This may not be necessary; it's just to be safe.
+     */
+    constexpr auto InputSendDelay = 1ms;
+    /**
      * Delay between checking for a connected joystick.
      */
     constexpr auto ConnectionCheckFrequency = 1s;
@@ -25,7 +30,7 @@ namespace config
     /**
      * Minimum delay between macro key presses/releases.
      */
-    constexpr auto MinimumMacroDelay = 5u/*ms*/;
+    constexpr auto MinimumMacroDelay = 5ms;
 
     /**
      * USB vendor and device ID for checking proper joystick connection.
@@ -46,6 +51,11 @@ namespace config
 
     constexpr int JoystickDefaultShortThreshold = 10000;
     constexpr int JoystickDefaultFarThreshold = 30000;
+
+    /**
+     * Time to show tray messages, in milliseconds.
+     */
+    //constexpr unsigned int TrayMessageDuration = 1000;
 }
 
 #endif // CONFIG_H

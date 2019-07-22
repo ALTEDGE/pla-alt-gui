@@ -115,6 +115,11 @@ private:
      */
     void reloadMacro(void);
 
+    inline std::pair<unsigned int, bool> getCurrentActionListRow(void) {
+        int row = actionList.currentIndex().row();
+        return { static_cast<unsigned int>(row), row >= 0 };
+    }
+
     // "MACRO NAME";
     QLabel lMacroName;
     // "ENTER DELAY: "

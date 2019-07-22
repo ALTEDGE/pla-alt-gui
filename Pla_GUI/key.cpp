@@ -1,5 +1,6 @@
 #include "key.h"
 
+#include "config.h"
 #include "macro.h"
 
 #include <thread>
@@ -359,5 +360,5 @@ void Key::fire(bool press) const
 
 #endif // _WIN64
 
-    std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    std::this_thread::sleep_for(config::InputSendDelay);
 }

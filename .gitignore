@@ -1,3 +1,4 @@
 build*
-Pla_GUI/Pla_GUI.pro*
+Pla_GUI/Pla_GUI.pro.*
+Pla_GUI/compile_commands.json
 

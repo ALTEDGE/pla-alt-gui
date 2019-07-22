@@ -78,9 +78,9 @@ void MainWindow::changeTab(int index)
 {
     // Check if tab is a SavableTab, if so, see if save prompt is needed
     auto tab = dynamic_cast<SavableTab*>(tabs.widget(lastTabIndex));
-    lastTabIndex = index;
-
     if (tab != nullptr && tab->isModified()) {
+        lastTabIndex = index;
+
         // Return focus to modified tab
         tabs.setCurrentWidget(dynamic_cast<QWidget*>(tab));
 

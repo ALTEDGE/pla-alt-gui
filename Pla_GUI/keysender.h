@@ -20,12 +20,12 @@ public:
     /**
      * Sends the index'th key to the operating system as a keystroke.
      * Releases the previous key if one was pressed.
-     * @param index The index of the key to send, -1 to only release previous key
+     * @param index The index of the key to send
+     * @param press True for press, false for release
      */
     void sendKey(int index, bool press) {
-        // Bound checks; don't allow consecutive presses/releases
-        if (index < 0 || index >= static_cast<int>(keys.size()) ||
-            press == keys[index].second)
+        //static_assert (index >= 0 && index < C, "Invalid index");
+        if (index < 0 || index >= (int)C)
             return;
 
         keys[index].first.fire(press);
@@ -39,7 +39,8 @@ public:
      */
     template<typename... Args>
     void setKey(int index, Args... args) {
-        if (index < 0 || index >= static_cast<int>(keys.size()))
+        //static_assert (index >= 0 && index < C, "Invalid index");
+        if (index < 0 || index >= (int)C)
             return;
 
         keys[index].first = Key(args...);
@@ -50,9 +51,10 @@ public:
      * @param index The index to read
      * @return A descriptive string
      */
-    QString getText(unsigned int index) const {
-        if (index >= keys.size())
-            return QString();
+    QString getText(int index) const {
+        //static_assert (index >= 0 && index < C, "Invalid index");
+        if (index < 0 || index >= (int)C)
+            return "";
 
         return keys[index].first.toString();
     }

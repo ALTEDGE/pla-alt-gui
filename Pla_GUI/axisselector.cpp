@@ -32,8 +32,8 @@ AxisSelector::AxisSelector(QWidget *parent) :
     connect(&selectRight, SIGNAL(released()), this, SLOT(onJoystickChange()));
 
     // Create the 8 PG buttons and add them to the button group
-    for (unsigned int i = 0; i < 8; i++) {
-        auto b = new QPushButton(QString("MAP PG_") + (i + '1'), this);
+    for (int i = 0; i < 8; i++) {
+        auto b = new QPushButton(QString("MAP PG_") + static_cast<char>(i + '1'), this);
         b->setGeometry(200, 40 + 22 * i, 80, 20);
         b->setCheckable(true);
         mapPGGroup.addButton(b, i);

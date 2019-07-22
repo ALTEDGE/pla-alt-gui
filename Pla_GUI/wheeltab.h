@@ -2,9 +2,9 @@
 #define WHEELTAB_H
 
 #include "editing.h"
-#include "joysticktracker.h"
 #include "keygrabber.h"
 #include "savabletab.h"
+#include "steeringtracker.h"
 
 #include <QPushButton>
 #include <QRadioButton>
@@ -20,7 +20,7 @@ class WheelTab : public SavableTab
     Q_OBJECT
 
 public:
-    explicit WheelTab(QWidget *parent = 0);
+    explicit WheelTab(QWidget *parent = nullptr);
 
 private slots:
     /**
@@ -73,7 +73,7 @@ private:
 
     Editing<SteeringTracker> steerData;
 
-    unsigned int activeAction;
+    int activeAction;
 };
 
 #endif // WHEELTAB_H

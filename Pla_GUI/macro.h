@@ -3,9 +3,12 @@
 
 #include "key.h"
 
+#include <chrono>
 #include <map>
 #include <string>
 #include <vector>
+
+using namespace std::chrono_literals;
 
 /**
  * @class Action
@@ -19,9 +22,9 @@
 struct Action {
     Key key;
     bool press;
-    unsigned int delay;
+    std::chrono::milliseconds delay;
 
-    Action(Key k = Key(), bool p = true, unsigned int d = 0)
+    Action(Key k = Key(), bool p = true, std::chrono::milliseconds d = 0ms)
         : key(k), press(p), delay(d) {}
 
     bool operator==(const Action& other) const {

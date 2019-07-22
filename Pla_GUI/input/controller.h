@@ -11,6 +11,8 @@
 #include <thread>
 
 #include "joysticktracker.h"
+#include "primaryjoysticktracker.h"
+#include "steeringtracker.h"
 
 /**
  * @class Controller
@@ -45,6 +47,12 @@ public:
     static bool connected(void);
 
     /**
+     * Enables or disables vector sequencing for all three joysticks.
+     * @param enable True to enable sequencing.
+     */
+    static void setSequencing(bool enable);
+
+    /**
      * Saves all settings to the given settings handler.
      * @param settings Where to save settings to
      */
@@ -62,7 +70,7 @@ private:
     /**
      * Keeps track of the currently selected PG.
      */
-    static unsigned int currentPG;
+    static int currentPG;
 
     static std::atomic<SDL_Joystick *> joystick;
     static std::atomic_bool runThreads;

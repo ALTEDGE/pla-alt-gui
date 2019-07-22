@@ -49,8 +49,8 @@ ProgramTab::ProgramTab(QWidget *parent) :
     usePrimaryJoystick.setLayoutDirection(Qt::RightToLeft);
 
     // Set up PG buttons
-    for (unsigned int i = 0; i < 8; i++) {
-        auto button = new QPushButton(QString("MAP PG_") + (i + '1'), this);
+    for (int i = 0; i < 8; i++) {
+        auto button = new QPushButton(QString("MAP PG_") + static_cast<char>('1' + i), this);
         button->setGeometry(200, 35 + 22 * i, 80, 20);
         button->setCheckable(true);
         pgButtons.addButton(button, i);
@@ -58,7 +58,7 @@ ProgramTab::ProgramTab(QWidget *parent) :
     pgButtons.setExclusive(true);
 
     // Set up key slots
-    for (unsigned int i = 0; i < 16; i++) {
+    for (int i = 0; i < 16; i++) {
         auto button = new QPushButton("", this);
         button->setGeometry(i < 8 ? 320 : 470, 75 + 22 * (i < 8 ? i : i - 8), 140, 20);
         button->setStyleSheet("text-align: left; padding: 2px");
@@ -66,7 +66,7 @@ ProgramTab::ProgramTab(QWidget *parent) :
         keySlots.addButton(button, i);
     }
 
-    for (unsigned int i = 0; i < 8; i++) {
+    for (int i = 0; i < 8; i++) {
         lKeySlots[i] = new QLabel(QString(std::to_string(i + 1).c_str()), this);
         lKeySlots[i]->setGeometry(305, 75 + 22 * i, 20, 20);
     }
@@ -143,8 +143,8 @@ void ProgramTab::updateControls(void)
 
     // Set key slots and diagonal check
     if (primary) {
-        lSelectedPG.setText(QString("MAP PG_") + (pgButtons.checkedId() + '1'));
-        for (unsigned int i = 0; i < 16; i++)
+        lSelectedPG.setText(QString("MAP PG_") + static_cast<char>(pgButtons.checkedId() + '1'));
+        for (int i = 0; i < 16; i++)
             keySlots.button(i)->setText(primaryData->getText(pgButtons.checkedId(), i));
 
         useDiagonals.setChecked(primaryData->getDiagonals());
@@ -154,7 +154,7 @@ void ProgramTab::updateControls(void)
     } else if (useLeftJoystick.isChecked()) {
         lSelectedPG.setText("L. AUX.");
 
-        for (unsigned int i = 0; i < 16; i++)
+        for (int i = 0; i < 16; i++)
             keySlots.button(i)->setText(leftData->getText(i));
 
         bool diag = leftData->getDiagonals();
@@ -165,7 +165,7 @@ void ProgramTab::updateControls(void)
     } else {
         lSelectedPG.setText("R. AUX.");
 
-        for (unsigned int i = 0; i < 16; i++)
+        for (int i = 0; i < 16; i++)
             keySlots.button(i)->setText(rightData->getText(i));
 
         bool diag = rightData->getDiagonals();
@@ -176,7 +176,7 @@ void ProgramTab::updateControls(void)
     }
 
     // Set tool tips in case key slot can't fit text
-    for (unsigned int i = 0; i < 16; i++)
+    for (int i = 0; i < 16; i++)
         keySlots.button(i)->setToolTip(keySlots.button(i)->text());
 }
 
