@@ -1,6 +1,7 @@
 #include "keygrabber.h"
 #include <QKeyEvent>
 
+#include "controller.h"
 #include "macro.h"
 
 KeyGrabber::KeyGrabber(QWidget *parent) :

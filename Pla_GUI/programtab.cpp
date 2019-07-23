@@ -232,12 +232,14 @@ void ProgramTab::assignSlot(int index)
 {
     // Remember what slot was selected
     assigningSlot = index;
+    Controller::setEnabled(false);
     keyAssignDialog.show();
 }
 
 void ProgramTab::keyPressed(Key key)
 {
     // Set the key
+    Controller::setEnabled(true);
     if (usePrimaryJoystick.isChecked())
         primaryData->setPGKey(pgButtons.checkedId(), assigningSlot, key);
     else if (useLeftJoystick.isChecked())

@@ -25,7 +25,7 @@ public:
      */
     void sendKey(int index, bool press) {
         //static_assert (index >= 0 && index < C, "Invalid index");
-        if (index < 0 || index >= (int)C)
+        if (index < 0 || index >= (int)C || keys[index].second == press)
             return;
 
         keys[index].first.fire(press);

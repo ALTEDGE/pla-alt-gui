@@ -46,11 +46,9 @@ public:
      */
     static bool connected(void);
 
-    /**
-     * Enables or disables vector sequencing for all three joysticks.
-     * @param enable True to enable sequencing.
-     */
-    static void setSequencing(bool enable);
+    static inline void setEnabled(bool enable) {
+        disableController.store(!enable);
+    }
 
     /**
      * Saves all settings to the given settings handler.
@@ -74,6 +72,7 @@ private:
 
     static std::atomic<SDL_Joystick *> joystick;
     static std::atomic_bool runThreads;
+    static std::atomic_bool disableController;
     static std::thread connectionThread;
     static std::thread controllerThread;
 

@@ -113,7 +113,7 @@ std::string Serial::nativeOpen(void)
         auto getProperty = [&](DWORD property) {
             return SetupDiGetDeviceRegistryPropertyA(hDevInfo, devInfo,
                 property, nullptr, reinterpret_cast<unsigned char *>(&data[0]),
-                data.size(), nullptr);
+                static_cast<DWORD>(data.size()), nullptr);
         };
 
         // Attempt to load the device's hardware ID
