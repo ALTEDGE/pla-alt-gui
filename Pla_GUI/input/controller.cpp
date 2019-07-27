@@ -202,12 +202,15 @@ void Controller::handleConnections(void)
                     tray->show("PLA", "Controller connected!");
                     joystick.store(SDL_JoystickOpen(event.jdevice.which));
                     Serial::open();
+                    Serial::sendLights(true);
                     updateColor();
                 }
                 break;
             case SDL_JOYDEVICEREMOVED:
                 if (joystick.load() != nullptr) {
                     tray->show("PLA", "Controller disconnected.");
+                    Serial::sendLights(false);
+                    Serial::close();
                     SDL_JoystickClose(joystick);
                     joystick.store(nullptr);
                 }

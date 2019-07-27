@@ -76,6 +76,11 @@ void Macro::replace(const std::string& name, ActionList& keys)
         macros.at(name) = keys;
 }
 
+void Macro::remove(const std::string& name)
+{
+    macros.erase(name);
+}
+
 void Macro::fire(const std::string& name)
 {
     auto macro = macros.find(name);

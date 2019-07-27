@@ -75,6 +75,12 @@ void Serial::sendColor(void)
     nativeWrite(colorBuffer, 4);
 }
 
+void Serial::sendLights(bool on)
+{
+    unsigned char code = on ? 'e' : 'd';
+    nativeWrite(&code, 1);
+}
+
 void Serial::nativeWrite(unsigned char *array, unsigned int count)
 {
 #ifdef _WIN64

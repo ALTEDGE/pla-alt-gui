@@ -39,6 +39,8 @@ private slots:
      */
     void createNewMacro(void);
 
+    void deleteMacro(void);
+
     /**
      * Loads the given macro.
      * @param name The macro to load
@@ -130,6 +132,7 @@ private:
     QComboBox macroList;
     QLineEdit macroName;
     QPushButton macroAdd;
+    QPushButton macroDelete;
 
     // Macro content controls
 

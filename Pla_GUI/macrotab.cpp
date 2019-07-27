@@ -15,11 +15,12 @@ MacroTab::MacroTab(QWidget *parent) :
     macroList(this),
     macroName("Macro 1", this),
     macroAdd("add", this),
+    macroDelete(this),
     actionList(this),
     actionEdit("edit", this),
-    actionRemove("del", this),
-    actionUp("up", this),
-    actionDown("dn", this),
+    actionRemove(this),
+    actionUp(this),
+    actionDown(this),
     actionInsert("INSERT", this),
     delayNone("NO DELAY", this),
     delayFixed("FIXED DELAY", this),
@@ -32,9 +33,15 @@ MacroTab::MacroTab(QWidget *parent) :
     recorder(this),
     ignoreNextMacroChange(false)
 {
+    macroDelete.setIcon(QIcon("assets/macro-trash.png"));
+    actionRemove.setIcon(QIcon("assets/macro-trash.png"));
+    actionUp.setIcon(QIcon("assets/macro-up.png"));
+    actionDown.setIcon(QIcon("assets/macro-down.png"));
+
     // Set geometry
     macroList.setGeometry(60, 60, 120, 20);
-    macroAdd.setGeometry(60, 85, 30, 20);
+    macroAdd.setGeometry(60, 85, 55, 20);
+    macroDelete.setGeometry(125, 85, 55, 20);
     lMacroName.setGeometry(60, 120, 80, 20);
     macroName.setGeometry(60, 140, 120, 20);
     actionList.setGeometry(200, 60, 225, 180);
@@ -56,9 +63,12 @@ MacroTab::MacroTab(QWidget *parent) :
     delayValue.setValidator(new QIntValidator(5, INT32_MAX));
     delayValue.setText("5");
 
+    actionList.setToolTip("Double click to toggle press/release");
+
     // Connect signals/slots
     connect(&keyGrabber, SIGNAL(keyPressed(Key)), this, SLOT(keyPressed(Key)));
     connect(&macroAdd, SIGNAL(released()), this, SLOT(createNewMacro()));
+    connect(&macroDelete, SIGNAL(released()), this, SLOT(deleteMacro()));
     connect(&actionUp, SIGNAL(released()), this, SLOT(moveKeyUp()));
     connect(&actionDown, SIGNAL(released()), this, SLOT(moveKeyDown()));
     connect(&actionRemove, SIGNAL(released()), this, SLOT(removeKey()));
@@ -97,7 +107,8 @@ void MacroTab::showEvent(QShowEvent *event)
 
     loadMacro(names.front().c_str());
 
-    event->accept();
+    if (event != nullptr)
+        event->accept();
 }
 
 bool MacroTab::isModified(void) const
@@ -227,6 +238,12 @@ void MacroTab::createNewMacro(void)
     loadMacro(name.c_str());
 }
 
+void MacroTab::deleteMacro(void)
+{
+    Macro::remove(macroList.currentText().toStdString());
+    showEvent(nullptr);
+}
+
 void MacroTab::moveKeyUp(void)
 {
     // Move data
@@ -271,8 +288,11 @@ void MacroTab::removeKey(void)
 
 void MacroTab::editKey(void)
 {
-    if (actionList.currentIndex().isValid())
-        keyGrabber.show();
+    auto row = getCurrentActionListRow().first;
+    if (row < currentMacro.size()) {
+        currentMacro.at(row).press ^= true;
+        reloadMacro();
+    }
 }
 
 void MacroTab::keyPressed(Key key)

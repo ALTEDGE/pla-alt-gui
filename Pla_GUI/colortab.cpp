@@ -11,17 +11,22 @@ ColorTab::ColorTab(QWidget *parent) :
     lColorBrightness("ADJUST BRIGHTNESS WITH BAR", this),
     colorPicker(this),
     colorBrightness(this),
-    ledOn("ON", this),
-    ledOff("OFF", this),
+    ledOn(this),
+    ledOff(this),
     updateTimer(this)
 {
+    ledOn.setIcon(QIcon("assets/color-on.png"));
+    ledOn.setIconSize(QSize(75, 79));
+    ledOff.setIcon(QIcon("assets/color-off.png"));
+    ledOff.setIconSize(QSize(75, 79));
+
     // Set control positions
     lColorPicker.setGeometry(0, 10, 640, 20);
     lColorBrightness.setGeometry(0, 280, 640, 20);
     colorPicker.setGeometry(100, 35, 440, 200);
     colorBrightness.setGeometry(150, 250, 340, 30);
-    ledOn.setGeometry(20, 115, 60, 40);
-    ledOff.setGeometry(560, 115, 60, 40);
+    ledOn.setGeometry(20, 115, 75, 79);
+    ledOff.setGeometry(560, 115, 75, 79);
 
     lColorPicker.setAlignment(Qt::AlignCenter);
     lColorBrightness.setAlignment(Qt::AlignCenter);

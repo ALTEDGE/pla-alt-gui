@@ -36,6 +36,8 @@ public:
     static void sendColor(unsigned char r, unsigned char g, unsigned char b);
     static void sendColor(void);
 
+    static void sendLights(bool on);
+
 private:
 #ifdef _WIN64
     static HANDLE hComPort;

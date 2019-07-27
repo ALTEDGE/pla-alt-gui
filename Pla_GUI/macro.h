@@ -32,7 +32,6 @@ struct Action {
             other.delay;
     }
 };
-//using ActionList = std::vector<Action>;
 
 class ActionList : public std::vector<Action>
 {
@@ -93,6 +92,8 @@ public:
      * @param keys The ActionList to replace the current one
      */
     static void replace(const std::string& name, ActionList& keys);
+
+    static void remove(const std::string& name);
 
     /**
      * Gets the type of delay of the current macro.
