@@ -14,6 +14,7 @@ using namespace std::chrono_literals;
 int Controller::currentPG = 0;
 std::atomic<SDL_Joystick *> Controller::joystick;
 std::atomic_bool Controller::runThreads;
+std::atomic_bool Controller::disableController;
 std::thread Controller::connectionThread;
 std::thread Controller::controllerThread;
 
@@ -33,6 +34,7 @@ bool Controller::init(void)
 
     joystick.store(nullptr);
     runThreads.store(true);
+    disableController.store(false);
     connectionThread = std::thread(handleConnections);
     controllerThread = std::thread(handleController);
 
@@ -136,13 +138,6 @@ void Controller::load(QSettings& settings)
     Joystick::loadThresholds(settings);
 }
 
-void Controller::setSequencing(bool enable)
-{
-    Left.setSequencing(enable);
-    Primary.setSequencing(enable);
-    Right.setSequencing(enable);
-}
-
 void Controller::updateColor(void)
 {
     if (connected()) {
@@ -162,7 +157,7 @@ void Controller::handleController(void)
     while (runThreads.load()) {
         // Only update if a joystick is connected
         auto* js = joystick.load();
-        if (js == nullptr) {
+        if (js == nullptr || disableController.load()) {
             std::this_thread::sleep_for(config::ConnectionCheckFrequency);
         } else {
             SDL_JoystickUpdate();

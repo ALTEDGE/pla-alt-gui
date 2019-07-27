@@ -27,7 +27,6 @@ SOURCES += \
     wheeltab.cpp \
     thresholdsetter.cpp \
     serial.cpp \
-    sequencertab.cpp \
     programtab.cpp \
     profiletab.cpp \
     profile.cpp \
@@ -62,7 +61,6 @@ HEADERS += \
     profiletab.h \
     programtab.h \
     savabletab.h \
-    sequencertab.h \
     serial.h \
     thresholdsetter.h \
     traymessage.h \
