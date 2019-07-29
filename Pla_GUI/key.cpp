@@ -135,25 +135,98 @@ void Key::fire(bool press) const
 
     // Handle modifiers
     if (mod & Qt::ControlModifier) {
-	input.ki.wScan = 0x14;
+	input.ki.wScan = 0x1D;
     } else if (mod & Qt::AltModifier) {
-	input.ki.wScan = 0x14;
+	input.ki.wScan = 0x38;
     } else if (mod & Qt::ShiftModifier) {
-	input.ki.wScan = 0x14;
+	input.ki.wScan = 0x2A;
     } else {
         // Handle key
 	switch (key) {
-	case Qt::Key_W:
-	    input.ki.wScan = 0x1D;
-	    break;
-	case Qt::Key_S:
-	    input.ki.wScan = 0x1B;
-	    break;
-	case Qt::Key_A:
+	case Qt::Return:
+	case Qt::Enter:
 	    input.ki.wScan = 0x1C;
 	    break;
+	case Qt::Tab:
+	    input.ki.wScan = 0x0F;
+	    break;
+	case Qt::Key_A:
+	    input.ki.wScan = 0x1E;
+	    break;
+	case Qt::Key_B:
+	    input.ki.wScan = 0x30;
+	    break;
+	case Qt::Key_C:
+	    input.ki.wScan = 0x2E;
+	    break;
 	case Qt::Key_D:
+	    input.ki.wScan = 0x20;
+	    break;
+	case Qt::Key_E:
+	    input.ki.wScan = 0x12;
+	    break;
+	case Qt::Key_F:
+	    input.ki.wScan = 0x21;
+	    break;
+	case Qt::Key_G:
+	    input.ki.wScan = 0x22;
+	    break;
+	case Qt::Key_H:
 	    input.ki.wScan = 0x23;
+	    break;
+	case Qt::Key_I:
+	    input.ki.wScan = 0x17;
+	    break;
+	case Qt::Key_J:
+	    input.ki.wScan = 0x24;
+	    break;
+	case Qt::Key_K:
+	    input.ki.wScan = 0x25;
+	    break;
+	case Qt::Key_L:
+	    input.ki.wScan = 0x26;
+	    break;
+	case Qt::Key_M:
+	    input.ki.wScan = 0x32;
+	    break;
+	case Qt::Key_N:
+	    input.ki.wScan = 0x31;
+	    break;
+	case Qt::Key_O:
+	    input.ki.wScan = 0x18;
+	    break;
+	case Qt::Key_P:
+	    input.ki.wScan = 0x19;
+	    break;
+	case Qt::Key_Q:
+	    input.ki.wScan = 0x10;
+	    break;
+	case Qt::Key_R:
+	    input.ki.wScan = 0x13;
+	    break;
+	case Qt::Key_S:
+	    input.ki.wScan = 0x1F;
+	    break;
+	case Qt::Key_T:
+	    input.ki.wScan = 0x14;
+	    break;
+	case Qt::Key_U:
+	    input.ki.wScan = 0x16;
+	    break;
+	case Qt::Key_V:
+	    input.ki.wScan = 0x2F;
+	    break;
+	case Qt::Key_W:
+	    input.ki.wScan = 0x11;
+	    break;
+	case Qt::Key_Y:
+	    input.ki.wScan = 0x15;
+	    break;
+	case Qt::Key_X:
+	    input.ki.wScan = 0x2D;
+	    break;
+	case Qt::Key_Z:
+	    input.ki.wScan = 0x2C;
 	    break;
 	default:
 	    break;
