@@ -125,142 +125,144 @@ void Key::fire(bool press) const
 // Fire code for Windows
 // Creates an array of keys to send, including modifiers
 #ifdef _WIN64
-    // Fills an INPUT structure for the given key value
-    auto createEvent = [&](INPUT& input, WORD wVk) {
-        input.type = INPUT_KEYBOARD;
-        input.ki.wVk = wVk;
-        input.ki.wScan = 0;
-        input.ki.dwFlags = !press ? static_cast<DWORD>(KEYEVENTF_KEYUP) : 0;
-        input.ki.time = 0;
-        input.ki.dwExtraInfo = static_cast<ULONG_PTR>(GetMessageExtraInfo());
-    };
-
-    std::vector<INPUT> inputs;
-    inputs.reserve(4);
+    INPUT input;
+    input.type = INPUT_KEYBOARD;
+    input.ki.wVk = 0;
+    input.ki.dwFlags = static_cast<DWORD>(!press ?
+    	(KEYEVENTF_SCANCODE | KEYEVENTF_KEYUP) : KEYEVENTF_SCANCODE);
+    input.ki.time = 0;
+    input.ki.dwExtraInfo = 0;
 
     // Handle modifiers
     if (mod & Qt::ControlModifier) {
-        inputs.emplace_back();
-        createEvent(inputs.back(), VK_CONTROL);
-    }
-    if (mod & Qt::AltModifier) {
-        inputs.emplace_back();
-        createEvent(inputs.back(), VK_MENU);
-    }
-    if (mod & Qt::ShiftModifier) {
-        inputs.emplace_back();
-        createEvent(inputs.back(), VK_SHIFT);
-    }
+	input.ki.wScan = 0x14;
+    } else if (mod & Qt::AltModifier) {
+	input.ki.wScan = 0x14;
+    } else if (mod & Qt::ShiftModifier) {
+	input.ki.wScan = 0x14;
+    } else {
+        // Handle key
+	switch (key) {
+	case Qt::Key_W:
+	    input.ki.wScan = 0x1D;
+	    break;
+	case Qt::Key_S:
+	    input.ki.wScan = 0x1B;
+	    break;
+	case Qt::Key_A:
+	    input.ki.wScan = 0x1C;
+	    break;
+	case Qt::Key_D:
+	    input.ki.wScan = 0x23;
+	    break;
+	default:
+	    break;
+	}
 
-    // Handle key
-    WORD vk = key;
-    switch (key) {
-    case Qt::Key_Control:
-        vk = VK_CONTROL;
-        break;
-    case Qt::Key_Shift:
-        vk = VK_SHIFT;
-        break;
-    case Qt::Key_Alt:
-        vk = VK_MENU;
-        break;
-    case Qt::Key_Backspace:
-        vk = VK_BACK;
-        break;
-    case Qt::Key_Tab:
-        vk = VK_TAB;
-        break;
-    case Qt::Key_Return:
-    case Qt::Key_Enter:
-        vk =  VK_RETURN;
-        break;
-    case Qt::Key_Pause:
-        vk = VK_PAUSE;
-        break;
-    case Qt::Key_Escape:
-        vk = VK_ESCAPE;
-        break;
-    case Qt::Key_Space:
-        vk = VK_SPACE;
-        break;
-    case Qt::Key_PageUp:
-        vk = VK_PRIOR;
-        break;
-    case Qt::Key_PageDown:
-        vk = VK_NEXT;
-        break;
-    case Qt::Key_End:
-        vk = VK_END;
-        break;
-    case Qt::Key_Home:
-        vk = VK_HOME;
-        break;
-    case Qt::Key_Left:
-        vk = VK_LEFT;
-        break;
-    case Qt::Key_Up:
-        vk = VK_UP;
-        break;
-    case Qt::Key_Right:
-        vk = VK_RIGHT;
-        break;
-    case Qt::Key_Down:
-        vk = VK_DOWN;
-        break;
-    case Qt::Key_Print:
-        vk = VK_SNAPSHOT;
-        break;
-    case Qt::Key_Insert:
-        vk = VK_INSERT;
-        break;
-    case Qt::Key_Delete:
-        vk = VK_DELETE;
-        break;
-    case Qt::Key_F1:
-        vk = VK_F1;
-        break;
-    case Qt::Key_F2:
-        vk = VK_F2;
-        break;
-    case Qt::Key_F3:
-        vk = VK_F3;
-        break;
-    case Qt::Key_F4:
-        vk = VK_F4;
-        break;
-    case Qt::Key_F5:
-        vk = VK_F5;
-        break;
-    case Qt::Key_F6:
-        vk = VK_F6;
-        break;
-    case Qt::Key_F7:
-        vk = VK_F7;
-        break;
-    case Qt::Key_F8:
-        vk = VK_F8;
-        break;
-    case Qt::Key_F9:
-        vk = VK_F9;
-        break;
-    case Qt::Key_F10:
-        vk = VK_F10;
-        break;
-    case Qt::Key_F11:
-        vk = VK_F11;
-        break;
-    case Qt::Key_F12:
-        vk = VK_F12;
-        break;
+//        WORD vk = key;
+//        switch (key) {
+//        case Qt::Key_Control:
+//            vk = VK_CONTROL;
+//            break;
+//        case Qt::Key_Shift:
+//            vk = VK_SHIFT;
+//            break;
+//        case Qt::Key_Alt:
+//            vk = VK_MENU;
+//            break;
+//        case Qt::Key_Backspace:
+//            vk = VK_BACK;
+//            break;
+//        case Qt::Key_Tab:
+//            vk = VK_TAB;
+//            break;
+//        case Qt::Key_Return:
+//        case Qt::Key_Enter:
+//            vk =  VK_RETURN;
+//            break;
+//        case Qt::Key_Pause:
+//            vk = VK_PAUSE;
+//            break;
+//        case Qt::Key_Escape:
+//            vk = VK_ESCAPE;
+//            break;
+//        case Qt::Key_Space:
+//            vk = VK_SPACE;
+//            break;
+//        case Qt::Key_PageUp:
+//            vk = VK_PRIOR;
+//            break;
+//        case Qt::Key_PageDown:
+//            vk = VK_NEXT;
+//            break;
+//        case Qt::Key_End:
+//            vk = VK_END;
+//            break;
+//        case Qt::Key_Home:
+//            vk = VK_HOME;
+//            break;
+//        case Qt::Key_Left:
+//            vk = VK_LEFT;
+//            break;
+//        case Qt::Key_Up:
+//            vk = VK_UP;
+//            break;
+//        case Qt::Key_Right:
+//            vk = VK_RIGHT;
+//            break;
+//        case Qt::Key_Down:
+//            vk = VK_DOWN;
+//            break;
+//        case Qt::Key_Print:
+//            vk = VK_SNAPSHOT;
+//            break;
+//        case Qt::Key_Insert:
+//            vk = VK_INSERT;
+//            break;
+//        case Qt::Key_Delete:
+//            vk = VK_DELETE;
+//            break;
+//        case Qt::Key_F1:
+//            vk = VK_F1;
+//            break;
+//        case Qt::Key_F2:
+//            vk = VK_F2;
+//            break;
+//        case Qt::Key_F3:
+//            vk = VK_F3;
+//            break;
+//        case Qt::Key_F4:
+//            vk = VK_F4;
+//            break;
+//        case Qt::Key_F5:
+//            vk = VK_F5;
+//            break;
+//        case Qt::Key_F6:
+//            vk = VK_F6;
+//            break;
+//        case Qt::Key_F7:
+//            vk = VK_F7;
+//            break;
+//        case Qt::Key_F8:
+//            vk = VK_F8;
+//            break;
+//        case Qt::Key_F9:
+//            vk = VK_F9;
+//            break;
+//        case Qt::Key_F10:
+//            vk = VK_F10;
+//            break;
+//        case Qt::Key_F11:
+//            vk = VK_F11;
+//            break;
+//        case Qt::Key_F12:
+//            vk = VK_F12;
+//            break;
+//        }
     }
-
-    // Add key to array
-    inputs.emplace_back();
-    createEvent(inputs.back(), vk);
 
     // Send the keystrokes
-    SendInput(static_cast<UINT>(inputs.size()), inputs.data(), sizeof(INPUT));
-
+    SendInput(1, &input, sizeof(INPUT));
 
 #else
     // Fire code for Linux-based OSes
