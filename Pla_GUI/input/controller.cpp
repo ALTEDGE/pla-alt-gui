@@ -221,8 +221,10 @@ void Controller::handleConnections(void)
     delete tray;
     auto js = joystick.load();
     if (js != nullptr) {
-        SDL_JoystickClose(js);
+        Serial::sendLights(false);
         Serial::close();
+        SDL_JoystickClose(js);
+        joystick.store(nullptr);
     }
 }
 
