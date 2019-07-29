@@ -143,11 +143,11 @@ void Key::fire(bool press) const
     } else {
         // Handle key
 	switch (key) {
-	case Qt::Return:
-	case Qt::Enter:
+    case Qt::Key_Return:
+    case Qt::Key_Enter:
 	    input.ki.wScan = 0x1C;
 	    break;
-	case Qt::Tab:
+    case Qt::Key_Tab:
 	    input.ki.wScan = 0x0F;
 	    break;
 	case Qt::Key_A:
