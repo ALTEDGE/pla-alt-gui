@@ -133,7 +133,7 @@ void Key::fire(bool press) const
 	input.ki.dwExtraInfo = 0;
 
 	switch (key) {
-	case Qt::Escape:
+    case Qt::Key_Escape:
 		input.ki.wScan = 0x01;
 		break;
 	case Qt::Key_1:
@@ -184,8 +184,8 @@ void Key::fire(bool press) const
 	case Qt::Key_BracketRight:
 		input.ki.wScan = 0x1B;
 		break;
-	case Qt::Return:
-	case Qt::Enter:
+    case Qt::Key_Return:
+    case Qt::Key_Enter:
 		input.ki.wScan = 0x1C;
 		break;
 	case Qt::Key_Control:
@@ -194,7 +194,7 @@ void Key::fire(bool press) const
 	case Qt::Key_Semicolon:
 		input.ki.wScan = 0x27;
 		break;
-	case Qt::Key_Apostraphe:
+    case Qt::Key_Apostrophe:
 		input.ki.wScan = 0x28;
 		break;
 	case Qt::Key_QuoteLeft:
