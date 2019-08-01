@@ -1,16 +1,18 @@
 MainWindow {
+    background: #000000;
     background-image: url('banner.png');
+    background-repeat: none;
 }
 
 QTabBar, QTabBar::tab {
-	background: #303030;
-	color: #cccccc;
+        background: #303030;
+        color: #aaaaaa;
 	width: 120px;
 	font-size: 12px;
 }
 
 QTabBar::tab:selected {
-	color: #ffffff;
+        color: #ffffff;
 }
 
 QTabBar::tab:!selected {
