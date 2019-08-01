@@ -355,6 +355,36 @@ void Key::fire(bool press) const
 	case Qt::Key_Z:
         scan = 0x2C;
 		break;
+    case Qt::Key_Insert:
+        scan = 0x52;
+        break;
+    case Qt::Key_Delete:
+        scan = 0x53;
+        break;
+    case Qt::Key_Home:
+        scan = 0x47;
+        break;
+    case Qt::Key_End:
+        scan = 0x4F;
+        break;
+    case Qt::Key_PageUp:
+        scan = 0x49;
+        break;
+    case Qt::Key_PageDown:
+        scan = 0x51;
+        break;
+    case Qt::Key_Up:
+        scan = 0x48;
+        break;
+    case Qt::Key_Down:
+        scan = 0x50;
+        break;
+    case Qt::Key_Left:
+        scan = 0x4B;
+        break;
+    case Qt::Key_Right:
+        scan = 0x4D;
+        break;
 	default:
         scan = 0;
 		break;
