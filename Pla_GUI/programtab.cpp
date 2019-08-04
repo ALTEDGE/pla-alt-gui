@@ -11,6 +11,7 @@ ProgramTab::ProgramTab(QWidget *parent) :
     lEnterKeyOrMacro("ENTER KEY OR MACRO COMMAND", this),
     lVector1("VECTOR 1 COMMAND", this),
     lVector2("VECTOR 2 COMMAND", this),
+    lJoystickGuide(this),
     useLeftJoystick("LEFT AUX JOYSTICK", this),
     useRightJoystick("RIGHT AUX JOYSTICK", this),
     usePrimaryJoystick("PRIMARY JOYSTICK", this),
@@ -27,16 +28,17 @@ ProgramTab::ProgramTab(QWidget *parent) :
     thresholdDialog(this)
 {
     // Control placement
-    lSelectJoystick.setGeometry(30, 190, 150, 20);
+    lSelectJoystick.setGeometry(30, 240, 150, 20);
     lSelectedPG.setGeometry(300, 10, 60, 20);
     lEnterKeyOrMacro.setGeometry(370, 10, 200, 20);
     lVector1.setGeometry(320, 55, 140, 20);
     lVector2.setGeometry(470, 55, 140, 20);
-    useLeftJoystick.setGeometry(30, 250, 150, 20);
-    useRightJoystick.setGeometry(30, 280, 150, 20);
-    usePrimaryJoystick.setGeometry(30, 220, 150, 20);
-    useDiagonals.setGeometry(30, 160, 150, 20);
-    useSequencer.setGeometry(30, 130, 150, 20);
+    lJoystickGuide.setGeometry(40, 60, 108, 117);
+    useLeftJoystick.setGeometry(30, 300, 150, 20);
+    useRightJoystick.setGeometry(30, 330, 150, 20);
+    usePrimaryJoystick.setGeometry(30, 270, 150, 20);
+    useDiagonals.setGeometry(30, 210, 150, 20);
+    useSequencer.setGeometry(30, 180, 150, 20);
     configSave.setGeometry(235, 320, 80, 20);
     configCancel.setGeometry(325, 320, 80, 20);
     configThreshold.setGeometry(30, 30, 130, 20);
@@ -44,6 +46,7 @@ ProgramTab::ProgramTab(QWidget *parent) :
     // Additional visual setups
     lVector1.setAlignment(Qt::AlignCenter);
     lVector2.setAlignment(Qt::AlignCenter);
+    lJoystickGuide.setPixmap(QPixmap("assets/joystick.png"));
     useLeftJoystick.setLayoutDirection(Qt::RightToLeft);
     useRightJoystick.setLayoutDirection(Qt::RightToLeft);
     usePrimaryJoystick.setLayoutDirection(Qt::RightToLeft);

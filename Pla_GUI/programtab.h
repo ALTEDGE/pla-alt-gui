@@ -92,6 +92,8 @@ private:
     // "VECTOR 2 COMMAND"
     QLabel lVector2;
 
+    QLabel lJoystickGuide;
+
     QRadioButton useLeftJoystick;
     QRadioButton useRightJoystick;
     QRadioButton usePrimaryJoystick;
