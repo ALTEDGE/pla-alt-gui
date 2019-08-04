@@ -84,12 +84,12 @@ public:
     }
 
     // For Editing
-    bool operator==(const KeySender& other) {
+    bool operator==(const KeySender& other) const {
         return keys == other.keys;
     }
 
     // For Editing
-    bool operator!=(const KeySender& other) {
+    bool operator!=(const KeySender& other) const {
         return keys != other.keys;
     }
 

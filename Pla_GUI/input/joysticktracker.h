@@ -74,28 +74,28 @@ public:
     virtual void load(QSettings &settings);
 
     // "Equal" comparison overload, needed for Editing objects
-    bool operator==(const JoystickTracker& other) {
+    bool operator==(const JoystickTracker& other) const {
         return KeySender::operator==(other) &&
             useDiagonals == other.useDiagonals &&
             useSequencing == other.useSequencing;
     }
 
     // "Not Equal" comparison overload, needed for Editing objects
-    bool operator!=(const JoystickTracker& other) {
+    bool operator!=(const JoystickTracker& other) const {
         return KeySender::operator!=(other) ||
             useDiagonals != other.useDiagonals ||
             useSequencing != other.useSequencing;
     }
 
-protected:
-    // Contains the previous X position, to track velocity.
-    // Kept protected so ThresholdSetter can access it.
-    int lastX;
+    inline std::pair<int, int> getPosition(void) const {
+        return { lastX, lastY };
+    }
 
 private:
     /**
-     * Contains the previous Y position, to track velocity.
+     * The previous X and Y position, for tracking velocity.
      */
+    int lastX;
     int lastY;
 
     /**

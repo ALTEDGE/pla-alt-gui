@@ -40,6 +40,8 @@ private:
      */
     void closeEvent(QCloseEvent *event);
 
+    void updateMap(void);
+
     // "DEFAULT / VECTOR 1 THRESHOLD"
     QLabel lShortThresh;
     // "VECTOR 2 THRESHOLD"
@@ -49,11 +51,14 @@ private:
 
     QSlider shortThreshold;
     QSlider farThreshold;
-    QSlider currentPrimary;
+    //QSlider currentPrimary;
 
     QPushButton configSave;
+    QImage joyMap;
+    QLabel joyMapLabel;
 
     std::thread updateCurrent;
+    std::pair<int, int> joyPosition;
     bool shouldUpdate;
 };
 
