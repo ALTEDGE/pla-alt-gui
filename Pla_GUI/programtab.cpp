@@ -146,6 +146,7 @@ void ProgramTab::updateControls(void)
 
     // Set key slots and diagonal check
     if (primary) {
+        thresholdDialog.setJoystick("PRIMARY");
         lSelectedPG.setText(QString("MAP PG_") + static_cast<char>(pgButtons.checkedId() + '1'));
         for (int i = 0; i < 16; i++)
             keySlots.button(i)->setText(primaryData->getText(pgButtons.checkedId(), i));
@@ -155,6 +156,7 @@ void ProgramTab::updateControls(void)
         setDiagonals(primaryData->getDiagonals());
         setSequencer(primaryData->getSequencing());
     } else if (useLeftJoystick.isChecked()) {
+        thresholdDialog.setJoystick("LEFT");
         lSelectedPG.setText("L. AUX.");
 
         for (int i = 0; i < 16; i++)
@@ -166,6 +168,7 @@ void ProgramTab::updateControls(void)
         setDiagonals(diag);
         setSequencer(leftData->getSequencing());
     } else {
+        thresholdDialog.setJoystick("RIGHT");
         lSelectedPG.setText("R. AUX.");
 
         for (int i = 0; i < 16; i++)

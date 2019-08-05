@@ -1,6 +1,8 @@
 #ifndef THRESHOLDSETTER_H
 #define THRESHOLDSETTER_H
 
+#include "input/joysticktracker.h"
+
 #include <QCloseEvent>
 #include <QDialog>
 #include <QLabel>
@@ -22,6 +24,8 @@ class ThresholdSetter : public QDialog
 public:
     ThresholdSetter(QWidget *parent = nullptr);
 
+    void setJoystick(QString _name);
+
 private slots:
     /**
      * Saves the threshold values.
@@ -42,16 +46,17 @@ private:
 
     void updateMap(void);
 
+    QString name;
+
     // "DEFAULT / VECTOR 1 THRESHOLD"
     QLabel lShortThresh;
     // "VECTOR 2 THRESHOLD"
     QLabel lFarThresh;
-    // "PRIMARY X+ CURRENT POSITION"
-    QLabel lCurrentPrimary;
+    // "CURRENT POSITION"
+    QLabel lCurrentPosition;
 
     QSlider shortThreshold;
     QSlider farThreshold;
-    //QSlider currentPrimary;
 
     QPushButton configSave;
     QImage joyMap;

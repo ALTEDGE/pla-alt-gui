@@ -2,6 +2,7 @@
 #include "config.h"
 
 #include <cmath> // sqrt()
+#include <iostream>
 
 JoystickTracker::JoystickTracker(bool ts, bool ad) :
     lastX(0),
@@ -23,7 +24,7 @@ int JoystickTracker::toState(int v)
     return s;
 }
 
-int JoystickTracker::getActionBits(int hstate, int vstate)
+int JoystickTracker::getActionBits(int hstate, int vstate) const
 {
     int bits = 0;
 
@@ -48,7 +49,7 @@ int JoystickTracker::getActionBits(int hstate, int vstate)
     return bits;
 }
 
-int JoystickTracker::getActionIndex(int hstate, int vstate)
+int JoystickTracker::getActionIndex(int hstate, int vstate) const
 {
     int action = -1;
 
@@ -117,6 +118,12 @@ void JoystickTracker::setSequencing(bool enable)
 void JoystickTracker::setDiagonals(bool enable)
 {
     useDiagonals = enable;
+}
+
+void JoystickTracker::dumpState(char id) const
+{
+    std::cout << "J" << id << ": (" << lastX << ", " << lastY << "): "
+        << getActionIndex(toState(lastX), toState(lastY)) << std::endl;
 }
 
 void JoystickTracker::update(int x, int y)

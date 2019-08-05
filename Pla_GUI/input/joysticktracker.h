@@ -91,6 +91,8 @@ public:
         return { lastX, lastY };
     }
 
+    void dumpState(char id) const;
+
 private:
     /**
      * The previous X and Y position, for tracking velocity.
@@ -128,7 +130,7 @@ private:
      * @param vstate The vertical axis' toState() value
      * @return If -1, no action to trigger, otherwise, an action's index
      */
-    int getActionIndex(int hstate, int vstate);
+    int getActionIndex(int hstate, int vstate) const;
 
     /**
      * Returns a value with bits set based on what directions are active.
@@ -139,7 +141,7 @@ private:
      * @return A 16-bit value where bit 'n' is set if action 'n' should
      * be fired.
      */
-    int getActionBits(int hstate, int vstate);
+    int getActionBits(int hstate, int vstate) const;
 };
 
 #endif // JOYSTICKTRACKER_H
