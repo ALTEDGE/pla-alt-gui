@@ -1,4 +1,5 @@
 build*
-Pla_GUI/Pla_GUI.pro.*
+*.pro*
+*.autosave
 Pla_GUI/compile_commands.json
 
