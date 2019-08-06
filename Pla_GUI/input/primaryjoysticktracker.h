@@ -45,13 +45,6 @@ public:
      */
     void load(QSettings &settings) final;
 
-    /**
-     * Gets the last position of the X-axis.
-     * Used for ThresholdSetter.
-     */
-    int getLastX(void) const
-    { return lastX; }
-
     // "Equal" comparison overload, needed for Editing objects
     bool operator==(const PrimaryJoystickTracker& other) {
         return groups == other.groups &&

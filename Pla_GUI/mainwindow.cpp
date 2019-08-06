@@ -25,7 +25,7 @@ MainWindow::MainWindow(QWidget *parent) :
     trayIcon = new QSystemTrayIcon(QIcon("icon.png"));
 
     // Keep the window at a fixed size.
-    setFixedSize(886, 467);
+    setFixedSize(640, 480);
 
     // Create the context menu for the system tray icon
     auto systemTrayMenu = new QMenu();
@@ -45,7 +45,7 @@ MainWindow::MainWindow(QWidget *parent) :
     trayIcon->show();
 
     // Tab widget starts with a Y of 80px, so a banner can be at the top of the window
-    tabs.setGeometry(0, 87, 886, 380);
+    tabs.setGeometry(0, 80, 640, 400);
 
     // Add tabs
     tabs.addTab(new ProfileTab(this), "Profiles");

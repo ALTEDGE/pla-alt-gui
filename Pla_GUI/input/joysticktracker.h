@@ -74,28 +74,30 @@ public:
     virtual void load(QSettings &settings);
 
     // "Equal" comparison overload, needed for Editing objects
-    bool operator==(const JoystickTracker& other) {
+    bool operator==(const JoystickTracker& other) const {
         return KeySender::operator==(other) &&
             useDiagonals == other.useDiagonals &&
             useSequencing == other.useSequencing;
     }
 
     // "Not Equal" comparison overload, needed for Editing objects
-    bool operator!=(const JoystickTracker& other) {
+    bool operator!=(const JoystickTracker& other) const {
         return KeySender::operator!=(other) ||
             useDiagonals != other.useDiagonals ||
             useSequencing != other.useSequencing;
     }
 
-protected:
-    // Contains the previous X position, to track velocity.
-    // Kept protected so ThresholdSetter can access it.
-    int lastX;
+    inline std::pair<int, int> getPosition(void) const {
+        return { lastX, lastY };
+    }
+
+    void dumpState(char id) const;
 
 private:
     /**
-     * Contains the previous Y position, to track velocity.
+     * The previous X and Y position, for tracking velocity.
      */
+    int lastX;
     int lastY;
 
     /**
@@ -128,7 +130,7 @@ private:
      * @param vstate The vertical axis' toState() value
      * @return If -1, no action to trigger, otherwise, an action's index
      */
-    int getActionIndex(int hstate, int vstate);
+    int getActionIndex(int hstate, int vstate) const;
 
     /**
      * Returns a value with bits set based on what directions are active.
@@ -139,7 +141,7 @@ private:
      * @return A 16-bit value where bit 'n' is set if action 'n' should
      * be fired.
      */
-    int getActionBits(int hstate, int vstate);
+    int getActionBits(int hstate, int vstate) const;
 };
 
 #endif // JOYSTICKTRACKER_H

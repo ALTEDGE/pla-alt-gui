@@ -5,6 +5,7 @@
 #ifdef _WIN64
 #include <Windows.h>
 #include <SetupAPI.h>
+#include <cstring>
 #else
 #include <fcntl.h>
 #include <string.h>
@@ -102,7 +103,7 @@ std::string Serial::nativeOpen(void)
         DIGCF_ALLCLASSES | DIGCF_PRESENT);
 
     if (hDevInfo == INVALID_HANDLE_VALUE)
-        return false;
+        return "";
 
     auto *devInfo = new SP_DEVINFO_DATA();
     std::string data (1024, '\0');
