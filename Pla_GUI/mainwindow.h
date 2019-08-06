@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QCloseEvent>
+#include <QLabel>
 #include <QMainWindow>
 #include <QMenu>
 #include <QSystemTrayIcon>
@@ -54,6 +55,7 @@ private:
     QTabWidget tabs;
     QMenu *profileMenu;
     QActionGroup *profileActionGroup;
+    QLabel lVersion;
 
     int lastTabIndex;
     bool done;

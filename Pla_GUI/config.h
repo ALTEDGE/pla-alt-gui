@@ -11,6 +11,10 @@
 
 namespace config
 {
+    constexpr const char *versionString = "v0.1";
+
+
+
     using namespace std::chrono_literals;
 
     /**
