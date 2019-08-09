@@ -396,7 +396,7 @@ void Key::fire(bool press) const
     }
 
 	// Send the keystrokes
-    SendInput(inputs.size(), inputs.data(), sizeof(INPUT));
+    SendInput(static_cast<UINT>(inputs.size()), inputs.data(), sizeof(INPUT));
 
 #else
 	// Fire code for Linux-based OSes
