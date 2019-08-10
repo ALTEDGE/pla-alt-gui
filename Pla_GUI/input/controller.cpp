@@ -92,9 +92,6 @@ void Controller::save(QSettings& settings)
     settings.setValue("enabled", ColorEnable);
 
     settings.endGroup();
-
-    // Save threshold values
-    Joystick::saveThresholds(settings);
 }
 
 void Controller::load(QSettings& settings)
@@ -133,9 +130,6 @@ void Controller::load(QSettings& settings)
     updateColor();
 
     settings.endGroup();
-
-    // Load threshold values
-    Joystick::loadThresholds(settings);
 }
 
 void Controller::updateColor(void)

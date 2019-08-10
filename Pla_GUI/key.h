@@ -66,6 +66,10 @@ public:
      */
     void save(QSettings& settings) const;
 
+    inline Qt::KeyboardModifiers getModifiers(void) const {
+        return mod;
+    }
+
 private:
     int key;
     Qt::KeyboardModifiers mod;

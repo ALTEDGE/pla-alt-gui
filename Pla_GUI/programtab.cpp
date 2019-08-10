@@ -28,20 +28,21 @@ ProgramTab::ProgramTab(QWidget *parent) :
     thresholdDialog(this)
 {
     // Control placement
-    lSelectJoystick.setGeometry(30, 240, 150, 20);
     lSelectedPG.setGeometry(300, 10, 60, 20);
+    lJoystickGuide.setGeometry(40, 10, 108, 117);
+    useSequencer.setGeometry(30, 140, 150, 20);
+    useDiagonals.setGeometry(30, 170, 150, 20);
+    lSelectJoystick.setGeometry(30, 210, 150, 20);
+    usePrimaryJoystick.setGeometry(30, 230, 150, 20);
+    useLeftJoystick.setGeometry(30, 260, 150, 20);
+    useRightJoystick.setGeometry(30, 290, 150, 20);
+    configThreshold.setGeometry(30, 320, 130, 20);
+
     lEnterKeyOrMacro.setGeometry(370, 10, 200, 20);
     lVector1.setGeometry(320, 55, 140, 20);
     lVector2.setGeometry(470, 55, 140, 20);
-    lJoystickGuide.setGeometry(40, 60, 108, 117);
-    useLeftJoystick.setGeometry(30, 300, 150, 20);
-    useRightJoystick.setGeometry(30, 330, 150, 20);
-    usePrimaryJoystick.setGeometry(30, 270, 150, 20);
-    useDiagonals.setGeometry(30, 210, 150, 20);
-    useSequencer.setGeometry(30, 180, 150, 20);
     configSave.setGeometry(235, 320, 80, 20);
     configCancel.setGeometry(325, 320, 80, 20);
-    configThreshold.setGeometry(30, 30, 130, 20);
 
     // Additional visual setups
     lVector1.setAlignment(Qt::AlignCenter);

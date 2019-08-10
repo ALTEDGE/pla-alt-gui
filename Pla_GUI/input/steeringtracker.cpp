@@ -18,6 +18,8 @@ bool SteeringTracker::getDigital(void) const
 }
 
 void SteeringTracker::update(int pos) {
+    lastPosition = pos;
+
     if (!digital)
         return;
 
@@ -34,12 +36,14 @@ void SteeringTracker::update(int pos) {
 
 void SteeringTracker::save(QSettings &settings) const
 {
-    settings.setValue("steering/digital", digital);
+    settings.setValue("digital", digital);
     KeySender::save(settings);
+    saveThresholds(settings);
 }
 
 void SteeringTracker::load(QSettings &settings)
 {
-    digital = settings.value("steering/digital").toBool();
+    digital = settings.value("digital").toBool();
     KeySender::load(settings);
+    loadThresholds(settings);
 }

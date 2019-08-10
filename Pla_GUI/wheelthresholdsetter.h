@@ -1,5 +1,5 @@
-#ifndef THRESHOLDSETTER_H
-#define THRESHOLDSETTER_H
+#ifndef WHEELTHRESHOLDSETTER_H
+#define WHEELTHRESHOLDSETTER_H
 
 #include "input/joysticktracker.h"
 
@@ -17,22 +17,18 @@
  * @class ThresholdSetter
  * @brief Provides controls to set the joystick's action thresholds.
  */
-class ThresholdSetter : public QDialog
+class WheelThresholdSetter : public QDialog
 {
     Q_OBJECT
 
 public:
-    ThresholdSetter(QWidget *parent = nullptr);
-
-    void setJoystick(QString _name);
+    WheelThresholdSetter(QWidget *parent = nullptr);
 
 private slots:
     /**
      * Saves the threshold values.
      */
     void saveSettings(void);
-
-    void saveSettingsAll(void);
 
 private:
     /**
@@ -48,27 +44,20 @@ private:
 
     void updateMap(void);
 
-    QString name;
+    // "WHEEL POSITION"
+    QLabel lMap;
+    // "WHEEL THRESHOLD"
+    QLabel lThresh;
 
-    // "DEFAULT / VECTOR 1 THRESHOLD"
-    QLabel lShortThresh;
-    // "VECTOR 2 THRESHOLD"
-    QLabel lFarThresh;
-    // "CURRENT POSITION"
-    QLabel lCurrentPosition;
-    QLabel lInstruction;
-
-    QSlider shortThreshold;
-    QSlider farThreshold;
+    QSlider threshold;
 
     QPushButton configSave;
-    QPushButton configSaveAll;
-    QImage joyMap;
-    QLabel joyMapLabel;
+    QImage map;
+    QLabel mapLabel;
 
     std::thread updateCurrent;
-    std::pair<int, int> joyPosition;
+    int position;
     bool shouldUpdate;
 };
 
-#endif // THRESHOLDSETTER_H
+#endif // WHEELTHRESHOLDSETTER_H

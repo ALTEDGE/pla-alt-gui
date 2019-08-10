@@ -10,7 +10,7 @@
  * @brief Keeps a fixed number of keys that can be set or sent as keystrokes.
  * C defines how many keys the class should store.
  */
-template<unsigned int C>
+template<int C>
 class KeySender {
 public:
     KeySender(void) {
@@ -23,13 +23,15 @@ public:
      * @param index The index of the key to send
      * @param press True for press, false for release
      */
-    void sendKey(int index, bool press) {
-        //static_assert (index >= 0 && index < C, "Invalid index");
-        if (index < 0 || index >= (int)C || keys[index].second == press)
-            return;
+    Qt::KeyboardModifiers sendKey(int index, bool press, Qt::KeyboardModifiers mods = Qt::NoModifier) {
+        if (index < 0 || index >= C ||
+            (keys[index].second == press && (keys[index].first.getModifiers() & mods) == 0))
+            return Qt::NoModifier;
 
         keys[index].first.fire(press);
         keys[index].second = press;
+
+        return keys[index].first.getModifiers();
     }
 
     /**
@@ -39,8 +41,7 @@ public:
      */
     template<typename... Args>
     void setKey(int index, Args... args) {
-        //static_assert (index >= 0 && index < C, "Invalid index");
-        if (index < 0 || index >= (int)C)
+        if (index < 0 || index >= C)
             return;
 
         keys[index].first = Key(args...);
@@ -52,8 +53,7 @@ public:
      * @return A descriptive string
      */
     QString getText(int index) const {
-        //static_assert (index >= 0 && index < C, "Invalid index");
-        if (index < 0 || index >= (int)C)
+        if (index < 0 || index >= C)
             return "";
 
         return keys[index].first.toString();

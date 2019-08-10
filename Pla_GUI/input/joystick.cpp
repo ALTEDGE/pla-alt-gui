@@ -1,15 +1,12 @@
 #include "config.h"
 #include "joystick.h"
 
-int Joystick::shortThreshold = config::JoystickDefaultShortThreshold;
-int Joystick::farThreshold = config::JoystickDefaultFarThreshold;
-
-int Joystick::getShortThreshold(void)
+int Joystick::getShortThreshold(void) const
 {
     return shortThreshold;
 }
 
-int Joystick::getFarThreshold(void)
+int Joystick::getFarThreshold(void) const
 {
     return farThreshold;
 }
@@ -32,7 +29,7 @@ void Joystick::loadThresholds(QSettings& config)
     config.endGroup();
 }
 
-void Joystick::saveThresholds(QSettings& config)
+void Joystick::saveThresholds(QSettings& config) const
 {
     config.beginGroup("thresholds");
     config.setValue("short", shortThreshold);

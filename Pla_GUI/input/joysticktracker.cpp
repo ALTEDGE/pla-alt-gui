@@ -13,7 +13,7 @@ JoystickTracker::JoystickTracker(bool ts, bool ad) :
 
 }
 
-int JoystickTracker::toState(int v)
+int JoystickTracker::toState(int v) const
 {
     int s = 0;
     if (v > shortThreshold)
@@ -41,10 +41,10 @@ int JoystickTracker::getActionBits(int hstate, int vstate) const
         bits |= (useSequencing && vstate == -2) ? (1 << 12) : (1 << 4);
 
     // some axis is at vector 2
-    if (bits & 0xFF00) {
-        bits |= (bits << 8) & 0xFF00;
-        bits &= ~(0xFF);
-    }
+    //if (bits & 0xFF00) {
+    //    bits |= (bits << 8) & 0xFF00;
+    //    bits &= ~(0xFF);
+    //}
 
     return bits;
 }
@@ -146,23 +146,35 @@ void JoystickTracker::update(int x, int y)
     auto horz = toState(x);
 
     if (useDiagonals) {
+        Qt::KeyboardModifiers releasedMods = Qt::NoModifier;
         int bits = getActionBits(horz, vert);
 
         // Set bits get pressed, unset bits get released
-        for (int i = 0; i < 16; i++)
-            sendKey(i, bits & (1 << i));
+        // Send releases first.
+        for (int i = 0; i < 16; i++) {
+            if (!(bits & (1 << i)))
+                releasedMods |= sendKey(i, false);
+        }
+        for (int i = 0; i < 16; i++) {
+            if (bits & (1 << i))
+                sendKey(i, true, releasedMods);
+        }
     } else {
         int index = getActionIndex(horz, vert);
 
         // Press index'th key, release all others
-        for (int i = 0; i < 16; i++)
-            sendKey(i, i == index);
+        for (int i = 0; i < 16; i++) {
+            if (i != index)
+                sendKey(i, false);
+        }
+        sendKey(index, true);
     }
 }
 
 void JoystickTracker::save(QSettings &settings) const
 {
     KeySender::save(settings);
+    saveThresholds(settings);
 
     settings.setValue("sequencer", useSequencing);
     settings.setValue("diagonals", useDiagonals);
@@ -171,6 +183,7 @@ void JoystickTracker::save(QSettings &settings) const
 void JoystickTracker::load(QSettings &settings)
 {
     KeySender::load(settings);
+    loadThresholds(settings);
 
     useSequencing = settings.value("sequencer").toBool();
     useDiagonals = settings.value("diagonals").toBool();

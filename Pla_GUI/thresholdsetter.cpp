@@ -18,29 +18,39 @@ ThresholdSetter::ThresholdSetter(QWidget *parent) :
     lShortThresh("DEFAULT / VECTOR 1 THRESHOLD", this),
     lFarThresh("VECTOR 2 THRESHOLD", this),
     lCurrentPosition("PRIMARY POSITION", this),
+    lInstruction(
+        "Passing green threshold\n"
+        "triggers action.\n\n"
+        "With vector sequencer,\n"
+        "passing green triggers Vector 1\n"
+        "and passing red triggers Vector 2.", this),
     shortThreshold(this),
     farThreshold(this),
     //currentPrimary(this),
     configSave("SAVE", this),
+    configSaveAll("SAVE ALL", this),
     joyMap(mapSize, mapSize, QImage::Format_ARGB32),
     joyMapLabel(this),
     shouldUpdate(true)
 {
     setWindowTitle("Threshold Settings");
-    setFixedSize(180, 240);
+    setFixedSize(300, 240);
 
     // Set geometries
-    lCurrentPosition.setGeometry(0, 10, 180, 20);
-    joyMapLabel.setGeometry(45, 30, mapSize, mapSize);
-    lShortThresh.setGeometry(0, 130, 180, 20);
-    shortThreshold.setGeometry(15, 150, 150, 10);
-    lFarThresh.setGeometry(0, 170, 180, 20);
-    farThreshold.setGeometry(15, 190, 150, 10);
-    configSave.setGeometry(60, 210, 60, 20);
+    lCurrentPosition.setGeometry(20, 10, 180, 20);
+    joyMapLabel.setGeometry(20, 30, mapSize, mapSize);
+    lInstruction.setGeometry(30 + mapSize, 30, 170, mapSize);
+    lShortThresh.setGeometry(20, 130, 260, 20);
+    shortThreshold.setGeometry(20, 150, 260, 10);
+    lFarThresh.setGeometry(20, 170, 260, 20);
+    farThreshold.setGeometry(20, 190, 260, 10);
+    configSave.setGeometry(80, 210, 60, 20);
+    configSaveAll.setGeometry(160, 210, 60, 20);
 
     lShortThresh.setAlignment(Qt::AlignCenter);
     lFarThresh.setAlignment(Qt::AlignCenter);
-    lCurrentPosition.setAlignment(Qt::AlignCenter);
+    lInstruction.setAlignment(Qt::AlignLeft | Qt::AlignTop);
+    //lCurrentPosition.setAlignment(Qt::AlignCenter);
     shortThreshold.setOrientation(Qt::Horizontal);
     farThreshold.setOrientation(Qt::Horizontal);
 
@@ -49,6 +59,7 @@ ThresholdSetter::ThresholdSetter(QWidget *parent) :
     farThreshold.setRange(100, 32767);
 
     connect(&configSave, SIGNAL(released()), this, SLOT(saveSettings()));
+    connect(&configSaveAll, SIGNAL(released()), this, SLOT(saveSettingsAll()));
 }
 
 void ThresholdSetter::showEvent(QShowEvent *event)
@@ -56,8 +67,16 @@ void ThresholdSetter::showEvent(QShowEvent *event)
     shouldUpdate = true;
 
     // Set sliders to current settings
-    shortThreshold.setValue(Joystick::getShortThreshold());
-    farThreshold.setValue(Joystick::getFarThreshold());
+    if (name[0] == 'L') {
+        shortThreshold.setValue(Controller::Left.getShortThreshold());
+        farThreshold.setValue(Controller::Left.getFarThreshold());
+    } else if (name[0] == 'R') {
+        shortThreshold.setValue(Controller::Right.getShortThreshold());
+        farThreshold.setValue(Controller::Right.getFarThreshold());
+    } else if (name[0] == 'P') {
+        shortThreshold.setValue(Controller::Primary.getShortThreshold());
+        farThreshold.setValue(Controller::Primary.getFarThreshold());
+    }
 
     // Start the joystick monitoring thread
     QtConcurrent::run([&](void) {
@@ -82,6 +101,7 @@ void ThresholdSetter::showEvent(QShowEvent *event)
                     Controller::Primary.dumpState(name.toStdString()[0]);
             }
         }
+        shouldUpdate = true;
     });
 
     event->accept();
@@ -91,6 +111,8 @@ void ThresholdSetter::closeEvent(QCloseEvent *event)
 {
     // Bring back the monitor thread
     shouldUpdate = false;
+    while (!shouldUpdate)
+        QThread::msleep(100);
     event->accept();
 }
 
@@ -135,8 +157,34 @@ void ThresholdSetter::updateMap(void)
 
 void ThresholdSetter::saveSettings(void)
 {
-    Joystick::setShortThreshold(shortThreshold.value());
-    Joystick::setFarThreshold(farThreshold.value());
-    Joystick::saveThresholds(Profile::current());
+    // Set sliders to current settings
+    if (name[0] == 'L') {
+        Controller::Left.setShortThreshold(shortThreshold.value());
+        Controller::Left.setFarThreshold(farThreshold.value());
+    } else if (name[0] == 'R') {
+        Controller::Right.setShortThreshold(shortThreshold.value());
+        Controller::Right.setFarThreshold(farThreshold.value());
+    } else if (name[0] == 'P') {
+        Controller::Primary.setShortThreshold(shortThreshold.value());
+        Controller::Primary.setFarThreshold(farThreshold.value());
+    }
+    Controller::save(Profile::current());
+    Profile::save();
+
+    close();
+}
+
+void ThresholdSetter::saveSettingsAll(void)
+{
+    int s = shortThreshold.value(), f = farThreshold.value();
+    Controller::Left.setShortThreshold(s);
+    Controller::Right.setShortThreshold(s);
+    Controller::Primary.setShortThreshold(s);
+    Controller::Left.setFarThreshold(f);
+    Controller::Right.setFarThreshold(f);
+    Controller::Primary.setFarThreshold(f);
+    Controller::save(Profile::current());
+    Profile::save();
+
     close();
 }

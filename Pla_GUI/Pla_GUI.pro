@@ -43,7 +43,8 @@ SOURCES += \
     input/joystick.cpp \
     input/joysticktracker.cpp \
     input/primaryjoysticktracker.cpp \
-    input/steeringtracker.cpp
+    input/steeringtracker.cpp \
+    wheelthresholdsetter.cpp
 
 HEADERS += \
     axisselector.h \
@@ -69,7 +70,8 @@ HEADERS += \
     input/joystick.h \
     input/joysticktracker.h \
     input/primaryjoysticktracker.h \
-    input/steeringtracker.h
+    input/steeringtracker.h \
+    wheelthresholdsetter.h
 
 INCLUDEPATH += input
 

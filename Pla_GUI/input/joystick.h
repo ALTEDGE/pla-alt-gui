@@ -17,7 +17,7 @@ protected:
      * that direction's action.
      * Otherwise, passing will trigger the "Vector 1" action.
      */
-    static int shortThreshold;
+    int shortThreshold;
 
     /**
      * Defines how far the joystick has to move from the origin on one of its
@@ -25,39 +25,40 @@ protected:
      *
      * This threshold isn't used if vector sequencing is disabled.
      */
-    static int farThreshold;
+    int farThreshold;
 
 public:
     /**
      * Gets the short threshold.
      */
-    static int getShortThreshold(void);
+    int getShortThreshold(void) const;
     /**
      * Gets the far threshold.
      */
-    static int getFarThreshold(void);
+    int getFarThreshold(void) const;
 
     /**
      * Sets the short threshold to the given value.
      * saveThresholds() must be called to retain the new value.
      */
-    static void setShortThreshold(int value);
+    void setShortThreshold(int value);
     /**
      * Sets the far threshold to the given value.
      * saveThresholds() must be called to retain the new value.
      */
-    static void setFarThreshold(int value);
+    void setFarThreshold(int value);
 
+protected:
     /**
      * Loads threshold values from the given settings object.
      * @param config Settings to load from
      */
-    static void loadThresholds(QSettings& config);
+    void loadThresholds(QSettings& config);
     /**
      * Saves threshold values to the given settings object.
      * @param config Settings to save to
      */
-    static void saveThresholds(QSettings& config);
+    void saveThresholds(QSettings& config) const;
 };
 
 #endif // JOYSTICK_H

@@ -11,7 +11,9 @@ WheelTab::WheelTab(QWidget *parent) :
     rightAction("", this),
     configSave("SAVE", this),
     configCancel("CANCEL", this),
-    steerData(Controller::Steering)
+    configThreshold("THRESHOLD SETTINGS", this),
+    steerData(Controller::Steering),
+    thresholdDialog(this)
 {
     // Set geometries
     steerDigital.setGeometry(60, 60, 140, 20);
@@ -22,6 +24,7 @@ WheelTab::WheelTab(QWidget *parent) :
     rightAction.setGeometry(450, 60, 140, 20);
     configSave.setGeometry(235, 320, 80, 20);
     configCancel.setGeometry(325, 320, 80, 20);
+    configThreshold.setGeometry(30, 320, 130, 20);
 
     // Connect signals/slots
     connect(&leftAction, SIGNAL(released()), this, SLOT(assignLeft()));
@@ -30,6 +33,7 @@ WheelTab::WheelTab(QWidget *parent) :
     connect(&steerDigital, SIGNAL(toggled(bool)), this, SLOT(setWheelFunction(bool)));
     connect(&configSave, SIGNAL(released()), this, SLOT(saveSettings()));
     connect(&configCancel, SIGNAL(released()), this, SLOT(loadSettings()));
+    connect(&configThreshold, SIGNAL(released()), this, SLOT(openThresholdSettings()));
 
     loadSettings();
 }
@@ -93,6 +97,11 @@ void WheelTab::assignRight(void)
 {
     activeAction = 1;
     keyGrabber.show();
+}
+
+void WheelTab::openThresholdSettings(void)
+{
+    thresholdDialog.show();
 }
 
 void WheelTab::keyPressed(Key key)

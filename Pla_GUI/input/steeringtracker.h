@@ -55,11 +55,17 @@ public:
         return KeySender::operator!=(other) || digital != other.digital;
     }
 
+    inline int getPosition(void) const {
+        return lastPosition;
+    }
+
 private:
     /**
      * When true, digital steering is enabled.
      */
     bool digital;
+
+    int lastPosition;
 };
 
 

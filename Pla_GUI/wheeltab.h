@@ -5,6 +5,7 @@
 #include "keygrabber.h"
 #include "savabletab.h"
 #include "steeringtracker.h"
+#include "wheelthresholdsetter.h"
 
 #include <QPushButton>
 #include <QRadioButton>
@@ -32,6 +33,8 @@ private slots:
      * Prompt the user to assign the right steer's key.
      */
     void assignRight(void);
+
+    void openThresholdSettings(void);
 
     /**
      * Catches key press data from the KeyGrabber dialog.
@@ -70,8 +73,10 @@ private:
 
     QPushButton configSave;
     QPushButton configCancel;
+    QPushButton configThreshold;
 
     Editing<SteeringTracker> steerData;
+    WheelThresholdSetter thresholdDialog;
 
     int activeAction;
 };

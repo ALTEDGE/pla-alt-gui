@@ -28,7 +28,7 @@
  *         5   4   3
  *     13     12      11
  */
-class JoystickTracker : protected Joystick, public KeySender<16>
+class JoystickTracker : public Joystick, public KeySender<16>
 {
 public:
     JoystickTracker(bool sequencer = false, bool diagonal = false);
@@ -122,7 +122,7 @@ private:
      * State +/- 2: Axis has passed the higher threshold (used for two-
      *     stage mode)
      */
-    static int toState(int v);
+    int toState(int v) const;
 
     /**
      * Gets the index of an action to trigger, based on the axes' states.
