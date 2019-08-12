@@ -22,7 +22,7 @@ class WheelThresholdSetter : public QDialog
     Q_OBJECT
 
 public:
-    WheelThresholdSetter(QWidget *parent = nullptr);
+    WheelThresholdSetter(QWidget *parent, QWidget *mainwindow);
 
 private slots:
     /**

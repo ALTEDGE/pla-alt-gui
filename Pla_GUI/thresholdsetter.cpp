@@ -12,7 +12,7 @@ using namespace std::chrono_literals;
 
 constexpr int mapSize = 90;
 
-ThresholdSetter::ThresholdSetter(QWidget *parent) :
+ThresholdSetter::ThresholdSetter(QWidget *parent, QWidget *mainwindow) :
     QDialog(parent),
     name("PRIMARY"),
     lShortThresh("DEFAULT / VECTOR 1 THRESHOLD", this),
@@ -60,6 +60,7 @@ ThresholdSetter::ThresholdSetter(QWidget *parent) :
 
     connect(&configSave, SIGNAL(released()), this, SLOT(saveSettings()));
     connect(&configSaveAll, SIGNAL(released()), this, SLOT(saveSettingsAll()));
+    connect(mainwindow, SIGNAL(exitingProgram()), this, SLOT(close()));
 }
 
 void ThresholdSetter::showEvent(QShowEvent *event)
@@ -101,19 +102,19 @@ void ThresholdSetter::showEvent(QShowEvent *event)
                     Controller::Primary.dumpState(name.toStdString()[0]);
             }
         }
-        shouldUpdate = true;
     });
 
-    event->accept();
+    if (event != nullptr)
+        event->accept();
 }
 
 void ThresholdSetter::closeEvent(QCloseEvent *event)
 {
     // Bring back the monitor thread
     shouldUpdate = false;
-    while (!shouldUpdate)
-        QThread::msleep(100);
-    event->accept();
+    QThread::msleep(200);
+    if (event != nullptr)
+        event->accept();
 }
 
 void ThresholdSetter::setJoystick(QString _name)

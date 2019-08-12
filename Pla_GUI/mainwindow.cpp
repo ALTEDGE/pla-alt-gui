@@ -32,7 +32,7 @@ MainWindow::MainWindow(QWidget *parent) :
     auto systemTrayMenu = new QMenu();
     profileMenu = systemTrayMenu->addMenu("Set profile...");
     systemTrayMenu->addSeparator();
-    auto quitAction = systemTrayMenu->addAction("Exit Pla_GUI");
+    auto quitAction = systemTrayMenu->addAction("Exit Pla GUI");
 
     connect(quitAction, SIGNAL(triggered(bool)), this, SLOT(handleQuit(bool)));
 
@@ -115,6 +115,7 @@ void MainWindow::handleQuit(bool unused)
     (void)unused;
     // Let closeEvent() know it's okay to exit
     done = true;
+    emit exitingProgram();
     close();
 }
 

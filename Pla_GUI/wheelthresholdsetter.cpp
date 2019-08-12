@@ -10,7 +10,7 @@
 #include <chrono>
 using namespace std::chrono_literals;
 
-WheelThresholdSetter::WheelThresholdSetter(QWidget *parent) :
+WheelThresholdSetter::WheelThresholdSetter(QWidget *parent, QWidget *mainwindow) :
     QDialog(parent),
     lMap("WHEEL POSITION", this),
     lThresh("WHEEL THRESHOLD", this),
@@ -36,6 +36,7 @@ WheelThresholdSetter::WheelThresholdSetter(QWidget *parent) :
     threshold.setRange(100, 32767);
 
     connect(&configSave, SIGNAL(released()), this, SLOT(saveSettings()));
+    connect(mainwindow, SIGNAL(exitingProgram()), this, SLOT(close()));
 }
 
 void WheelThresholdSetter::showEvent(QShowEvent *event)
@@ -54,14 +55,17 @@ void WheelThresholdSetter::showEvent(QShowEvent *event)
         }
     });
 
-    event->accept();
+    if (event != nullptr)
+        event->accept();
 }
 
 void WheelThresholdSetter::closeEvent(QCloseEvent *event)
 {
     // Bring back the monitor thread
     shouldUpdate = false;
-    event->accept();
+    QThread::msleep(200);
+    if (event != nullptr)
+        event->accept();
 }
 
 void WheelThresholdSetter::updateMap(void)

@@ -23,6 +23,9 @@ public:
         return trayIcon;
     }
 
+signals:
+    void exitingProgram(void);
+
 private slots:
     /**
      * Prompts to save changes if tab is changed before saving.

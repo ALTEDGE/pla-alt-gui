@@ -25,7 +25,7 @@ ProgramTab::ProgramTab(QWidget *parent) :
     rightData(Controller::Right),
     primaryData(Controller::Primary),
     keyAssignDialog(this),
-    thresholdDialog(this)
+    thresholdDialog(this, parent)
 {
     // Control placement
     lSelectedPG.setGeometry(300, 10, 60, 20);

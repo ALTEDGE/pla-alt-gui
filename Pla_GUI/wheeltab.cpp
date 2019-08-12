@@ -13,7 +13,7 @@ WheelTab::WheelTab(QWidget *parent) :
     configCancel("CANCEL", this),
     configThreshold("THRESHOLD SETTINGS", this),
     steerData(Controller::Steering),
-    thresholdDialog(this)
+    thresholdDialog(this, parent)
 {
     // Set geometries
     steerDigital.setGeometry(60, 60, 140, 20);

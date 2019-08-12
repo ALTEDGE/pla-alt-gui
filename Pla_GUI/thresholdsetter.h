@@ -22,7 +22,7 @@ class ThresholdSetter : public QDialog
     Q_OBJECT
 
 public:
-    ThresholdSetter(QWidget *parent = nullptr);
+    ThresholdSetter(QWidget *parent, QWidget *mainwindow);
 
     void setJoystick(QString _name);
 
