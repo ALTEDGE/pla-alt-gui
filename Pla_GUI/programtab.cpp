@@ -97,11 +97,6 @@ ProgramTab::ProgramTab(QWidget *parent) :
 
 void ProgramTab::showEvent(QShowEvent *event)
 {
-    // Get Editing objects up-to-date
-    leftData.save();
-    rightData.save();
-    primaryData.save();
-
     updateControls();
 
     if (event != nullptr)

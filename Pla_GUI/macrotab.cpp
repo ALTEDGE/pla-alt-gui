@@ -92,20 +92,8 @@ MacroTab::MacroTab(QWidget *parent) :
 
 void MacroTab::showEvent(QShowEvent *event)
 {
-    // Load macros from the config file
-    auto names = Macro::getNames();
-    if (names.empty()) {
-        Macro::get("Macro 1");
-        names.emplace_back("Macro 1");
-    }
-
-    macroList.blockSignals(true);
-    macroList.clear();
-    for (const auto& name : names)
-        macroList.addItem(name.c_str());
-    macroList.blockSignals(false);
-
-    loadMacro(names.front().c_str());
+    if (macroList.count() == 0)
+        loadSettings();
 
     if (event != nullptr)
         event->accept();
@@ -127,7 +115,20 @@ void MacroTab::saveSettings(void)
 
 void MacroTab::loadSettings(void)
 {
-    loadMacro(currentName);
+    // Load macros from the config file
+    auto names = Macro::getNames();
+    if (names.empty()) {
+        Macro::get("Macro 1");
+        names.emplace_back("Macro 1");
+    }
+
+    macroList.blockSignals(true);
+    macroList.clear();
+    for (const auto& name : names)
+        macroList.addItem(name.c_str());
+    macroList.blockSignals(false);
+
+    loadMacro(names.front().c_str());
 }
 
 void MacroTab::changeName(void)

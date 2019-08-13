@@ -40,9 +40,6 @@ WheelTab::WheelTab(QWidget *parent) :
 
 void WheelTab::showEvent(QShowEvent *event)
 {
-    // Get Editing objects up-to-date
-    steerData.save();
-
     // Set key slots
     leftAction.setText(steerData->getText(0));
     rightAction.setText(steerData->getText(1));

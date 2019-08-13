@@ -80,11 +80,12 @@ void MainWindow::closeEvent(QCloseEvent *event)
 
 void MainWindow::changeTab(int index)
 {
+    if (index == lastTabIndex)
+        return;
+
     // Check if tab is a SavableTab, if so, see if save prompt is needed
     auto tab = dynamic_cast<SavableTab*>(tabs.widget(lastTabIndex));
     if (tab != nullptr && tab->isModified()) {
-        lastTabIndex = index;
-
         // Return focus to modified tab
         tabs.setCurrentWidget(dynamic_cast<QWidget*>(tab));
 
@@ -103,11 +104,15 @@ void MainWindow::changeTab(int index)
             tab->loadSettings();
             tabs.setCurrentIndex(index);
             break;
+        case QMessageBox::Cancel:
+            return;
+            break;
         default:
-            // Stay in old tab
             break;
         }
     }
+
+    lastTabIndex = index;
 }
 
 void MainWindow::handleQuit(bool unused)
