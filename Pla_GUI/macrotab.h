@@ -122,6 +122,8 @@ private:
         return { static_cast<unsigned int>(row), row >= 0 };
     }
 
+    // "MACRO"
+    QLabel lMacro;
     // "MACRO NAME";
     QLabel lMacroName;
     // "ENTER DELAY: "

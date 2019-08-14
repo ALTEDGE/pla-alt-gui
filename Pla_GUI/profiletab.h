@@ -35,7 +35,6 @@ private:
     QPushButton profileNew;
     QPushButton profileRename;
     QPushButton profileSave;
-    QPushButton profileToPLA;
 };
 
 #endif // PROFILETAB_H

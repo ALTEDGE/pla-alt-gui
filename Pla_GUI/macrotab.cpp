@@ -10,6 +10,7 @@
 
 MacroTab::MacroTab(QWidget *parent) :
     SavableTab(parent),
+    lMacro("MACRO", this),
     lMacroName("MACRO NAME", this),
     lDelayPrompt("ENTER DELAY:", this),
     macroList(this),
@@ -39,25 +40,26 @@ MacroTab::MacroTab(QWidget *parent) :
     actionDown.setIcon(QIcon("assets/macro-down.png"));
 
     // Set geometry
-    macroList.setGeometry(60, 60, 120, 20);
-    macroAdd.setGeometry(60, 85, 55, 20);
-    macroDelete.setGeometry(125, 85, 55, 20);
-    lMacroName.setGeometry(60, 120, 80, 20);
-    macroName.setGeometry(60, 140, 120, 20);
-    actionList.setGeometry(200, 60, 225, 180);
-    actionEdit.setGeometry(210, 30, 40, 20);
-    actionRemove.setGeometry(265, 30, 40, 20);
-    actionUp.setGeometry(320, 30, 40, 20);
-    actionDown.setGeometry(375, 30, 40, 20);
-    actionInsert.setGeometry(272, 245, 80, 20);
-    delayFixed.setGeometry(450, 60, 120, 20);
-    delayNone.setGeometry(450, 90, 120, 20);
-    delayRecord.setGeometry(450, 120, 120, 20);
-    delayBeginRecord.setGeometry(450, 150, 60, 20);
-    lDelayPrompt.setGeometry(450, 150, 100, 20);
-    delayValue.setGeometry(450, 180, 120, 20);
-    configSave.setGeometry(235, 320, 80, 20);
-    configCancel.setGeometry(325, 320, 80, 20);
+    lMacro.setGeometry(70, 40, 200, 20);
+    macroList.setGeometry(70, 60, 200, 20);
+    macroAdd.setGeometry(70, 85, 92, 20);
+    macroDelete.setGeometry(178, 85, 92, 20);
+    lMacroName.setGeometry(70, 125, 200, 20);
+    macroName.setGeometry(70, 145, 200, 20);
+    delayRecord.setGeometry(70, 215, 200, 20);
+    delayFixed.setGeometry(70, 245, 200, 20);
+    delayNone.setGeometry(70, 275, 200, 20);
+    delayBeginRecord.setGeometry(70, 305, 200, 20);
+    lDelayPrompt.setGeometry(70, 305, 200, 20);
+    delayValue.setGeometry(70, 325, 200, 20);
+    actionEdit.setGeometry(320, 40, 90, 20);
+    actionRemove.setGeometry(460, 40, 90, 20);
+    actionUp.setGeometry(600, 40, 90, 20);
+    actionDown.setGeometry(740, 40, 90, 20);
+    actionList.setGeometry(320, 70, 510, 255);
+    actionInsert.setGeometry(750, 335, 80, 20);
+    configSave.setGeometry(365, 400, 80, 20);
+    configCancel.setGeometry(455, 400, 80, 20);
 
     // Enforce minimum 5ms delay
     delayValue.setValidator(new QIntValidator(5, INT32_MAX));

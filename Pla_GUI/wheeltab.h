@@ -64,6 +64,9 @@ private slots:
 private:
     void showEvent(QShowEvent *event);
 
+    QLabel lLeftAction;
+    QLabel lRightAction;
+
     QRadioButton steerDigital;
     QRadioButton steerAnalog;
 

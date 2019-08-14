@@ -11,7 +11,7 @@
 
 namespace config
 {
-    constexpr const char *versionString = "v0.1";
+    constexpr const char *versionString = "v0.2";
 
 
 

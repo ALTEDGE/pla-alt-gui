@@ -1,30 +1,49 @@
 MainWindow {
     background: #000000;
-    background-image: url('banner.png');
+    background-image: url('assets/banner.png');
     background-repeat: none;
 }
 
-QTabBar, QTabBar::tab {
-        background: #303030;
+QTabBar {
+	height: 30px;
+        background: #000000;
         color: #aaaaaa;
-	width: 120px;
 	font-size: 12px;
+	border: 1px solid white;
+	border-top: none;
+}
+
+QTabBar::tab {
+	width: 120px;
+}
+
+QTabBar::tab:first {
+	border-left: none;
+}
+
+QTabBar::tab:last {
+	border-right: none;
 }
 
 QTabBar::tab:selected {
+	height: 30px;
         color: #ffffff;
+	border: 1px solid white;
+	border-top: none;
 }
 
 QTabBar::tab:!selected {
 	margin-top: 0px;
+	border: 1px solid white;
+	border-top: none;
 }
 
 QTabWidget::tab-bar {
 	alignment: center;
 }
 
-QTabWidget, QTabWidget::pane {
-	background: #000000;
+QTabWidget::pane {
+	background: #000;
 	border: none;
 }
 
@@ -34,13 +53,14 @@ QDialog, QMessageBox {
 
 QComboBox, QLineEdit {
 	font-size: 12px;
+	border: 1px solid #333;
+	border-radius: 3px;
 	background: #000000;
-	color: #cccccc;
-	border: 1px solid #444444;
+	color: #bbb;
 }
 
 QLabel, QPushButton, QRadioButton, QCheckBox {
-	font-size: 10px;
+	font-size: 12px;
 }
 
 QLabel, QRadioButton, QCheckBox {
@@ -65,10 +85,10 @@ QwwListWidget {
 
 ProgramTab QPushButton, WheelTab QPushButton, MacroTab QPushButton,
     ProfileTab QPushButton {
-    border: 1px solid #444444;
-    background: #333333;
-    color: #777777;
-    border-radius: 0px;
+    border: 1px solid #333;
+    border-radius: 3px;
+    background: qlineargradient(x1: 0, y1: 0, x2: 1, y2: 0, stop: 0 #222, stop: 1 #000);
+    color: #ddd;
 }
 
 ProgramTab QPushButton:pressed, WheelTab QPushButton:pressed,
@@ -85,6 +105,9 @@ ColorTab QPushButton {
 
 QRadioButton {
     padding: 4px;
+}
+
+WheelTab QRadioButton {
     border: 1px solid #444444;
 }
 

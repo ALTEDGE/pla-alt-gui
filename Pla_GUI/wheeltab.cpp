@@ -4,6 +4,8 @@
 
 WheelTab::WheelTab(QWidget *parent) :
     SavableTab(parent),
+    lLeftAction("WHEEL LEFT", this),
+    lRightAction("WHEEL RIGHT", this),
     steerDigital("DIGITAL STEERING", this),
     steerAnalog("ANALOG STEERING", this),
     keyGrabber(this),
@@ -16,15 +18,20 @@ WheelTab::WheelTab(QWidget *parent) :
     thresholdDialog(this, parent)
 {
     // Set geometries
-    steerDigital.setGeometry(60, 60, 140, 20);
-    steerDigital.setLayoutDirection(Qt::RightToLeft);
-    steerAnalog.setGeometry(60, 100, 140, 20);
-    steerAnalog.setLayoutDirection(Qt::RightToLeft);
-    leftAction.setGeometry(300, 60, 140, 20);
-    rightAction.setGeometry(450, 60, 140, 20);
-    configSave.setGeometry(235, 320, 80, 20);
-    configCancel.setGeometry(325, 320, 80, 20);
-    configThreshold.setGeometry(30, 320, 130, 20);
+    lLeftAction.setGeometry(70, 40, 90, 20);
+    lRightAction.setGeometry(190, 40, 90, 20);
+    leftAction.setGeometry(70, 60, 90, 30);
+    rightAction.setGeometry(190, 60, 90, 30);
+    steerDigital.setGeometry(70, 105, 210, 30);
+    steerAnalog.setGeometry(70, 150, 210, 30);
+    configThreshold.setGeometry(70, 190, 170, 20);
+    configSave.setGeometry(70, 220, 80, 20);
+    configCancel.setGeometry(160, 220, 80, 20);
+
+    lLeftAction.setAlignment(Qt::AlignCenter);
+    lRightAction.setAlignment(Qt::AlignCenter);
+    //steerDigital.setLayoutDirection(Qt::RightToLeft);
+    //steerAnalog.setLayoutDirection(Qt::RightToLeft);
 
     // Connect signals/slots
     connect(&leftAction, SIGNAL(released()), this, SLOT(assignLeft()));
@@ -77,6 +84,8 @@ void WheelTab::saveSettings(void)
 void WheelTab::setWheelFunction(bool digital)
 {
     // Make buttons visible if in digital mode
+    lLeftAction.setVisible(digital);
+    lRightAction.setVisible(digital);
     leftAction.setVisible(digital);
     rightAction.setVisible(digital);
 

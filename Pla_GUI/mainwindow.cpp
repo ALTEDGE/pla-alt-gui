@@ -26,7 +26,7 @@ MainWindow::MainWindow(QWidget *parent) :
     trayIcon = new QSystemTrayIcon(QIcon("icon.png"));
 
     // Keep the window at a fixed size.
-    setFixedSize(640, 490);
+    setFixedSize(900, 588);
 
     // Create the context menu for the system tray icon
     auto systemTrayMenu = new QMenu();
@@ -46,17 +46,17 @@ MainWindow::MainWindow(QWidget *parent) :
     trayIcon->show();
 
     lVersion.setAlignment(Qt::AlignRight);
-    lVersion.setGeometry(0, 480, 640, 10);
+    lVersion.setGeometry(0, 573, 900, 15);
 
     // Tab widget starts with a Y of 80px, so a banner can be at the top of the window
-    tabs.setGeometry(0, 80, 640, 400);
+    tabs.setGeometry(0, 88, 900, 500);
 
     // Add tabs
-    tabs.addTab(new ProfileTab(this), "Profiles");
-    tabs.addTab(new ColorTab(this), "LED Colors");
-    tabs.addTab(new ProgramTab(this), "Programming");
-    tabs.addTab(new WheelTab(this), "Wheel");
-    tabs.addTab(new MacroTab(this), "Macros");
+    tabs.addTab(new ProfileTab(this), "PROFILES");
+    tabs.addTab(new ColorTab(this), "LIGHTS");
+    tabs.addTab(new ProgramTab(this), "PROGRAMMING");
+    tabs.addTab(new WheelTab(this), "WHEEL");
+    tabs.addTab(new MacroTab(this), "MACROS");
 
     connect(&tabs, SIGNAL(currentChanged(int)), this, SLOT(changeTab(int)));
     changeTab(0);

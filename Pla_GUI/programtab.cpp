@@ -28,21 +28,20 @@ ProgramTab::ProgramTab(QWidget *parent) :
     thresholdDialog(this, parent)
 {
     // Control placement
-    lSelectedPG.setGeometry(300, 10, 60, 20);
-    lJoystickGuide.setGeometry(40, 10, 108, 117);
-    useSequencer.setGeometry(30, 140, 150, 20);
-    useDiagonals.setGeometry(30, 170, 150, 20);
-    lSelectJoystick.setGeometry(30, 210, 150, 20);
-    usePrimaryJoystick.setGeometry(30, 230, 150, 20);
-    useLeftJoystick.setGeometry(30, 260, 150, 20);
-    useRightJoystick.setGeometry(30, 290, 150, 20);
-    configThreshold.setGeometry(30, 320, 130, 20);
-
-    lEnterKeyOrMacro.setGeometry(370, 10, 200, 20);
-    lVector1.setGeometry(320, 55, 140, 20);
-    lVector2.setGeometry(470, 55, 140, 20);
-    configSave.setGeometry(235, 320, 80, 20);
-    configCancel.setGeometry(325, 320, 80, 20);
+    lJoystickGuide.setGeometry(150, 40, 108, 117);
+    lSelectJoystick.setGeometry(150, 180, 150, 20);
+    usePrimaryJoystick.setGeometry(150, 210, 150, 20);
+    useLeftJoystick.setGeometry(150, 235, 150, 20);
+    useRightJoystick.setGeometry(150, 260, 150, 20);
+    useSequencer.setGeometry(150, 290, 150, 20);
+    useDiagonals.setGeometry(150, 315, 150, 30);
+    configThreshold.setGeometry(150, 355, 150, 20);
+    lSelectedPG.setGeometry(440, 40, 60, 20);
+    lEnterKeyOrMacro.setGeometry(520, 40, 250, 20);
+    lVector1.setGeometry(460, 70, 140, 20);
+    lVector2.setGeometry(610, 70, 140, 20);
+    configSave.setGeometry(365, 400, 80, 20);
+    configCancel.setGeometry(455, 400, 80, 20);
 
     // Additional visual setups
     lVector1.setAlignment(Qt::AlignCenter);
@@ -55,24 +54,24 @@ ProgramTab::ProgramTab(QWidget *parent) :
     // Set up PG buttons
     for (int i = 0; i < 8; i++) {
         auto button = new QPushButton(QString("MAP PG_") + static_cast<char>('1' + i), this);
-        button->setGeometry(200, 35 + 22 * i, 80, 20);
+        button->setGeometry(330, 35 + 22 * i, 80, 20);
         button->setCheckable(true);
         pgButtons.addButton(button, i);
     }
     pgButtons.setExclusive(true);
 
+    for (int i = 0; i < 8; i++) {
+        lKeySlots[i] = new QLabel(QString(std::to_string(i + 1).c_str()), this);
+        lKeySlots[i]->setGeometry(440, 100 + 28 * i, 20, 24);
+    }
+
     // Set up key slots
     for (int i = 0; i < 16; i++) {
         auto button = new QPushButton("", this);
-        button->setGeometry(i < 8 ? 320 : 470, 75 + 22 * (i < 8 ? i : i - 8), 140, 20);
+        button->setGeometry(i < 8 ? 460 : 610, 100 + 28 * (i < 8 ? i : i - 8), 140, 24);
         button->setStyleSheet("text-align: left; padding: 2px");
         button->setProperty("i", i);
         keySlots.addButton(button, i);
-    }
-
-    for (int i = 0; i < 8; i++) {
-        lKeySlots[i] = new QLabel(QString(std::to_string(i + 1).c_str()), this);
-        lKeySlots[i]->setGeometry(305, 75 + 22 * i, 20, 20);
     }
 
     // Connect signals/slots

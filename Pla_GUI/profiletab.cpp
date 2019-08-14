@@ -15,22 +15,19 @@ ProfileTab::ProfileTab(QWidget *parent) :
     profileDelete("DELETE", this),
     profileNew("NEW", this),
     profileRename("RENAME", this),
-    profileSave("SAVE", this),
-    profileToPLA("SAVE TO CONTROLLER", this)
+    profileSave("SAVE", this)
 {
-    lCurrentProfile.setGeometry(50, 30, 200, 20);
-    profiles.setGeometry(50, 60, 200, 20);
-    profileNew.setGeometry(50, 90, 60, 20);
+    lCurrentProfile.setGeometry(170, 40, 200, 20);
+    profiles.setGeometry(170, 60, 200, 25);
+    profileNew.setGeometry(170, 95, 70, 20);
 
-    lProfileName.setGeometry(310, 30, 200, 20);
-    profileName.setGeometry(310, 60, 200, 20);
-    profileRename.setGeometry(520, 60, 60, 20);
-    profileSave.setGeometry(325, 90, 80, 20);
-    profileDelete.setGeometry(415, 90, 80, 20);
-    profileToPLA.setGeometry(325, 120, 170, 20);
+    lProfileName.setGeometry(450, 40, 200, 20);
+    profileName.setGeometry(450, 60, 200, 25);
+    profileRename.setGeometry(660, 60, 70, 25);
+    profileSave.setGeometry(450, 95, 95, 20);
+    profileDelete.setGeometry(555, 95, 95, 20);
 
-    profileToPLA.setVisible(false);
-
+    lCurrentProfile.setAlignment(Qt::AlignCenter);
     lProfileName.setAlignment(Qt::AlignCenter);
 
     connect(&profiles, SIGNAL(currentTextChanged(QString)), this, SLOT(openProfile(QString)));

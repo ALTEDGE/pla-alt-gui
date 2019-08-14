@@ -55,6 +55,9 @@ private:
     // "ADJUST BRIGHTNESS WITH BAR"
     QLabel lColorBrightness;
 
+    QLabel lLedOn;
+    QLabel lLedOff;
+
     QwwHueSatPicker colorPicker;
     QSlider colorBrightness;
 

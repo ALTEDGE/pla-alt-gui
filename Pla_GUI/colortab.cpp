@@ -9,32 +9,39 @@ ColorTab::ColorTab(QWidget *parent) :
     QWidget(parent),
     lColorPicker("DRAG CURSOR OVER COLOR", this),
     lColorBrightness("ADJUST BRIGHTNESS WITH BAR", this),
+    lLedOn("ON", this),
+    lLedOff("OFF", this),
     colorPicker(this),
     colorBrightness(this),
-    ledOn("ON", this),
-    ledOff("OFF", this),
+    ledOn(this),
+    ledOff(this),
     updateTimer(this)
 {
-//    ledOn.setIcon(QIcon("assets/color-on.png"));
-//    ledOn.setIconSize(QSize(75, 79));
-//    ledOff.setIcon(QIcon("assets/color-off.png"));
-//    ledOff.setIconSize(QSize(75, 79));
+    ledOn.setIcon(QIcon("assets/color-on.png"));
+    ledOn.setIconSize(QSize(75, 79));
+    ledOff.setIcon(QIcon("assets/color-off.png"));
+    ledOff.setIconSize(QSize(75, 79));
 
     // Set control positions
-    lColorPicker.setGeometry(0, 10, 640, 20);
-    lColorBrightness.setGeometry(0, 280, 640, 20);
-    colorPicker.setGeometry(100, 35, 440, 200);
-    colorBrightness.setGeometry(150, 250, 340, 30);
-    ledOn.setGeometry(20, 115, 75, 40);//79);
-    ledOff.setGeometry(550, 115, 75, 40);//79);
+    lColorPicker.setGeometry(0, 10, 900, 20);
+    lColorBrightness.setGeometry(0, 380, 900, 20);
+    lLedOn.setGeometry(68, 150 + 79, 75, 20);
+    lLedOff.setGeometry(768, 150 + 79, 75, 20);
+    colorPicker.setGeometry(200, 35, 500, 300);
+    colorBrightness.setGeometry(275, 350, 350, 30);
+    ledOn.setGeometry(68, 150, 75, 79);
+    ledOff.setGeometry(768, 150, 75, 79);
 
     lColorPicker.setAlignment(Qt::AlignCenter);
     lColorBrightness.setAlignment(Qt::AlignCenter);
+    lLedOn.setAlignment(Qt::AlignCenter);
+    lLedOff.setAlignment(Qt::AlignCenter);
     colorBrightness.setOrientation(Qt::Horizontal);
 
     // Brightness range from 0 to 100
     colorBrightness.setRange(0, 50);
 
+    colorPicker.setCursor(Qt::CrossCursor);
     updateTimer.setSingleShot(true);
 
     // Connect signals/slots
