@@ -75,7 +75,7 @@ MacroTab::MacroTab(QWidget *parent) :
     connect(&actionDown, SIGNAL(released()), this, SLOT(moveKeyDown()));
     connect(&actionRemove, SIGNAL(released()), this, SLOT(removeKey()));
     connect(&actionInsert, SIGNAL(released()), this, SLOT(insertKey()));
-    connect(&actionEdit, SIGNAL(released()), this, SLOT(editKey()));
+    connect(&actionEdit, SIGNAL(released()), this, SLOT(editKeybind()));
     connect(&actionList, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(editKey()));
     connect(&macroList, SIGNAL(currentTextChanged(QString)), this, SLOT(changeCurrentMacro(QString)));
     connect(&macroName, SIGNAL(returnPressed()), this, SLOT(changeName()));
@@ -118,6 +118,12 @@ void MacroTab::saveSettings(void)
 void MacroTab::loadSettings(void)
 {
     // Load macros from the config file
+    Macro::load(Profile::current());
+    reloadMacroList();
+}
+
+void MacroTab::reloadMacroList(void)
+{
     auto names = Macro::getNames();
     if (names.empty()) {
         Macro::get("Macro 1");
@@ -244,7 +250,9 @@ void MacroTab::createNewMacro(void)
 void MacroTab::deleteMacro(void)
 {
     Macro::remove(macroList.currentText().toStdString());
-    showEvent(nullptr);
+    ignoreNextMacroChange = true;
+    macroList.removeItem(macroList.currentIndex());
+    reloadMacroList();
 }
 
 void MacroTab::moveKeyUp(void)
@@ -296,6 +304,11 @@ void MacroTab::editKey(void)
         currentMacro.at(row).press ^= true;
         reloadMacro();
     }
+}
+
+void MacroTab::editKeybind(void)
+{
+    keyGrabber.show();
 }
 
 void MacroTab::keyPressed(Key key)

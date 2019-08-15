@@ -112,13 +112,13 @@ WheelTab QRadioButton {
 }
 
 QRadioButton::indicator::unchecked, QCheckBox::indicator::unchecked {
-    background: #888888;
+    background-image: url('assets/macro-radio-off');
 }
 
 QRadioButton::indicator::unchecked:hover, QCheckBox::indicator::unchecked:hover {
-    background: #88cc88;
+    background-image: url('assets/macro-radio-off');
 }
 
 QRadioButton::indicator::checked, QCheckBox::indicator::checked {
-    background: #44aa44;
+    background-image: url('assets/macro-radio-on');
 }

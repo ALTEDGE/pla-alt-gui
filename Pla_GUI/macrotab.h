@@ -76,6 +76,7 @@ private slots:
      * Edits the selected key.
      */
     void editKey(void);
+    void editKeybind(void);
 
     /**
      * Captures key presses from the KeyGrabber dialog box.
@@ -116,6 +117,7 @@ private:
      * Updates controls with new macro values.
      */
     void reloadMacro(void);
+    void reloadMacroList(void);
 
     inline std::pair<unsigned int, bool> getCurrentActionListRow(void) {
         int row = actionList.currentIndex().row();
