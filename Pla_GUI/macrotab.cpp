@@ -38,6 +38,7 @@ MacroTab::MacroTab(QWidget *parent) :
     actionRemove.setIcon(QIcon("assets/macro-trash.png"));
     actionUp.setIcon(QIcon("assets/macro-up.png"));
     actionDown.setIcon(QIcon("assets/macro-down.png"));
+    delayBeginRecord.setIcon(QIcon("assets/macro-record.png"));
 
     // Set geometry
     lMacro.setGeometry(70, 40, 200, 20);
