@@ -1,61 +1,49 @@
 MainWindow {
-    background: #000000;
+    background: #000;
     background-image: url('assets/banner.png');
     background-repeat: none;
 }
 
 QTabBar {
 	height: 30px;
-        background: #000000;
-        color: #aaaaaa;
-	font-size: 12px;
-	border: 1px solid white;
-	border-top: none;
+        color: #aaa;
+	font-size: 11px;
+	border: none;
 }
 
 QTabBar::tab {
 	width: 120px;
 }
 
-QTabBar::tab:first {
-	border-left: none;
-}
-
-QTabBar::tab:last {
-	border-right: none;
-}
-
 QTabBar::tab:selected {
-	height: 30px;
+	margin-top: 4px;
         color: #ffffff;
-	border: 1px solid white;
-	border-top: none;
+	border: none;
 }
 
 QTabBar::tab:!selected {
-	margin-top: 0px;
-	border: 1px solid white;
-	border-top: none;
+	margin-top: 4px;
+	background: transparent;
 }
+
 
 QTabWidget::tab-bar {
 	alignment: center;
 }
 
 QTabWidget::pane {
-	background: #000;
 	border: none;
 }
 
 QDialog, QMessageBox {
-	background: #000000;
+	background: #000;
 }
 
 QComboBox, QLineEdit {
 	font-size: 12px;
 	border: 1px solid #333;
 	border-radius: 3px;
-	background: #000000;
+	background: #000;
 	color: #bbb;
 }
 
@@ -64,7 +52,7 @@ QLabel, QPushButton, QRadioButton, QCheckBox {
 }
 
 QLabel, QRadioButton, QCheckBox {
-	color: #ffffff;
+	color: #fff;
 }
 
 QRadioButton::indicator, QCheckBox::indicator {
@@ -73,13 +61,13 @@ QRadioButton::indicator, QCheckBox::indicator {
 }
 
 QwwHueSatPicker {
-	border: 1px solid #cccccc;
+	border: 1px solid #ccc;
 }
 
 QwwListWidget {
-	background: #000000;
-	color: #cccccc;
-	border: 1px solid #cccccc;
+	background: #000;
+	color: #ccc;
+	border: 1px solid #ccc;
 	font-size: 12px;
 }
 
@@ -94,13 +82,13 @@ ProgramTab QPushButton, WheelTab QPushButton, MacroTab QPushButton,
 ProgramTab QPushButton:pressed, WheelTab QPushButton:pressed,
     MacroTab QPushButton:pressed, ProgramTab QPushButton:checked,
     ProfileTab QPushButton:pressed {
-    background: #000000;
-    color: #ffffff;
+    background: #000;
+    color: #fff;
 }
 
 ColorTab QPushButton {
-	background: #222222;
-	color: #ffffff;
+	background: #222;
+	color: #fff;
 }
 
 QRadioButton {
@@ -108,7 +96,7 @@ QRadioButton {
 }
 
 WheelTab QRadioButton {
-    border: 1px solid #444444;
+    border: 1px solid #444;
 }
 
 QRadioButton::indicator::unchecked, QCheckBox::indicator::unchecked {
