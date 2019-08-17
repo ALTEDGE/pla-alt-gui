@@ -2,6 +2,8 @@
 #include "controller.h"
 #include "profile.h"
 
+#include <QPainter>
+
 WheelTab::WheelTab(QWidget *parent) :
     SavableTab(parent),
     lLeftAction("WHEEL LEFT", this),
@@ -57,6 +59,16 @@ void WheelTab::showEvent(QShowEvent *event)
     bool digital = steerData->getDigital();
     (digital ? steerDigital : steerAnalog).setChecked(true);
     setWheelFunction(digital);
+
+    if (event != nullptr)
+        event->accept();
+}
+
+void WheelTab::paintEvent(QPaintEvent *event)
+{
+    static QImage background ("assets/wheelbg.png");
+    QPainter paint (this);
+    paint.drawImage(0, 0, background);
 
     if (event != nullptr)
         event->accept();

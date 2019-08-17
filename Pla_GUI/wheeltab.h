@@ -63,6 +63,7 @@ private slots:
 
 private:
     void showEvent(QShowEvent *event);
+    void paintEvent(QPaintEvent *event);
 
     QLabel lLeftAction;
     QLabel lRightAction;
