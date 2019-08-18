@@ -62,10 +62,12 @@ bool MacroRecorder::eventFilter(QObject *watched, QEvent *event)
 
 void MacroRecorder::stopRecording(void)
 {
-    // Shift delays back one
-    for (unsigned int i = 0; i < keys.size() - 1; i++)
-        keys[i].delay = keys[i + 1].delay;
-    keys.back().delay = std::chrono::milliseconds::zero();
+    if (keys.size() > 1) {
+        // Shift delays back one
+        for (unsigned int i = 0; i < keys.size() - 1; i++)
+            keys[i].delay = keys[i + 1].delay;
+        keys.back().delay = std::chrono::milliseconds::zero();
+    }
 
     emit recordFinished(keys);
     hide();
