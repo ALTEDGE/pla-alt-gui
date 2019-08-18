@@ -5,5 +5,5 @@
     <Title>PLA GUI Installer</Title>
     <Publisher>PLA</Publisher>
     <StartMenuDir>PLA GUI</StartMenuDir>
-    <TargetDir>@ApplicationsDirX64@/PLA GUI</TargetDir>
+    <TargetDir>@ApplicationsDirX64@\PLA GUI</TargetDir>
 </Installer>

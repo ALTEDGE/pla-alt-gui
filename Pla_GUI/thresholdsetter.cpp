@@ -34,18 +34,18 @@ ThresholdSetter::ThresholdSetter(QWidget *parent, QWidget *mainwindow) :
     shouldUpdate(true)
 {
     setWindowTitle("Threshold Settings");
-    setFixedSize(300, 240);
+    setFixedSize(340, 240);
 
     // Set geometries
     lCurrentPosition.setGeometry(20, 10, 180, 20);
     joyMapLabel.setGeometry(20, 30, mapSize, mapSize);
-    lInstruction.setGeometry(30 + mapSize, 30, 170, mapSize);
-    lShortThresh.setGeometry(20, 130, 260, 20);
-    shortThreshold.setGeometry(20, 150, 260, 10);
-    lFarThresh.setGeometry(20, 170, 260, 20);
-    farThreshold.setGeometry(20, 190, 260, 10);
-    configSave.setGeometry(80, 210, 60, 20);
-    configSaveAll.setGeometry(160, 210, 60, 20);
+    lInstruction.setGeometry(30 + mapSize, 30, 210, mapSize);
+    lShortThresh.setGeometry(20, 130, 300, 20);
+    shortThreshold.setGeometry(20, 150, 300, 10);
+    lFarThresh.setGeometry(20, 170, 300, 20);
+    farThreshold.setGeometry(20, 190, 300, 10);
+    configSave.setGeometry(100, 210, 60, 20);
+    configSaveAll.setGeometry(180, 210, 60, 20);
 
     lShortThresh.setAlignment(Qt::AlignCenter);
     lFarThresh.setAlignment(Qt::AlignCenter);

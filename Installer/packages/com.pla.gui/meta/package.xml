@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package>
-    <DisplayName>Main component</DisplayName>
+    <DisplayName>PLA GUI</DisplayName>
     <Description>The PLA GUI program and required files.</Description>
-    <Version>0.1</Version>
-    <ReleaseDate>2018-08-03</ReleaseDate>
+    <Version>0.2</Version>
+    <ReleaseDate>2019-08-18</ReleaseDate>
     <ForcedInstallation>true</ForcedInstallation>
-    <Script>desktopshortcut.qs</Script>
+    <Script>installscript.qs</Script>
 </Package>

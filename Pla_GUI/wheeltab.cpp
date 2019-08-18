@@ -68,7 +68,7 @@ void WheelTab::paintEvent(QPaintEvent *event)
 {
     static QImage background ("assets/wheelbg.png");
     QPainter paint (this);
-    paint.drawImage(0, 8, background);
+    paint.drawImage(0, 10, background);
 
     if (event != nullptr)
         event->accept();

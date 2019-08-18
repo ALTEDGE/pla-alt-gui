@@ -19,12 +19,12 @@ KeyGrabber::KeyGrabber(QWidget *parent) :
     macroNames.setFocusPolicy(Qt::NoFocus);
 
     // Set geometry
-    setFixedSize(200, 100);
-    lInstructions.setGeometry(0, 0, 200, 40);
+    setFixedSize(240, 100);
+    lInstructions.setGeometry(0, 0, 240, 40);
     lInstructions.setAlignment(Qt::AlignCenter);
-    useMacro.setGeometry(130, 40, 60, 20);
-    useNone.setGeometry(70, 70, 60, 20);
-    macroNames.setGeometry(10, 40, 110, 20);
+    useMacro.setGeometry(160, 40, 70, 20);
+    useNone.setGeometry(90, 70, 60, 20);
+    macroNames.setGeometry(10, 40, 140, 20);
 
     // Connect signals/slots
     connect(&useNone, SIGNAL(released()), this, SLOT(noneClicked()));
