@@ -127,8 +127,8 @@ void ThresholdSetter::setJoystick(QString _name)
 void ThresholdSetter::updateMap(void)
 {
     QPainter pen (&joyMap);
-    auto dist = sqrt(joyPosition.first * joyPosition.first +
-        joyPosition.second * joyPosition.second);
+    long double dist = sqrt(static_cast<long double>(joyPosition.first * joyPosition.first) +
+        static_cast<long double>(joyPosition.second * joyPosition.second));
 
     pen.fillRect(0, 0, mapSize, mapSize, dist > farThreshold.value() ? Qt::red : Qt::white);
     auto rs = shortThreshold.value() / 32767. * static_cast<double>(mapSize / 2.);
