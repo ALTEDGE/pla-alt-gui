@@ -47,6 +47,11 @@ QComboBox, QLineEdit {
 	color: #bbb;
 }
 
+QComboBox QListView {
+	background: #222;
+	color: #bbb;
+}
+
 QLabel, QPushButton, QRadioButton, QCheckBox {
 	font-size: 12px;
 }
