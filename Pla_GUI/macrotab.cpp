@@ -12,7 +12,7 @@ MacroTab::MacroTab(QWidget *parent) :
     SavableTab(parent),
     lMacro("MACRO", this),
     lMacroName("MACRO NAME", this),
-    lDelayPrompt("ENTER DELAY:", this),
+    lDelayPrompt("ENTER DELAY (ms):", this),
     macroList(this),
     macroName("Macro 1", this),
     macroAdd("+", this),

@@ -34,9 +34,9 @@ ProgramTab::ProgramTab(QWidget *parent) :
     // Control placement
     lJoystickGuide.setGeometry(150, 40, 108, 117);
     lSelectJoystick.setGeometry(150, 180, 150, 20);
-    usePrimaryJoystick.setGeometry(150, 210, 150, 20);
-    useLeftJoystick.setGeometry(150, 235, 150, 20);
-    useRightJoystick.setGeometry(150, 260, 150, 20);
+    usePrimaryJoystick.setGeometry(150, 210, 150, 24);
+    useLeftJoystick.setGeometry(150, 235, 150, 24);
+    useRightJoystick.setGeometry(150, 260, 150, 24);
     useSequencer.setGeometry(150, 290, 150, 20);
     useDiagonals.setGeometry(150, 315, 150, 30);
     configThreshold.setGeometry(150, 355, 150, 20);

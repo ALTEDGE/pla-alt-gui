@@ -23,14 +23,14 @@ ColorTab::ColorTab(QWidget *parent) :
     ledOff.setIconSize(QSize(75, 79));
 
     // Set control positions
-    lColorPicker.setGeometry(0, 10, 900, 20);
-    lColorBrightness.setGeometry(0, 424, 900, 20);
-    lLedOn.setGeometry(68, 150 + 79, 75, 20);
-    lLedOff.setGeometry(768, 150 + 79, 75, 20);
-    colorPicker.setGeometry(200, 35, 500, 300);
-    colorBrightness.setGeometry(275, 350, 337, 74);
-    ledOn.setGeometry(68, 150, 75, 79);
-    ledOff.setGeometry(768, 150, 75, 79);
+    lColorPicker.setGeometry(0, 20, 900, 20);
+    lColorBrightness.setGeometry(0, 444, 900, 20);
+    lLedOn.setGeometry(68, 160 + 79, 75, 20);
+    lLedOff.setGeometry(768, 160 + 79, 75, 20);
+    colorPicker.setGeometry(200, 45, 500, 300);
+    colorBrightness.setGeometry(275, 360, 337, 74);
+    ledOn.setGeometry(68, 160, 75, 79);
+    ledOff.setGeometry(768, 160, 75, 79);
 
     lColorPicker.setAlignment(Qt::AlignCenter);
     lColorBrightness.setAlignment(Qt::AlignCenter);
