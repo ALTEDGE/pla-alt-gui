@@ -24,11 +24,11 @@ ColorTab::ColorTab(QWidget *parent) :
 
     // Set control positions
     lColorPicker.setGeometry(0, 10, 900, 20);
-    lColorBrightness.setGeometry(0, 380, 900, 20);
+    lColorBrightness.setGeometry(0, 424, 900, 20);
     lLedOn.setGeometry(68, 150 + 79, 75, 20);
     lLedOff.setGeometry(768, 150 + 79, 75, 20);
     colorPicker.setGeometry(200, 35, 500, 300);
-    colorBrightness.setGeometry(275, 350, 350, 30);
+    colorBrightness.setGeometry(275, 350, 337, 74);
     ledOn.setGeometry(68, 150, 75, 79);
     ledOff.setGeometry(768, 150, 75, 79);
 
@@ -39,7 +39,7 @@ ColorTab::ColorTab(QWidget *parent) :
     colorBrightness.setOrientation(Qt::Horizontal);
 
     // Brightness range from 0 to 100
-    colorBrightness.setRange(0, 50);
+    colorBrightness.setRange(0, 100);
 
     colorPicker.setCursor(Qt::CrossCursor);
     updateTimer.setSingleShot(true);
@@ -88,7 +88,7 @@ void ColorTab::disableLeds(void)
 
 void ColorTab::updateBrightness(int level)
 {
-    Controller::ColorBrightness = level;
+    Controller::ColorBrightness = level / 2;
     if (!updateTimer.isActive())
         updateTimer.start(100);
 }

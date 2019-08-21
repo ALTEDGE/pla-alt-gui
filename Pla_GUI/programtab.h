@@ -93,6 +93,8 @@ private:
     QLabel lVector2;
 
     QLabel lJoystickGuide;
+    QPixmap pixJoystick;
+    QPixmap pixPJoystick;
 
     QRadioButton useLeftJoystick;
     QRadioButton useRightJoystick;

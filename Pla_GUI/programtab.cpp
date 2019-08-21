@@ -12,6 +12,8 @@ ProgramTab::ProgramTab(QWidget *parent) :
     lVector1("VECTOR 1 COMMAND", this),
     lVector2("VECTOR 2 COMMAND", this),
     lJoystickGuide(this),
+    pixJoystick("assets/joystick.png"),
+    pixPJoystick("assets/pjoystick.png"),
     useLeftJoystick("LEFT AUX JOYSTICK", this),
     useRightJoystick("RIGHT AUX JOYSTICK", this),
     usePrimaryJoystick("PRIMARY JOYSTICK", this),
@@ -27,6 +29,8 @@ ProgramTab::ProgramTab(QWidget *parent) :
     keyAssignDialog(this),
     thresholdDialog(this, parent)
 {
+    lJoystickGuide.setPixmap(pixJoystick);
+
     // Control placement
     lJoystickGuide.setGeometry(150, 40, 108, 117);
     lSelectJoystick.setGeometry(150, 180, 150, 20);
@@ -46,7 +50,6 @@ ProgramTab::ProgramTab(QWidget *parent) :
     // Additional visual setups
     lVector1.setAlignment(Qt::AlignCenter);
     lVector2.setAlignment(Qt::AlignCenter);
-    lJoystickGuide.setPixmap(QPixmap("assets/joystick.png"));
     useLeftJoystick.setLayoutDirection(Qt::RightToLeft);
     useRightJoystick.setLayoutDirection(Qt::RightToLeft);
     usePrimaryJoystick.setLayoutDirection(Qt::RightToLeft);
@@ -141,6 +144,7 @@ void ProgramTab::updateControls(void)
 
     // Set key slots and diagonal check
     if (primary) {
+        //lJoystickGuide.setPixmap(pixPJoystick);
         thresholdDialog.setJoystick("PRIMARY");
         lSelectedPG.setText(QString("MAP PG_") + static_cast<char>(pgButtons.checkedId() + '1'));
         for (int i = 0; i < 16; i++)
@@ -151,6 +155,7 @@ void ProgramTab::updateControls(void)
         setDiagonals(primaryData->getDiagonals());
         setSequencer(primaryData->getSequencing());
     } else if (useLeftJoystick.isChecked()) {
+        //lJoystickGuide.setPixmap(pixJoystick);
         thresholdDialog.setJoystick("LEFT");
         lSelectedPG.setText("L. AUX.");
 
@@ -163,6 +168,7 @@ void ProgramTab::updateControls(void)
         setDiagonals(diag);
         setSequencer(leftData->getSequencing());
     } else {
+        //lJoystickGuide.setPixmap(pixJoystick);
         thresholdDialog.setJoystick("RIGHT");
         lSelectedPG.setText("R. AUX.");
 

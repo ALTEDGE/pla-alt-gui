@@ -57,6 +57,8 @@ ThresholdSetter::ThresholdSetter(QWidget *parent, QWidget *mainwindow) :
     // Set slider ranges
     shortThreshold.setRange(100, 32767);
     farThreshold.setRange(100, 32767);
+    shortThreshold.setObjectName("short");
+    farThreshold.setObjectName("far");
 
     connect(&configSave, SIGNAL(released()), this, SLOT(saveSettings()));
     connect(&configSaveAll, SIGNAL(released()), this, SLOT(saveSettingsAll()));
