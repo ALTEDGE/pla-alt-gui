@@ -1,3 +1,7 @@
+/**
+ * @file wheeltab.h
+ * @brief Code for the Wheel tab.
+ */
 #ifndef WHEELTAB_H
 #define WHEELTAB_H
 

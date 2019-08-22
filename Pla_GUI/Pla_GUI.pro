@@ -38,7 +38,6 @@ SOURCES += \
     keygrabber.cpp \
     colortab.cpp \
     key.cpp \
-    axisselector.cpp \
     input/controller.cpp \
     input/joystick.cpp \
     input/joysticktracker.cpp \
@@ -47,7 +46,6 @@ SOURCES += \
     wheelthresholdsetter.cpp
 
 HEADERS += \
-    axisselector.h \
     colortab.h \
     config.h \
     editing.h \

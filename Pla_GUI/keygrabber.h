@@ -1,3 +1,7 @@
+/**
+ * @file keygrabber.h
+ * @brief Provides dialog for capturing the keystroke for a binding.
+ */
 #ifndef KEYGRABBER_H
 #define KEYGRABBER_H
 
@@ -12,7 +16,8 @@
 /**
  * @class KeyGrabber
  * @brief Prompts the user for a keystroke, recording the input.
- * This class is used to obtain a keystrokes for actions.
+ * Additionally, a macro may be selected instead; or, no keystroke may be
+ * reported.
  */
 class KeyGrabber : public QDialog
 {

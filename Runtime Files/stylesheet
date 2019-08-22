@@ -17,7 +17,7 @@ QTabBar::tab {
 
 QTabBar::tab:selected {
 	margin-top: 4px;
-        color: #ffffff;
+        color: #3f3;
 	border: none;
 }
 
@@ -60,20 +60,20 @@ QLabel, QRadioButton, QCheckBox {
 	color: #fff;
 }
 
-QRadioButton::indicator, QCheckBox::indicator {
-	width: 10px;
-	height: 10px;
-}
-
 QwwHueSatPicker {
 	border: 1px solid #ccc;
 }
 
 QwwListWidget {
 	background: #000;
-	color: #ccc;
-	border: 1px solid #ccc;
+	color: #bbb;
+	border: 1px solid #333;
 	font-size: 12px;
+}
+
+QwwListWidget QScrollBar {
+	background: #000;
+	color: #eee;
 }
 
 ProgramTab QPushButton, WheelTab QPushButton, MacroTab QPushButton,
@@ -96,6 +96,11 @@ ColorTab QPushButton {
 	color: #fff;
 }
 
+QRadioButton::indicator, QCheckBox::indicator {
+	width: 11px;
+	height: 11px;
+}
+
 QRadioButton {
     padding: 4px;
 }
@@ -104,14 +109,86 @@ WheelTab QRadioButton {
     border: 1px solid #444;
 }
 
-QRadioButton::indicator::unchecked, QCheckBox::indicator::unchecked {
-    background-image: url('assets/macro-radio-off');
+QCheckBox::indicator::unchecked {
+    background-image: url('assets/check-off.png');
 }
 
-QRadioButton::indicator::unchecked:hover, QCheckBox::indicator::unchecked:hover {
-    background-image: url('assets/macro-radio-off');
+QCheckBox::indicator::unchecked:hover {
+    background-image: url('assets/check-off.png');
 }
 
-QRadioButton::indicator::checked, QCheckBox::indicator::checked {
-    background-image: url('assets/macro-radio-on');
+QCheckBox::indicator::checked {
+    background-image: url('assets/check-on.png');
 }
+
+QRadioButton::indicator::unchecked {
+    background-image: url('assets/macro-radio-off.png');
+}
+
+QRadioButton::indicator::unchecked:hover {
+    background-image: url('assets/macro-radio-off.png');
+}
+
+QRadioButton::indicator::checked {
+    background-image: url('assets/macro-radio-on.png');
+}
+
+ThresholdSetter QSlider::groove:horizontal, WheelThresholdSetter QSlider::groove:horizontal {
+	background: #111;
+	border: 1px solid #000;
+	border-radius: 2px;
+	height: 6px;
+}
+
+ThresholdSetter QSlider::sub-page:horizontal#far {
+	background: #d00;
+	border: 1px solid #777;
+	height: 10px;
+	border-radius: 4px;
+}
+
+ThresholdSetter QSlider::sub-page:horizontal#short, WheelThresholdSetter QSlider::sub-page:horizontal {
+	background: #0e0;
+	border: 1px solid #777;
+	height: 10px;
+	border-radius: 4px;
+}
+
+ThresholdSetter QSlider::handle:horizontal, WheelThresholdSetter QSlider::handle:horizontal {
+	background: #eee;
+	width: 10px;
+	height: 10px;
+	border: 1px solid #777;
+	border-radius: 4px;
+}
+
+ThresholdSetter QSlider::add-page:horizontal, WheelThresholdSetter QSlider::add-page:horizontal {
+	background: #fff;
+	border: 1px solid #777;
+	height: 10px;
+	border-radius: 4px;
+}
+
+ThresholdSetter QSlider::handle:horizontal, WheelThresholdSetter QSlider::handle:horizontal {
+	background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
+	    stop:0 #eee, stop:1 #ccc);
+	border: 1px solid #777;
+	width: 10px;
+	margin-top: -2px;
+	margin-bottom: -2px;
+	border-radius: 4px;
+}
+
+ColorTab QSlider::groove:horizontal {
+	background-image: url('assets/color-groove.png');
+}
+
+ColorTab QSlider::handle:horizontal {
+	width: 9px;
+	height: 30px;
+	margin-top: 12px;
+	background-image: url('assets/color-slider.png');
+	background-repeat: no-repeat;
+	background-position: center;
+}
+

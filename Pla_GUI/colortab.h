@@ -1,3 +1,7 @@
+/**
+ * @file colortab.h
+ * @brief Code for the Color tab.
+ */
 #ifndef COLORTAB_H
 #define COLORTAB_H
 
@@ -11,7 +15,7 @@
 
 /**
  * @class ColorTab
- * @brief Provides controls for setting the controller's color.
+ * @brief Provides controls for setting the controller's LED color.
  */
 class ColorTab: public QWidget
 {
@@ -45,6 +49,9 @@ private slots:
      */
     void updateBrightness(int level);
 
+    /**
+     * Sends the latest color setting to the controller.
+     */
     void updateColor(void);
 
 private:

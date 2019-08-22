@@ -1,3 +1,7 @@
+/**
+ * @file editing.h
+ * @brief Utility for managing control modification and saving.
+ */
 #ifndef EDITING_H
 #define EDITING_H
 
@@ -11,7 +15,8 @@
  * or revert to the original state.
  *
  * The object is modified first, saved later, rather than modified-on-save.
- * This allows controller settings to be viewed in real time.
+ * This allows controller settings to be viewed in real time before any changes
+ * are committed to.
  */
 template<typename T>
 class Editing

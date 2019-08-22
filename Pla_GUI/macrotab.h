@@ -1,3 +1,7 @@
+/**
+ * @file macrotab.h
+ * @brief Code for the Macro tab.
+ */
 #ifndef MACROTAB_H
 #define MACROTAB_H
 
@@ -39,6 +43,9 @@ private slots:
      */
     void createNewMacro(void);
 
+    /**
+     * Deletes the currently selected macro.
+     */
     void deleteMacro(void);
 
     /**
@@ -73,9 +80,13 @@ private slots:
     void removeKey(void);
 
     /**
-     * Edits the selected key.
+     * Toggles the press/release state of the currently selected key.
      */
     void editKey(void);
+
+    /**
+     * Opens the key grabber for the currently selected key.
+     */
     void editKeybind(void);
 
     /**
@@ -119,6 +130,7 @@ private:
     void reloadMacro(void);
     void reloadMacroList(void);
 
+    // Simplifies code in some member functions
     inline std::pair<unsigned int, bool> getCurrentActionListRow(void) {
         int row = actionList.currentIndex().row();
         return { static_cast<unsigned int>(row), row >= 0 };

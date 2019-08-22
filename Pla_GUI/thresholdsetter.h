@@ -1,3 +1,7 @@
+/**
+ * @file thresholdsetter.h
+ * @brief Dialog for managing joystick thresholds.
+ */
 #ifndef THRESHOLDSETTER_H
 #define THRESHOLDSETTER_H
 
@@ -24,6 +28,11 @@ class ThresholdSetter : public QDialog
 public:
     ThresholdSetter(QWidget *parent, QWidget *mainwindow);
 
+    /**
+     * Sets the joystick to be managed.
+     * Options are: "LEFT", "RIGHT", and "PRIMARY". Anything else is undefined
+     * behavior.
+     */
     void setJoystick(QString _name);
 
 private slots:
@@ -32,6 +41,10 @@ private slots:
      */
     void saveSettings(void);
 
+    /**
+     * Saves the threshold values for all joysticks.
+     * Includes left, primany, and right (not steering).
+     */
     void saveSettingsAll(void);
 
 private:
@@ -46,6 +59,9 @@ private:
      */
     void closeEvent(QCloseEvent *event);
 
+    /**
+     * Updates the joystick position map.
+     */
     void updateMap(void);
 
     QString name;

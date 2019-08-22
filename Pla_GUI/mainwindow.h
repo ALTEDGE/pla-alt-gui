@@ -1,3 +1,7 @@
+/**
+ * @file mainwindow.h
+ * @brief Code for the main window.
+ */
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
@@ -19,6 +23,9 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = nullptr);
 
+    /**
+     * Gets the tray icon object (for creating notifications).
+     */
     static inline QSystemTrayIcon* getTrayIcon(void) {
         return trayIcon;
     }
@@ -43,6 +50,7 @@ private slots:
      */
     void handleQuit(bool);
 
+    // These are for the tray menu's profile selection
     void updateProfilesMenu(void);
     void loadProfile(bool);
 

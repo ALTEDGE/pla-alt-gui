@@ -1,3 +1,7 @@
+/**
+ * @file joystick.h
+ * @brief Provides common joystick functionalities.
+ */
 #ifndef JOYSTICK_H
 #define JOYSTICK_H
 
@@ -32,6 +36,7 @@ public:
      * Gets the short threshold.
      */
     int getShortThreshold(void) const;
+
     /**
      * Gets the far threshold.
      */

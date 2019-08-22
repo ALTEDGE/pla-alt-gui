@@ -1,3 +1,7 @@
+/**
+ * @file wheelthresholdsetter.h
+ * @brief Threshold setting dialog for the steering wheel.
+ */
 #ifndef WHEELTHRESHOLDSETTER_H
 #define WHEELTHRESHOLDSETTER_H
 

@@ -1,3 +1,7 @@
+/**
+ * @file macro.h
+ * @brief Provides macro storage and managment.
+ */
 #ifndef MACRO_H
 #define MACRO_H
 
@@ -33,6 +37,10 @@ struct Action {
     }
 };
 
+/**
+ * @class ActionList
+ * @brief Stores Actions in a vector, and includes a delay type value.
+ */
 class ActionList : public std::vector<Action>
 {
 public:

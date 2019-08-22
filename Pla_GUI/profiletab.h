@@ -1,3 +1,7 @@
+/**
+ * @file profiletab.h
+ * @brief Code for the Profile tab
+ */
 #ifndef PROFILETAB_H
 #define PROFILETAB_H
 
@@ -9,6 +13,10 @@
 #include <QShowEvent>
 #include <QWidget>
 
+/**
+ * @class ProfileTab
+ * @brief Provides controls for loading and managing profiles.
+ */
 class ProfileTab : public QWidget
 {
     Q_OBJECT

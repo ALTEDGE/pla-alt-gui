@@ -1,3 +1,7 @@
+/**
+ * @file traymessage.h
+ * @brief Utility for creating notifications.
+ */
 #ifndef TRAYMESSAGE_H_
 #define TRAYMESSAGE_H_
 
@@ -24,6 +28,9 @@ public:
     }
 
 private:
+    /**
+     * Function called by QThread when start() is called.
+     */
     void run(void) override {
         auto* icon = MainWindow::getTrayIcon();
 

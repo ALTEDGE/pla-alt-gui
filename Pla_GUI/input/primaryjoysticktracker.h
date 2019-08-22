@@ -1,3 +1,7 @@
+/**
+ * @file primaryjoysticktracker.h
+ * @brief Provides additional support for the primary joystick.
+ */
 #ifndef PRIMARYJOYSTICKTRACKER_H
 #define PRIMARYJOYSTICKTRACKER_H
 
@@ -60,14 +64,10 @@ public:
     }
 
 private:
-    /**
-     * Stores actions for all eight PGs.
-     */
+    // Stores actions for all eight PGs.
     std::array<std::array<Key, 16>, 8> groups;
 
-    /**
-     * Stores the current PG.
-     */
+    // Stores the current PG.
     int currentPG;
 };
 

@@ -1,3 +1,7 @@
+/**
+ * @file key.h
+ * @brief Key action storage.
+ */
 #ifndef KEY_H
 #define KEY_H
 
@@ -66,6 +70,9 @@ public:
      */
     void save(QSettings& settings) const;
 
+    /**
+     * Gets the modifiers. These are pressed along with the main key.
+     */
     inline Qt::KeyboardModifiers getModifiers(void) const {
         return mod;
     }

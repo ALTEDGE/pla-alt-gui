@@ -1,3 +1,7 @@
+/**
+ * @file serial.h
+ * @brief Serial communication and management.
+ */
 #ifndef SERIAL_H
 #define SERIAL_H
 
@@ -25,6 +29,9 @@ public:
      */
     static void close(void);
 
+    /**
+     * Tests if the serial connection exists.
+     */
     static bool connected(void);
 
     /**
@@ -34,8 +41,18 @@ public:
      * @param b Blue value, 0-255
      */
     static void sendColor(unsigned char r, unsigned char g, unsigned char b);
+
+    /**
+     * Sends the most recently sent color.
+     */
     static void sendColor(void);
 
+    /**
+     * Sends code for showing 'connected/disconnected' lights on the
+     * controller.
+     * @param on True if connected (show user lights), false if not (constant
+     *           green)
+     */
     static void sendLights(bool on);
 
 private:

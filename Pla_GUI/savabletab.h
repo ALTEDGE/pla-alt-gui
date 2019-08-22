@@ -1,3 +1,7 @@
+/**
+ * @file savabletab.h
+ * @brief Utility for testing settings modifications in tabs.
+ */
 #ifndef SAVABLETAB_H
 #define SAVABLETAB_H
 

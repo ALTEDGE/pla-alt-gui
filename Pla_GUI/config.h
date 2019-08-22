@@ -1,3 +1,7 @@
+/**
+ * @file config.h
+ * @brief Provides global configuration values.
+ */
 #ifndef CONFIG_H
 #define CONFIG_H
 
@@ -11,6 +15,9 @@
 
 namespace config
 {
+    /**
+     * Version string to show in bottom right of the main window.
+     */
     constexpr const char *versionString = "v0.3";
 
 
@@ -53,7 +60,14 @@ namespace config
      */
     constexpr double JoystickSpeedThreshold = 100;
 
+    /**
+     * Default threshold value for vector 1 / normal actions.
+     */
     constexpr int JoystickDefaultShortThreshold = 10000;
+
+    /**
+     * Default threshold value for vector 2.
+     */
     constexpr int JoystickDefaultFarThreshold = 30000;
 
     /**

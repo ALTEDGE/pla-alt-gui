@@ -1,9 +1,8 @@
-/***
- * This file contains the following classes:
- *
- * Joystick, JoystickTracker, PrimaryJoystickTracker, and SteeringTracker.
- **/
-
+/**
+ * @file joysticktracker.h
+ * @brief Provides class to track joystick position and translate from position
+ * to action index.
+ */
 #ifndef JOYSTICKTRACKER_H
 #define JOYSTICKTRACKER_H
 
@@ -31,6 +30,12 @@
 class JoystickTracker : public Joystick, public KeySender<16>
 {
 public:
+    /**
+     * Constructs a tracker with the given initial sequencer and diagonal
+     * states.
+     * @param sequencer True to have the vector sequencer enabled
+     * @param diagonal True to have diagonal movement enabled
+     */
     JoystickTracker(bool sequencer = false, bool diagonal = false);
     virtual ~JoystickTracker(void) = default;
 
@@ -42,22 +47,29 @@ public:
 
     /**
      * Enables or disables diagonals.
-     *
      * If enabled, actions cannot be assigned to diagonal directions. Instead,
      * diagonal positions will trigger the two adjacent actions.
+     * @param enable True to enable sequencing
      */
     void setDiagonals(bool enable);
 
-    // Get the vector sequencing state
+    /**
+     * Checks if the vector sequencer is enabled.
+     * @return True if sequencing is enabled
+     */
     inline bool getSequencing(void) const
     { return useSequencing; }
 
-    // Get the diagonal state
+    /**
+     * Checks if diagonal movement is enabled.
+     * @return True if diagonals are enabled
+     */
     inline bool getDiagonals(void) const
     { return useDiagonals; }
 
     /**
-     * Updates with the given values, and fires an action if necessary.
+     * Updates the tracker with the given values, and fires an action if
+     * necessary.
      * @param x The x-axis' new position
      * @param y The y-axis' new position
      */
@@ -87,29 +99,31 @@ public:
             useSequencing != other.useSequencing;
     }
 
+    /**
+     * Gets the last position of the joystick.
+     * @return A pair of the x/y position
+     */
     inline std::pair<int, int> getPosition(void) const {
         return { lastX, lastY };
     }
 
+    /**
+     * Dumps the joystick state to standard output.
+     * @param id Character id to include in the dump (useful for identification)
+     */
     void dumpState(char id) const;
 
 private:
-    /**
-     * The previous X and Y position, for tracking velocity.
-     */
+    // The previous X and Y position, for tracking velocity.
     int lastX;
     int lastY;
 
-    /**
-     * If true, vector sequencing is enabled.
-     */
+    // If true, vector sequencing is enabled.
     bool useSequencing;
 
-    /**
-     * If true, diagonal actions are disabled.
-     * Instead, for example, an up-left movement would press the up and left
-     * actions/keys.
-     */
+    // If true, diagonal actions are disabled.
+    // Instead, a diagonal movement triggers the two adjacent actions (e.g. up
+    // and left).
     bool useDiagonals;
 
     /**

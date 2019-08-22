@@ -1,3 +1,7 @@
+/**
+ * @file steeringtracker.h
+ * @brief Provides tracking functionality specific to the steering wheel.
+ */
 #ifndef STEERINGTRACKER_H
 #define STEERINGTRACKER_H
 
@@ -11,6 +15,10 @@
 class SteeringTracker : public Joystick, public KeySender<2>
 {
 public:
+    /**
+     * Creates a tracker with the given digital/analog state.
+     * @param d True for digital mode, false for analog
+     */
     SteeringTracker(bool d = true);
     virtual ~SteeringTracker(void) = default;
 
@@ -55,14 +63,15 @@ public:
         return KeySender::operator!=(other) || digital != other.digital;
     }
 
+    /**
+     * Gets the last recorded position of the steering wheel.
+     */
     inline int getPosition(void) const {
         return lastPosition;
     }
 
 private:
-    /**
-     * When true, digital steering is enabled.
-     */
+    // When true, digital steering is enabled.
     bool digital;
 
     int lastPosition;

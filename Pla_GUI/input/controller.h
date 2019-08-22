@@ -1,3 +1,7 @@
+/**
+ * @file controller.h
+ * @brief Handles all non-serial communication with the controller.
+ */
 #ifndef CONTROLLERROUTINE_H
 #define CONTROLLERROUTINE_H
 
@@ -46,6 +50,10 @@ public:
      */
     static bool connected(void);
 
+    /**
+     * Enables or disables triggering actions (used when setting bindings).
+     * @param enable True to enable action triggering
+     */
     static inline void setEnabled(bool enable) {
         disableController.store(!enable);
     }
@@ -62,6 +70,9 @@ public:
      */
     static void load(QSettings& settings);
 
+    /**
+     * Sends the current color value to the controller (through serial).
+     */
     static void updateColor(void);
 
 private:

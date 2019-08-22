@@ -1,3 +1,7 @@
+/**
+ * @file programtab.h
+ * @brief Code for the Programming tab.
+ */
 #ifndef PROGRAMTAB_H
 #define PROGRAMTAB_H
 

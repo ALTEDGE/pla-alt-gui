@@ -1,3 +1,7 @@
+/**
+ * @file keysender.h
+ * @brief Handles action storage and firing.
+ */
 #ifndef KEYSENDER_H
 #define KEYSENDER_H
 

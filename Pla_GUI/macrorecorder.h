@@ -1,3 +1,7 @@
+/**
+ * @file macrorecorder.h
+ * @brief Dialog for recording macro keystrokes.
+ */
 #ifndef MACRORECORDER_H
 #define MACRORECORDER_H
 
@@ -9,6 +13,11 @@
 
 #include "macro.h"
 
+/**
+ * @class MacroRecorder
+ * @brief Dialog window for recording macros. Keystrokes and timings are
+ * recorded.
+ */
 class MacroRecorder : public QDialog
 {
     Q_OBJECT
