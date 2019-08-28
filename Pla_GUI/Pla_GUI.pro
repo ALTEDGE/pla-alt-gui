@@ -69,7 +69,8 @@ HEADERS += \
     input/joysticktracker.h \
     input/primaryjoysticktracker.h \
     input/steeringtracker.h \
-    wheelthresholdsetter.h
+    wheelthresholdsetter.h \
+    runguard.h
 
 INCLUDEPATH += input
 

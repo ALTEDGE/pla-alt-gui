@@ -2,6 +2,7 @@
 #include "controller.h"
 #include "macro.h"
 #include "profile.h"
+#include "runguard.h"
 #include "serial.h"
 
 #include <QApplication>
@@ -22,30 +23,37 @@
 
 int main(int argc, char *argv[])
 {
+    // Base initialization, and stylesheet loading
     QApplication a (argc, argv);
-
-    // Load GUI stylesheet
     QFile styleSheet ("stylesheet");
     styleSheet.open(QFile::ReadOnly);
     a.setStyleSheet(QString(styleSheet.readAll()));
+
+    // Check if an instance is already running
+    RunGuard program ("PLA GUI");
+    if (program.alreadyRunning()) {
+        QMessageBox::information(nullptr, "PLA GUI",
+            "PLA GUI is already running.\n"
+            "The program may be accessed through the system tray.",
+            QMessageBox::Ok);
+        return 0;
+    }
 
     // Load controller settings
     Profile::openFirst();
     Macro::load(Profile::current());
     Controller::load(Profile::current());
 
-    // Show the main window
-    // Construct before controller init so tray icon exists
-    MainWindow w;
-
     // Attempt to connect to the controller
     if (!Controller::init()) {
         // No controller
-        QMessageBox::information(nullptr, "Controller Disconnected", "Unable to find the PLA \
-controller. The program will not work with the controller unless it is connected at \
-start.", QMessageBox::Ok);
+        QMessageBox::information(nullptr, "Controller Disconnected",
+             "Unable to find the PLA controller. Please connect the controller "
+             "to use it with this program.", QMessageBox::Ok);
     }
 
+    // Show the main window
+    MainWindow w;
     w.show();
     auto ret = a.exec();
 
