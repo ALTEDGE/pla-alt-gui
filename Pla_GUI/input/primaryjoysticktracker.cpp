@@ -12,7 +12,7 @@ void PrimaryJoystickTracker::setPGKey(int pg, int index, Key key)
     //static_assert (index < 16 && index >= 0, "Index bounds check");
 
     // Validate arguments
-    if (pg >= 8 || index >= 16)
+    if (pg >= 8 || index >= 17)
         return;
 
     groups[pg][index] = key;
@@ -30,13 +30,13 @@ void PrimaryJoystickTracker::setPG(int pg)
     currentPG = pg;
 
     // Update the base class' (KeySender) keys
-    for (unsigned int i = 0; i < 16; i++)
+    for (unsigned int i = 0; i < 17; i++)
         keys[i].first = groups[pg][i];
 }
 
 QString PrimaryJoystickTracker::getText(int pg, int index) const
 {
-    if (pg >= 8 || index >= 16)
+    if (pg >= 8 || index >= 17)
         return QString();
 
     return groups[pg][index].toString();
@@ -51,7 +51,7 @@ void PrimaryJoystickTracker::save(QSettings& settings) const
         settings.beginGroup("pg" + QString::fromStdString(std::to_string(i)));
 
         // For each action
-        for (unsigned int j = 0; j < 16; j++) {
+        for (unsigned int j = 0; j < 17; j++) {
             settings.beginGroup(QString::fromStdString(std::to_string(j)));
             groups[i][j].save(settings);
             settings.endGroup();
@@ -70,7 +70,7 @@ void PrimaryJoystickTracker::load(QSettings& settings)
         settings.beginGroup("pg" + QString::fromStdString(std::to_string(i)));
 
         // For each action
-        for (unsigned int j = 0; j < 16; j++) {
+        for (unsigned int j = 0; j < 17; j++) {
             settings.beginGroup(QString::fromStdString(std::to_string(j)));
             groups[i][j] = Key(settings);
             settings.endGroup();

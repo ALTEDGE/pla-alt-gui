@@ -7,6 +7,7 @@
 JoystickTracker::JoystickTracker(bool ts, bool ad) :
     lastX(0),
     lastY(0),
+    lastPressed(0),
     useSequencing(ts),
     useDiagonals(ad)
 {
@@ -126,7 +127,7 @@ void JoystickTracker::dumpState(char id) const
         << getActionIndex(toState(lastX), toState(lastY)) << std::endl;
 }
 
-void JoystickTracker::update(int x, int y)
+void JoystickTracker::update(int x, int y, int pressed)
 {
     // Calculate speed/distance traveled
     auto dx = x - lastX;
@@ -168,6 +169,11 @@ void JoystickTracker::update(int x, int y)
                 sendKey(i, false);
         }
         sendKey(index, true);
+    }
+
+    if (lastPressed != pressed) {
+        sendKey(16, pressed);
+        lastPressed = pressed;
     }
 }
 

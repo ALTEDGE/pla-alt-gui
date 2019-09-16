@@ -11,6 +11,7 @@ ProgramTab::ProgramTab(QWidget *parent) :
     lEnterKeyOrMacro("ENTER KEY OR MACRO COMMAND", this),
     lVector1("VECTOR 1 COMMAND", this),
     lVector2("VECTOR 2 COMMAND", this),
+    lButton("BUTTON ACTION:", this),
     lJoystickGuide(this),
     pixJoystick("assets/joystick.png"),
     pixPJoystick("assets/pjoystick.png"),
@@ -18,6 +19,7 @@ ProgramTab::ProgramTab(QWidget *parent) :
     useRightJoystick("RIGHT AUX JOYSTICK", this),
     usePrimaryJoystick("PRIMARY JOYSTICK", this),
     pgButtons(this),
+    joystickButton(this),
     useDiagonals("ENABLE DIAGONAL\nMOVEMENT", this),
     useSequencer("ENABLE SEQUENCER", this),
     configSave("SAVE", this),
@@ -77,9 +79,15 @@ ProgramTab::ProgramTab(QWidget *parent) :
         keySlots.addButton(button, i);
     }
 
+    lButton.setGeometry(460, 350, 140, 24);
+    lButton.setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+    // TODO match v.seq. buttons (align)
+    joystickButton.setGeometry(610, 350, 140, 24);
+
     // Connect signals/slots
     connect(&pgButtons, SIGNAL(buttonClicked(int)), this, SLOT(updateControls()));
     connect(&keySlots, SIGNAL(buttonClicked(int)), this, SLOT(assignSlot(int)));
+    connect(&joystickButton, SIGNAL(released()), this, SLOT(assignButton()));
     connect(&useLeftJoystick, SIGNAL(released()), this, SLOT(updateControls()));
     connect(&useRightJoystick, SIGNAL(released()), this, SLOT(updateControls()));
     connect(&usePrimaryJoystick, SIGNAL(released()), this, SLOT(updateControls()));
@@ -147,8 +155,14 @@ void ProgramTab::updateControls(void)
         //lJoystickGuide.setPixmap(pixPJoystick);
         thresholdDialog.setJoystick("PRIMARY");
         lSelectedPG.setText(QString("MAP PG_") + static_cast<char>(pgButtons.checkedId() + '1'));
-        for (int i = 0; i < 16; i++)
-            keySlots.button(i)->setText(primaryData->getText(pgButtons.checkedId(), i));
+        for (int i = 0; i < 16; i++) {
+            auto text = primaryData->getText(pgButtons.checkedId(), i);
+            keySlots.button(i)->setText(text);
+            keySlots.button(i)->setToolTip(text);
+        }
+        auto text = primaryData->getText(pgButtons.checkedId(), 16);
+        joystickButton.setText(text);
+        joystickButton.setToolTip(text);
 
         useDiagonals.setChecked(primaryData->getDiagonals());
         useSequencer.setChecked(primaryData->getSequencing());
@@ -159,8 +173,14 @@ void ProgramTab::updateControls(void)
         thresholdDialog.setJoystick("LEFT");
         lSelectedPG.setText("L. AUX.");
 
-        for (int i = 0; i < 16; i++)
-            keySlots.button(i)->setText(leftData->getText(i));
+        for (int i = 0; i < 16; i++) {
+            auto text = leftData->getText(i);
+            keySlots.button(i)->setText(text);
+            keySlots.button(i)->setToolTip(text);
+        }
+        auto text = leftData->getText(16);
+        joystickButton.setText(text);
+        joystickButton.setToolTip(text);
 
         bool diag = leftData->getDiagonals();
         useDiagonals.setChecked(diag);
@@ -172,8 +192,14 @@ void ProgramTab::updateControls(void)
         thresholdDialog.setJoystick("RIGHT");
         lSelectedPG.setText("R. AUX.");
 
-        for (int i = 0; i < 16; i++)
-            keySlots.button(i)->setText(rightData->getText(i));
+        for (int i = 0; i < 16; i++) {
+            auto text = rightData->getText(i);
+            keySlots.button(i)->setText(text);
+            keySlots.button(i)->setToolTip(text);
+        }
+        auto text = rightData->getText(16);
+        joystickButton.setText(text);
+        joystickButton.setToolTip(text);
 
         bool diag = rightData->getDiagonals();
         useDiagonals.setChecked(diag);
@@ -235,6 +261,11 @@ void ProgramTab::setDiagonals(bool enabled)
     }
 }
 
+void ProgramTab::assignButton(void)
+{
+    assignSlot(16);
+}
+
 void ProgramTab::assignSlot(int index)
 {
     // Remember what slot was selected
@@ -255,6 +286,11 @@ void ProgramTab::keyPressed(Key key)
         rightData->setKey(assigningSlot, key);
 
     // Update key slot text
-    keySlots.button(assigningSlot)->setText(key.toString());
-    keySlots.button(assigningSlot)->setToolTip(key.toString());
+    if (assigningSlot == 16) {
+        joystickButton.setText(key.toString());
+        joystickButton.setToolTip(key.toString());
+    } else {
+        keySlots.button(assigningSlot)->setText(key.toString());
+        keySlots.button(assigningSlot)->setToolTip(key.toString());
+    }
 }

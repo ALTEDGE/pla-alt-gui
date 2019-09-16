@@ -169,9 +169,12 @@ void Controller::handleController(void)
 
             // Update the joystick objects with their respective axes
             // Y-axis is inverted because joysticks on prototype are upside-down
-            Left.update(-SDL_JoystickGetAxis(js, 3), SDL_JoystickGetAxis(js, 4));
-            Right.update(-SDL_JoystickGetAxis(js, 2), SDL_JoystickGetAxis(js, 5));
-            Primary.update(-SDL_JoystickGetAxis(js, 0), SDL_JoystickGetAxis(js, 1));
+            Left.update(-SDL_JoystickGetAxis(js, 3), SDL_JoystickGetAxis(js, 4),
+                SDL_JoystickGetButton(js, 0));
+            Right.update(-SDL_JoystickGetAxis(js, 2), SDL_JoystickGetAxis(js, 5),
+                SDL_JoystickGetButton(js, 2));
+            Primary.update(-SDL_JoystickGetAxis(js, 0), SDL_JoystickGetAxis(js, 1),
+                SDL_JoystickGetButton(js, 1));
             Steering.update(SDL_JoystickGetAxis(js, 6));
 
             std::this_thread::sleep_for(config::InputUpdateFrequency);

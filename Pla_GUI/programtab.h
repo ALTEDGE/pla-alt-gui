@@ -56,6 +56,7 @@ private slots:
      * @param index Index of the key slot
      */
     void assignSlot(int index);
+    void assignButton(void);
 
     /**
      * Captures key presses from the KeyGrabber dialog.
@@ -96,6 +97,8 @@ private:
     // "VECTOR 2 COMMAND"
     QLabel lVector2;
 
+    QLabel lButton;
+
     QLabel lJoystickGuide;
     QPixmap pixJoystick;
     QPixmap pixPJoystick;
@@ -105,6 +108,7 @@ private:
     QRadioButton usePrimaryJoystick;
 
     QButtonGroup pgButtons;
+    QPushButton joystickButton;
     QButtonGroup keySlots;
     QLabel *lKeySlots[8];
 

@@ -18,7 +18,7 @@ public:
     /**
      * Sets the index'th action under the given PG to the given key.
      * @param pg The PG to modify, 0-7
-     * @param index The index to modify, 0-15
+     * @param index The index to modify, 0-16
      * @param key The key to set the action to (Key() for no action)
      */
     void setPGKey(int pg, int index, Key key);
@@ -65,7 +65,7 @@ public:
 
 private:
     // Stores actions for all eight PGs.
-    std::array<std::array<Key, 16>, 8> groups;
+    std::array<std::array<Key, 17>, 8> groups;
 
     // Stores the current PG.
     int currentPG;

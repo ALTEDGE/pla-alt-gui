@@ -27,7 +27,7 @@
  *         5   4   3
  *     13     12      11
  */
-class JoystickTracker : public Joystick, public KeySender<16>
+class JoystickTracker : public Joystick, public KeySender<17>
 {
 public:
     /**
@@ -72,8 +72,9 @@ public:
      * necessary.
      * @param x The x-axis' new position
      * @param y The y-axis' new position
+     * @param pressed State of the joystick's button
      */
-    virtual void update(int x, int y);
+    void update(int x, int y, int pressed);
 
     /**
      * Saves settings to the given settings object.
@@ -117,6 +118,7 @@ private:
     // The previous X and Y position, for tracking velocity.
     int lastX;
     int lastY;
+    int lastPressed;
 
     // If true, vector sequencing is enabled.
     bool useSequencing;
