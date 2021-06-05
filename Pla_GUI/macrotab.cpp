@@ -260,9 +260,8 @@ void MacroTab::moveKeyUp(void)
 {
     // Move data
     auto row = getCurrentActionListRow();
-    if (row.second)
-        std::swap(currentMacro[row.first],
-                  currentMacro[row.first - 1]);
+    if (row < currentMacro.size())
+        std::swap(currentMacro[row], currentMacro[row - 1]);
 
     actionList.moveCurrentUp();
 }
@@ -270,7 +269,7 @@ void MacroTab::moveKeyUp(void)
 void MacroTab::moveKeyDown(void)
 {
     // Move data
-    auto row = getCurrentActionListRow().first;
+    auto row = getCurrentActionListRow();
     if (row < currentMacro.size())
         std::swap(currentMacro[row], currentMacro[row + 1]);
 
@@ -281,17 +280,16 @@ void MacroTab::insertKey(void)
 {
     // Get the macro's key list
     auto row = getCurrentActionListRow();
-    auto index = row.second ? row.first : 0u;
-    int srow = static_cast<int>(index);
+    int index = row < currentMacro.size() ? static_cast<int>(row) : 0;
 
     // Add a new key
     currentMacro.emplace(currentMacro.begin() + index);
-    actionList.insertItem(srow, currentMacro[index].key.toString());
+    actionList.insertItem(index, currentMacro[index].key.toString());
 }
 
 void MacroTab::removeKey(void)
 {
-    auto row = getCurrentActionListRow().first;
+    auto row = getCurrentActionListRow();
     if (row < currentMacro.size())
         currentMacro.erase(currentMacro.begin() + row);
 
@@ -300,7 +298,7 @@ void MacroTab::removeKey(void)
 
 void MacroTab::editKey(void)
 {
-    auto row = getCurrentActionListRow().first;
+    auto row = getCurrentActionListRow();
     if (row < currentMacro.size()) {
         currentMacro.at(row).press ^= true;
         reloadMacro();
@@ -314,13 +312,12 @@ void MacroTab::editKeybind(void)
 
 void MacroTab::keyPressed(Key key)
 {
-    auto row = getCurrentActionListRow().first;
-    int srow = static_cast<int>(row);
-
-    currentMacro[row].key = key;
-    actionList.item(srow)->setText(key.toString());
-
-    reloadMacro();
+    auto row = getCurrentActionListRow();
+    if (row < currentMacro.size()) {
+        currentMacro[row].key = key;
+        actionList.item(row)->setText(key.toString());
+        reloadMacro();
+    }
 }
 
 void MacroTab::delayChange(void)

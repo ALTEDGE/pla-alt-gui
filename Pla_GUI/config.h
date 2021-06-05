@@ -18,7 +18,7 @@ namespace config
     /**
      * Version string to show in bottom right of the main window.
      */
-    constexpr const char *versionString = "v0.3";
+    constexpr const char *versionString = "v0.4";
 
 
 
@@ -41,7 +41,7 @@ namespace config
     /**
      * Minimum delay between macro key presses/releases.
      */
-    constexpr auto MinimumMacroDelay = 5ms;
+    constexpr auto MinimumMacroDelay = 2ms;
 
     /**
      * USB vendor and device ID for checking proper joystick connection.

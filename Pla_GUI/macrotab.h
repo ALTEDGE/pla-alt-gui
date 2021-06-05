@@ -131,9 +131,8 @@ private:
     void reloadMacroList(void);
 
     // Simplifies code in some member functions
-    inline std::pair<unsigned int, bool> getCurrentActionListRow(void) {
-        int row = actionList.currentIndex().row();
-        return { static_cast<unsigned int>(row), row >= 0 };
+    inline unsigned int getCurrentActionListRow(void) {
+        return static_cast<unsigned int>(actionList.currentIndex().row());
     }
 
     // "MACRO"

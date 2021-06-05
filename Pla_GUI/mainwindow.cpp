@@ -23,27 +23,30 @@ MainWindow::MainWindow(QWidget *parent) :
     lastTabIndex(0),
     done(false)
 {
-    trayIcon = new QSystemTrayIcon(QIcon("icon.png"));
-
     // Keep the window at a fixed size.
     setFixedSize(900, 588);
 
-    // Create the context menu for the system tray icon
-    auto systemTrayMenu = new QMenu();
-    profileMenu = systemTrayMenu->addMenu("Set profile...");
-    systemTrayMenu->addSeparator();
-    auto quitAction = systemTrayMenu->addAction("Exit Pla GUI");
+    trayIcon = QSystemTrayIcon::isSystemTrayAvailable() ?
+        new QSystemTrayIcon(QIcon("icon.png")) : nullptr;
 
-    connect(quitAction, SIGNAL(triggered(bool)), this, SLOT(handleQuit(bool)));
+    if (trayIcon) {
+        // Create the context menu for the system tray icon
+        auto systemTrayMenu = new QMenu();
+        profileMenu = systemTrayMenu->addMenu("Set profile...");
+        systemTrayMenu->addSeparator();
+        auto quitAction = systemTrayMenu->addAction("Exit Pla GUI");
 
-    profileActionGroup = new QActionGroup(profileMenu);
-    connect(profileMenu, SIGNAL(aboutToShow()), this, SLOT(updateProfilesMenu()));
+        connect(quitAction, SIGNAL(triggered(bool)), this, SLOT(handleQuit(bool)));
 
-    // Prepare and show the icon
-    connect(trayIcon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)),
-        this, SLOT(handleTray(QSystemTrayIcon::ActivationReason)));
-    trayIcon->setContextMenu(systemTrayMenu);
-    trayIcon->show();
+        profileActionGroup = new QActionGroup(profileMenu);
+        connect(profileMenu, SIGNAL(aboutToShow()), this, SLOT(updateProfilesMenu()));
+
+        // Prepare and show the icon
+        connect(trayIcon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)),
+            this, SLOT(handleTray(QSystemTrayIcon::ActivationReason)));
+        trayIcon->setContextMenu(systemTrayMenu);
+        trayIcon->show();
+    }
 
     lVersion.setAlignment(Qt::AlignRight);
     lVersion.setGeometry(0, 573, 900, 15);
@@ -66,10 +69,18 @@ void MainWindow::closeEvent(QCloseEvent *event)
 {
 #ifdef KEEP_OPEN_IN_TRAY
     if (!done) {
-        event->ignore();
-        trayIcon->showMessage("GUI Hidden", "Re-open PLA GUI by clicking the tray icon.",
-            QSystemTrayIcon::Information, 4000);
-        hide();
+        if (trayIcon) {
+            event->ignore();
+            trayIcon->showMessage("GUI Hidden", "Re-open PLA GUI by clicking the tray icon.",
+                QSystemTrayIcon::Information, 4000);
+            hide();
+        } else {
+            auto choice = QMessageBox::warning(this, "Exit PLA GUI",
+                                               "Are you sure you want to quit?",
+                                               QMessageBox::Ok | QMessageBox::Cancel);
+            if (choice != QMessageBox::Ok)
+                event->ignore();
+        }
     } else {
 #endif
         event->accept();

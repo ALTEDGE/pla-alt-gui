@@ -2,12 +2,13 @@
 #include "controller.h"
 #include "macro.h"
 #include "profile.h"
-#include "runguard.h"
+//#include "runguard.h"
 #include "serial.h"
 
 #include <QApplication>
 #include <QFile>
 #include <QMessageBox>
+#include <QSharedMemory>
 
 #include <SDL2/SDL.h>
 #include <atomic>
@@ -26,12 +27,19 @@ int main(int argc, char *argv[])
     // Base initialization, and stylesheet loading
     QApplication a (argc, argv);
     QFile styleSheet ("stylesheet");
-    styleSheet.open(QFile::ReadOnly);
+
+    if (!styleSheet.open(QFile::ReadOnly)) {
+        QMessageBox::critical(nullptr, "PLA GUI",
+            "Runtime files not found.", QMessageBox::Ok);
+        return 0;
+    }
+
     a.setStyleSheet(QString(styleSheet.readAll()));
+    a.setQuitOnLastWindowClosed(true);
 
     // Check if an instance is already running
-    RunGuard program ("PLA GUI");
-    if (program.alreadyRunning()) {
+    QSharedMemory runGuard ("PLA_GUI_runGuardKey");
+    if (!runGuard.create(1)) {
         QMessageBox::information(nullptr, "PLA GUI",
             "PLA GUI is already running.\n"
             "The program may be accessed through the system tray.",

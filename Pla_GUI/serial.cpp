@@ -160,10 +160,10 @@ std::string Serial::nativeOpen(void)
         return "";
 
     // Set connection parameters to what we need
-    DCB params = { 0 };
+    DCB params {};
     params.DCBlength = sizeof(DCB);
     GetCommState(hComPort, &params);
-    params.BaudRate = CBR_9600; // 9600 baud
+    //params.BaudRate = CBR_9600; // 9600 baud
     params.ByteSize = 8;
     params.StopBits = ONESTOPBIT;
     params.Parity = ODDPARITY;

@@ -79,7 +79,7 @@ void WheelThresholdSetter::updateMap(void)
     pen.drawRect(110 - width / 2, -1, width, 31);
     pen.setPen(Qt::black);
     pen.setBrush(Qt::black);
-    int x = std::min(std::max(110 + static_cast<int>(position / 32767. * 220), 0), 220);
+    int x = std::min(std::max(110 + static_cast<int>(position / 32767. * 110), 0), 220);
     pen.drawRect(x, 0, 1, 30);
 
     mapLabel.setPixmap(QPixmap::fromImage(map));
