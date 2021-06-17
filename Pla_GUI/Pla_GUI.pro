@@ -77,7 +77,7 @@ INCLUDEPATH += input
 FORMS +=
 
 unix:!macx: LIBS += -lwwwidgets5 -lxdo -lSDL2main -lSDL2
-unix:!macx: QMAKE_CXXFLAGS += -Wall -Wextra -Werror -pedantic
+unix:!macx: QMAKE_CXXFLAGS += -Wall -Wextra -pedantic
 win32: LIBS += -lwwwidgets5d -lSDL2 -lSDL2main -luser32 -lSetupAPI
 win32: RC_ICONS += icon.ico
 win32: QMAKE_CXXFLAGS += /std:c++latest

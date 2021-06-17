@@ -47,8 +47,10 @@ void KeyGrabber::showEvent(QShowEvent *event)
 
 bool KeyGrabber::eventFilter(QObject *watched, QEvent *event)
 {
+    const auto& type = event->type();
+
     // Escape can only be received on KeyPress, handle that here
-    if (event->type() == QEvent::KeyPress) {
+    if (type == QEvent::KeyPress) {
         auto press = reinterpret_cast<QKeyEvent*>(event);
         if (press->key() == Qt::Key_Escape) {
             emit keyPressed(Key(press->key(), press->modifiers()));
@@ -56,9 +58,8 @@ bool KeyGrabber::eventFilter(QObject *watched, QEvent *event)
             return true;
         }
     }
-
     // Catch key releases
-    if (event->type() == QEvent::KeyRelease) {
+    else if (type == QEvent::KeyRelease) {
         auto press = reinterpret_cast<QKeyEvent*>(event);
 
         auto k = press->key();
@@ -75,6 +76,11 @@ bool KeyGrabber::eventFilter(QObject *watched, QEvent *event)
         // 'Close' this window
         hide();
         return true;
+    }
+    // Catch mouse events
+    else if (type == QEvent::MouseButtonPress) {
+    }
+    else if (type == QEvent::Wheel) {
     }
 
     return QObject::eventFilter(watched, event);

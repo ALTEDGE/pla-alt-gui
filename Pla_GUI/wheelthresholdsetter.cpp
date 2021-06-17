@@ -47,23 +47,24 @@ void WheelThresholdSetter::showEvent(QShowEvent *event)
     threshold.setValue(Controller::Steering.getShortThreshold());
 
     // Start the joystick monitoring thread
-    QtConcurrent::run([&](void) {
+    joyThread = QtConcurrent::run([&] {
         while (shouldUpdate) {
             position = Controller::Steering.getPosition();
             updateMap();
             QThread::msleep(100);
         }
+        return 0;
     });
 
     if (event != nullptr)
         event->accept();
 }
 
-void WheelThresholdSetter::closeEvent(QCloseEvent *event)
+void WheelThresholdSetter::hideEvent(QHideEvent *event)
 {
     // Bring back the monitor thread
     shouldUpdate = false;
-    QThread::msleep(200);
+    joyThread.result();
     if (event != nullptr)
         event->accept();
 }

@@ -7,8 +7,9 @@
 
 #include "input/joysticktracker.h"
 
-#include <QCloseEvent>
 #include <QDialog>
+#include <QFuture>
+#include <QHideEvent>
 #include <QLabel>
 #include <QPushButton>
 #include <QSettings>
@@ -34,18 +35,19 @@ private slots:
      */
     void saveSettings(void);
 
-private:
+public:
     /**
      * Starts the primary joystick monitoring thread, to provide a sense of
      * the joystick's range.
      */
-    void showEvent(QShowEvent *);
+    void showEvent(QShowEvent *) override;
 
     /**
      * Ends the monitoring thread.
      */
-    void closeEvent(QCloseEvent *event);
+    void hideEvent(QHideEvent *event) override;
 
+private:
     void updateMap(void);
 
     // "WHEEL POSITION"
@@ -62,6 +64,7 @@ private:
     std::thread updateCurrent;
     int position;
     bool shouldUpdate;
+    QFuture<int> joyThread;
 };
 
 #endif // WHEELTHRESHOLDSETTER_H

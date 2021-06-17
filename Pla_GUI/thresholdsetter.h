@@ -7,14 +7,16 @@
 
 #include "input/joysticktracker.h"
 
-#include <QCloseEvent>
 #include <QDialog>
+#include <QHideEvent>
 #include <QLabel>
 #include <QPushButton>
 #include <QSettings>
 #include <QShowEvent>
 #include <QSlider>
+#include <QThread>
 
+#include <atomic>
 #include <thread>
 
 /**
@@ -47,24 +49,25 @@ private slots:
      */
     void saveSettingsAll(void);
 
-private:
+public:
     /**
      * Starts the primary joystick monitoring thread, to provide a sense of
      * the joystick's range.
      */
-    void showEvent(QShowEvent *);
+    void showEvent(QShowEvent *) override;
 
     /**
      * Ends the monitoring thread.
      */
-    void closeEvent(QCloseEvent *event);
+    void hideEvent(QHideEvent *event) override;
 
+private:
     /**
      * Updates the joystick position map.
      */
     void updateMap(void);
 
-    QString name;
+    std::atomic<const char *> joyName;
 
     // "DEFAULT / VECTOR 1 THRESHOLD"
     QLabel lShortThresh;
@@ -84,7 +87,8 @@ private:
 
     std::thread updateCurrent;
     std::pair<int, int> joyPosition;
-    bool shouldUpdate;
+    std::atomic_bool shouldUpdate;
+    QThread *joyThread;
 };
 
 #endif // THRESHOLDSETTER_H

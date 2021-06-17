@@ -24,7 +24,7 @@ void SteeringTracker::update(int pos) {
         return;
 
     // Quirky steering wheel returns 32767 if the wire is loose
-    if (pos > shortThreshold && pos != 32767) {
+    if (pos > shortThreshold) {
         sendKey(1, true); // right
     } else if (pos < -shortThreshold) {
         sendKey(0, true); // left

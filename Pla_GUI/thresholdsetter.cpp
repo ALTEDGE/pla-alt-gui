@@ -14,7 +14,7 @@ constexpr int mapSize = 90;
 
 ThresholdSetter::ThresholdSetter(QWidget *parent, QWidget *mainwindow) :
     QDialog(parent),
-    name("PRIMARY"),
+    joyName("PRIMARY"),
     lShortThresh("DEFAULT / VECTOR 1 THRESHOLD", this),
     lFarThresh("VECTOR 2 THRESHOLD", this),
     lCurrentPosition("PRIMARY POSITION", this),
@@ -31,7 +31,7 @@ ThresholdSetter::ThresholdSetter(QWidget *parent, QWidget *mainwindow) :
     configSaveAll("SAVE ALL", this),
     joyMap(mapSize, mapSize, QImage::Format_ARGB32),
     joyMapLabel(this),
-    shouldUpdate(true)
+    shouldUpdate(false)
 {
     setWindowTitle("Threshold Settings");
     setFixedSize(340, 240);
@@ -67,64 +67,51 @@ ThresholdSetter::ThresholdSetter(QWidget *parent, QWidget *mainwindow) :
 
 void ThresholdSetter::showEvent(QShowEvent *event)
 {
-    shouldUpdate = true;
-
-    // Set sliders to current settings
-    if (name[0] == 'L') {
-        shortThreshold.setValue(Controller::Left.getShortThreshold());
-        farThreshold.setValue(Controller::Left.getFarThreshold());
-    } else if (name[0] == 'R') {
-        shortThreshold.setValue(Controller::Right.getShortThreshold());
-        farThreshold.setValue(Controller::Right.getFarThreshold());
-    } else if (name[0] == 'P') {
-        shortThreshold.setValue(Controller::Primary.getShortThreshold());
-        farThreshold.setValue(Controller::Primary.getFarThreshold());
-    }
+    shouldUpdate.store(true);
 
     // Start the joystick monitoring thread
-    QtConcurrent::run([&](void) {
-        static unsigned int counter = 0;
-        while (shouldUpdate) {
-            if (name[0] == 'L')
-                joyPosition = Controller::Left.getPosition();
-            else if (name[0] == 'R')
-                joyPosition = Controller::Right.getPosition();
-            else if (name[0] == 'P')
-                joyPosition = Controller::Primary.getPosition();
-            updateMap();
-            QThread::msleep(100);
+    joyThread = QThread::create([this] {
+        auto nameL = joyName.load()[0];
+        JoystickTracker& joy = nameL == 'L' ? Controller::Left
+                            : (nameL == 'R' ? Controller::Right
+                                            : Controller::Primary);
 
-            if (++counter >= 10) {
-                counter = 0;
-                if (name[0] == 'L')
-                    Controller::Left.dumpState(name.toStdString()[0]);
-                else if (name[0] == 'R')
-                    Controller::Right.dumpState(name.toStdString()[0]);
-                else if (name[0] == 'P')
-                    Controller::Primary.dumpState(name.toStdString()[0]);
-            }
+        // Set sliders to current settings
+        shortThreshold.setValue(joy.getShortThreshold());
+        farThreshold.setValue(joy.getFarThreshold());
+
+        while (shouldUpdate.load()) {
+            joyPosition = joy.getPosition();
+            updateMap();
+            QThread::msleep(50);
         }
     });
+    joyThread->start();
 
     if (event != nullptr)
         event->accept();
 }
 
-void ThresholdSetter::closeEvent(QCloseEvent *event)
+void ThresholdSetter::hideEvent(QHideEvent *event)
 {
     // Bring back the monitor thread
-    shouldUpdate = false;
-    QThread::msleep(200);
+    shouldUpdate.store(false);
+    joyThread->wait();
+    joyThread->terminate();
     if (event != nullptr)
         event->accept();
 }
 
 void ThresholdSetter::setJoystick(QString _name)
 {
-    name = _name;
+    if (_name == "LEFT")
+        joyName.store("LEFT");
+    else if (_name == "RIGHT")
+        joyName.store("RIGHT");
+    else
+        joyName.store("PRIMARY");
     lCurrentPosition.setText(_name + " POSITION");
 }
-
 
 void ThresholdSetter::updateMap(void)
 {
@@ -161,13 +148,14 @@ void ThresholdSetter::updateMap(void)
 void ThresholdSetter::saveSettings(void)
 {
     // Set sliders to current settings
-    if (name[0] == 'L') {
+    auto nameL = joyName.load()[0];
+    if (nameL == 'L') {
         Controller::Left.setShortThreshold(shortThreshold.value());
         Controller::Left.setFarThreshold(farThreshold.value());
-    } else if (name[0] == 'R') {
+    } else if (nameL == 'R') {
         Controller::Right.setShortThreshold(shortThreshold.value());
         Controller::Right.setFarThreshold(farThreshold.value());
-    } else if (name[0] == 'P') {
+    } else if (nameL == 'P') {
         Controller::Primary.setShortThreshold(shortThreshold.value());
         Controller::Primary.setFarThreshold(farThreshold.value());
     }
