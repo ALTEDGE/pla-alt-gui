@@ -46,11 +46,11 @@ namespace config
     /**
      * USB vendor and device ID for checking proper joystick connection.
      */
-    constexpr unsigned char DeviceGUID[4] = { 0x4F, 0x1B, 0x04, 0x92 };
+    constexpr unsigned char DeviceGUID[4] = { 0x09, 0x12, 0x01, 0x00 };
     /**
      * USB IDs for Windows COM checking.
      */
-    constexpr const char WindowsDeviceGUID[18] = "VID_1B4F&PID_9204";
+    constexpr const char WindowsDeviceGUID[18] = "VID_1209&PID_0001";
 
     /**
      * Defines the minimum rate-of-change in a joystick to be considered movement.
