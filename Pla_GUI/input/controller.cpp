@@ -11,6 +11,8 @@
 
 using namespace std::chrono_literals;
 
+constexpr int WHEEL_DEADZONE = 0.1f * 32767;
+
 int Controller::currentPG = 0;
 std::atomic<SDL_Joystick *> Controller::joystick;
 std::atomic_bool Controller::runThreads;
@@ -122,10 +124,10 @@ void Controller::load(QSettings& settings)
     settings.beginGroup("color");
 
     // Load colors
-    Color.setRed(settings.value("red", 255).toInt());
-    Color.setGreen(settings.value("green", 255).toInt());
-    Color.setBlue(settings.value("blue", 255).toInt());
-    ColorBrightness = settings.value("brightness", 20).toInt();
+    Color.setRed(settings.value("red", 0x03).toInt());
+    Color.setGreen(settings.value("green", 0xF7).toInt());
+    Color.setBlue(settings.value("blue", 0xFF).toInt());
+    ColorBrightness = settings.value("brightness", 50).toInt();
     ColorEnable = settings.value("enabled", true).toBool();
     updateColor();
 
@@ -144,6 +146,14 @@ void Controller::updateColor(void)
             Serial::sendColor(0, 0, 0);
         }
     }
+}
+
+void Controller::setOperating(bool enable)
+{
+    Left.setEnabled(enable);
+    Right.setEnabled(enable);
+    Primary.setEnabled(enable);
+    Steering.setEnabled(enable);
 }
 
 void Controller::handleController(void)
@@ -175,7 +185,10 @@ void Controller::handleController(void)
                 SDL_JoystickGetButton(js, 0));
             Primary.update(-SDL_JoystickGetAxis(js, 0), SDL_JoystickGetAxis(js, 1),
                 SDL_JoystickGetButton(js, 1));
-            Steering.update(SDL_JoystickGetAxis(js, 6));
+
+            // Add slight dead-zone to the wheel
+            auto w = SDL_JoystickGetAxis(js, 6);
+            Steering.update(std::abs(w) >= WHEEL_DEADZONE ? w : 0);
 
             std::this_thread::sleep_for(config::InputUpdateFrequency);
         }

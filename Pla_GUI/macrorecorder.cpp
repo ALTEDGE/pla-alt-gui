@@ -1,5 +1,7 @@
 #include "macrorecorder.h"
 
+#include "controller.h"
+
 #include <QKeyEvent>
 
 MacroRecorder::MacroRecorder(QWidget *parent) :
@@ -24,6 +26,13 @@ MacroRecorder::MacroRecorder(QWidget *parent) :
 void MacroRecorder::showEvent(QShowEvent *event)
 {
     keys.clear();
+    Controller::setEnabled(false);
+    event->accept();
+}
+
+void MacroRecorder::hideEvent(QHideEvent *event)
+{
+    Controller::setEnabled(true);
     event->accept();
 }
 

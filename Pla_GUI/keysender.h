@@ -7,19 +7,17 @@
 
 #include "key.h"
 
-#include <array>
+#include <tuple>
+#include <vector>
 
 /**
  * @class KeySender
  * @brief Keeps a fixed number of keys that can be set or sent as keystrokes.
  * C defines how many keys the class should store.
  */
-template<int C>
 class KeySender {
 public:
-    KeySender(void) {
-        keys.fill(std::make_pair(Key(), false));
-    }
+    KeySender(unsigned int count);
 
     /**
      * Sends the index'th key to the operating system as a keystroke.
@@ -27,16 +25,7 @@ public:
      * @param index The index of the key to send
      * @param press True for press, false for release
      */
-    Qt::KeyboardModifiers sendKey(int index, bool press, Qt::KeyboardModifiers mods = Qt::NoModifier) {
-        if (index < 0 || index >= C ||
-            (keys[index].second == press && (keys[index].first.getModifiers() & mods) == 0))
-            return Qt::NoModifier;
-
-        keys[index].first.fire(press);
-        keys[index].second = press;
-
-        return keys[index].first.getModifiers();
-    }
+    Qt::KeyboardModifiers sendKey(int index, bool press, Qt::KeyboardModifiers mods = Qt::NoModifier);
 
     /**
      * Sets the index'th key, given arguments for one of Key's constructors.
@@ -45,9 +34,8 @@ public:
      */
     template<typename... Args>
     void setKey(int index, Args... args) {
-        if (index < 0 || index >= C)
+        if (index < 0 || index >= static_cast<int>(keys.size()))
             return;
-
         keys[index].first = Key(args...);
     }
 
@@ -56,51 +44,32 @@ public:
      * @param index The index to read
      * @return A descriptive string
      */
-    QString getText(int index) const {
-        if (index < 0 || index >= C)
-            return "";
-
-        return keys[index].first.toString();
-    }
+    QString getText(int index) const;
 
     /**
      * Saves all keys to the given settings object.
      * @param settings The settings to modify
      */
-    virtual void save(QSettings& settings) const {
-        for (unsigned int i = 0; i < keys.size(); i++) {
-            settings.beginGroup(QString::fromStdString(std::to_string(i)));
-            keys[i].first.save(settings);
-            settings.endGroup();
-        }
-    }
+    virtual void save(QSettings& settings) const;
 
     /**
      * Loads all keys from the given settings object.
      * @param settings The settings to read from
      */
-    virtual void load(QSettings &settings) {
-        for (unsigned int i = 0; i < keys.size(); i++) {
-            settings.beginGroup(QString::fromStdString(std::to_string(i)));
-            keys[i].first = Key(settings);
-            settings.endGroup();
-        }
-    }
+    virtual void load(QSettings &settings);
 
     // For Editing
-    bool operator==(const KeySender& other) const {
-        return keys == other.keys;
-    }
+    bool operator==(const KeySender& other) const;
 
     // For Editing
-    bool operator!=(const KeySender& other) const {
-        return keys != other.keys;
-    }
+    bool operator!=(const KeySender& other) const;
 
 protected:
     // Stores values for the keys
-    std::array<std::pair<Key, bool>, C> keys;
+    std::vector<std::pair<Key, bool>> keys;
 
+private:
+    static std::vector<std::pair<Key, int>> pressedKeys;
 };
 
 #endif // KEYSENDER_H

@@ -12,7 +12,7 @@
  * @class SteeringTracker
  * @brief Tracks steering wheel movement, firing actions when necesasary.
  */
-class SteeringTracker : public Joystick, public KeySender<2>
+class SteeringTracker : public Joystick, public KeySender
 {
 public:
     /**
@@ -32,6 +32,10 @@ public:
      * Gets the state of digital steering.
      */
     bool getDigital(void) const;
+
+    inline void setEnabled(bool yes) {
+        isEnabled = yes;
+    }
 
     /**
      * Fires actions based on the wheel's position.
@@ -73,6 +77,7 @@ public:
 private:
     // When true, digital steering is enabled.
     bool digital;
+    bool isEnabled = true;
 
     int lastPosition;
 };

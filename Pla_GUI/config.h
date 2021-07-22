@@ -18,7 +18,7 @@ namespace config
     /**
      * Version string to show in bottom right of the main window.
      */
-    constexpr const char *versionString = "v0.4";
+    constexpr const char *versionString = "v0.5.2";
 
 
 
@@ -46,12 +46,12 @@ namespace config
     /**
      * USB vendor and device ID for checking proper joystick connection.
      */
-    constexpr unsigned char DeviceGUID[4] = /*{ 0x09, 0x12, 0x01, 0x00 };*/
+    constexpr unsigned char DeviceGUID[4] = //{ 0x09, 0x12, 0x01, 0x00 };
                                             { 0x4F, 0x1B, 0x04, 0x92 };
     /**
      * USB IDs for Windows COM checking.
      */
-    constexpr const char WindowsDeviceGUID[18] = /*"VID_1209&PID_0001";*/
+    constexpr const char WindowsDeviceGUID[18] = //"VID_1209&PID_0001";
                                                  "VID_1B4F&PID_9204";
 
     /**

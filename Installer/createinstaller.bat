@@ -1,12 +1,12 @@
 echo off
 
 echo Packaging program...
-cd ..\build-Pla_GUI-Qt_Static-Release\release
-C:\Qt\Tools\QtInstallerFramework\3.0\bin\archivegen.exe ..\..\Installer\packages\com.pla.gui\data\program.7z *.dll *.png stylesheet Pla_GUI.exe platforms\* assets\* driver\*
+cd ..\Release
+C:\Qt\Tools\QtInstallerFramework\4.1\bin\archivegen.exe ..\Installer\packages\com.pla.gui\data\program.7z assets\* drivers\* iconengines\* imageformats\* platforms\* styles\* *.dll Pla_GUI.exe
 
 echo Creating installer...
-cd ..\..\Installer
-C:\Qt\Tools\QtInstallerFramework\3.0\bin\binarycreator.exe --offline-only -c config.xml -p packages "PLA Installer.exe"
+cd ..\Installer
+C:\Qt\Tools\QtInstallerFramework\4.1\bin\binarycreator.exe --offline-only -c config.xml -p packages "PLA Installer.exe"
 
 pause
 echo on

@@ -6,9 +6,10 @@
 #include <thread>
 
 // Windows-specific includes for sending keystrokes
-#ifdef _WIN64
+#ifdef PLA_WINDOWS
 
-#include <windows.h>
+typedef struct IUnknown IUnknown;
+#include <Windows.h>
 #include <vector>
 
 #else
@@ -22,7 +23,7 @@ extern "C" {
 
 static xdo_t *xdo = xdo_new(nullptr);
 
-#endif // _WIN64
+#endif // PLA_WINDOWS
 
 
 
@@ -123,7 +124,7 @@ void Key::fire(bool press) const
 	// Otherwise, a key action:
 
 // Fire code for Windows
-#ifdef _WIN64
+#ifdef PLA_WINDOWS
     auto createEvent = [&](INPUT& input, WORD wScan) {
         input.type = INPUT_KEYBOARD;
         input.ki.wVk = 0;
@@ -494,7 +495,7 @@ void Key::fire(bool press) const
 	else
 		xdo_send_keysequence_window_up(xdo, CURRENTWINDOW, text.c_str(), 0);
 
-#endif // _WIN64
+#endif // PLA_WINDOWS
 
 	std::this_thread::sleep_for(config::InputSendDelay);
 }

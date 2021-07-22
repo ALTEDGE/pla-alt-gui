@@ -15,7 +15,7 @@ WheelTab::WheelTab(QWidget *parent) :
     rightAction("", this),
     configSave("SAVE", this),
     configCancel("CANCEL", this),
-    configThreshold("THRESHOLD SETTINGS", this),
+    configThreshold("TRIGGER SETTINGS", this),
     steerData(Controller::Steering),
     thresholdDialog(this, parent)
 {

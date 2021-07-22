@@ -57,6 +57,11 @@ public:
     static inline void setEnabled(bool enable) {
         disableController.store(!enable);
     }
+    /**
+     * If false, only joy positions are updated.
+     * If true, keystrokes can be fired.
+     */
+    static void setOperating(bool enable);
 
     /**
      * Saves all settings to the given settings handler.

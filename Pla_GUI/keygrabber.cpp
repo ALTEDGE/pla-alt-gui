@@ -42,6 +42,13 @@ void KeyGrabber::showEvent(QShowEvent *event)
     for (const auto& n : names)
         macroNames.addItem(n.c_str());
 
+    Controller::setEnabled(false);
+    event->accept();
+}
+
+void KeyGrabber::hideEvent(QHideEvent *event)
+{
+    Controller::setEnabled(true);
     event->accept();
 }
 

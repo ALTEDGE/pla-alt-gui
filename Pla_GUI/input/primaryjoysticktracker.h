@@ -7,6 +7,8 @@
 
 #include "joysticktracker.h"
 
+#include <array>
+
 /**
  * @class PrimaryJoystickTracker
  * @brief Builds upon JoystickTracker to handle programmable groups (PGs).

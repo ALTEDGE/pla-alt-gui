@@ -2,7 +2,7 @@
 #include "config.h"
 
 // Include platform-specific libraries
-#ifdef _WIN64
+#ifdef PLA_WINDOWS
 #include <Windows.h>
 #include <SetupAPI.h>
 #include <cstring>
@@ -15,7 +15,7 @@
 #include <iostream>
 #include <string>
 
-#ifdef _WIN64
+#ifdef PLA_WINDOWS
 HANDLE Serial::hComPort = INVALID_HANDLE_VALUE;
 #else
 int Serial::comFd = -1;
@@ -36,7 +36,7 @@ bool Serial::open(void)
 
 void Serial::close(void)
 {
-#ifdef _WIN64
+#ifdef PLA_WINDOWS
     // Release the COM port
     if (hComPort != INVALID_HANDLE_VALUE) {
         CloseHandle(hComPort);
@@ -52,11 +52,11 @@ void Serial::close(void)
 
 bool Serial::connected(void)
 {
-#ifdef _WIN64
+#ifdef PLA_WINDOWS
     return hComPort != INVALID_HANDLE_VALUE;
 #else
     return comFd != -1;
-#endif // _WIN64
+#endif // PLA_WINDOWS
 }
 
 void Serial::sendColor(unsigned char r, unsigned char g, unsigned char b)
@@ -84,7 +84,7 @@ void Serial::sendLights(bool on)
 
 void Serial::nativeWrite(unsigned char *array, unsigned int count)
 {
-#ifdef _WIN64
+#ifdef PLA_WINDOWS
     if (hComPort != INVALID_HANDLE_VALUE) {
         DWORD written = 0;
         WriteFile(hComPort, array, count, &written, nullptr);
@@ -97,7 +97,7 @@ void Serial::nativeWrite(unsigned char *array, unsigned int count)
 
 std::string Serial::nativeOpen(void)
 {
-#ifdef _WIN64
+#ifdef PLA_WINDOWS
     // Load a handle to access all connected devices
     auto hDevInfo = SetupDiGetClassDevs(nullptr, nullptr, nullptr,
         DIGCF_ALLCLASSES | DIGCF_PRESENT);

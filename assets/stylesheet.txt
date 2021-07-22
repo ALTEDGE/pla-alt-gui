@@ -5,100 +5,106 @@ MainWindow {
 }
 
 QTabBar {
-	height: 30px;
-        color: #aaa;
-	font-size: 11px;
-	border: none;
+    height: 30px;
+    color: #ccc;
+    font-size: 11px;
+    border: none;
 }
 
 QTabBar::tab {
-	width: 120px;
-}
-
-QTabBar::tab:selected {
-	margin-top: 4px;
-        color: #3f3;
+    width: 124px;
 	border: none;
-}
-
-QTabBar::tab:!selected {
-	margin-top: 4px;
 	background: transparent;
 }
 
+QTabBar::tab:selected {
+    color: #03F7FF;
+	margin-top: 3px;
+}
 
 QTabWidget::tab-bar {
-	alignment: center;
+    alignment: center;
 }
 
 QTabWidget::pane {
-	border: none;
+    border: none;
 }
 
 QDialog, QMessageBox {
-	background: #000;
+    background: #000;
 }
 
 QComboBox, QLineEdit {
-	font-size: 12px;
-	border: 1px solid #333;
-	border-radius: 3px;
-	background: #000;
-	color: #bbb;
+    font-size: 12px;
+    border: 1px solid #03F7FF;
+    border-radius: 3px;
+    background: #000;
+    color: #ccc;
 }
 
 QComboBox QListView {
-	background: #222;
-	color: #bbb;
+    background: #222;
+    color: #ccc;
 }
 
 QLabel, QPushButton, QRadioButton, QCheckBox {
-	font-size: 12px;
+    font-size: 12px;
 }
 
 QLabel, QRadioButton, QCheckBox {
-	color: #fff;
+    color: #fff;
 }
 
 QwwHueSatPicker {
-	border: 1px solid #ccc;
+    border: 1px solid #03F7FF;
 }
 
 QwwListWidget {
-	background: #000;
-	color: #bbb;
-	border: 1px solid #333;
-	font-size: 12px;
+    background: #000;
+    color: #ccc;
+    border: 1px solid #03F7FF;
+    font-size: 12px;
 }
 
 QwwListWidget QScrollBar {
-	background: #000;
-	color: #eee;
+    background: #000;
+    color: #eee;
 }
 
-ProgramTab QPushButton, WheelTab QPushButton, MacroTab QPushButton,
-    ProfileTab QPushButton {
-    border: 1px solid #333;
+QPushButton {
+    border: 1px solid #7EC1B0;
     border-radius: 3px;
     background: qlineargradient(x1: 0, y1: 0, x2: 1, y2: 0, stop: 0 #222, stop: 1 #000);
     color: #ddd;
 }
 
-ProgramTab QPushButton:pressed, WheelTab QPushButton:pressed,
-    MacroTab QPushButton:pressed, ProgramTab QPushButton:checked,
-    ProfileTab QPushButton:pressed {
-    background: #000;
-    color: #fff;
+QPushButton:pressed {
+	border: 1px solid #03F7FF;
+}
+
+QPushButton:checked {
+	border: 1px solid #03F7FF;
+    color: #03F7FF;
+	font-weight: bold;
+}
+
+QPushButton:disabled {
+	border: 1px solid #777;
+    color: #555;
+}
+
+QMessageBox QPushButton {
+	padding: 4px 16px;
 }
 
 ColorTab QPushButton {
-	background: #222;
-	color: #fff;
+    background: #222;
+    color: #fff;
 }
 
 QRadioButton::indicator, QCheckBox::indicator {
-	width: 11px;
-	height: 11px;
+    width: 11px;
+    height: 11px;
 }
 
 QRadioButton {
@@ -106,7 +112,7 @@ QRadioButton {
 }
 
 WheelTab QRadioButton {
-    border: 1px solid #444;
+    border: 1px solid #7EC1B0;
 }
 
 QCheckBox::indicator::unchecked {
@@ -134,61 +140,61 @@ QRadioButton::indicator::checked {
 }
 
 ThresholdSetter QSlider::groove:horizontal, WheelThresholdSetter QSlider::groove:horizontal {
-	background: #111;
-	border: 1px solid #000;
-	border-radius: 2px;
-	height: 6px;
+    background: #111;
+    border: 1px solid #000;
+    border-radius: 2px;
+    height: 6px;
 }
 
 ThresholdSetter QSlider::sub-page:horizontal#far {
-	background: #d00;
-	border: 1px solid #777;
-	height: 10px;
-	border-radius: 4px;
+    background: #d00;
+    border: 1px solid #777;
+    height: 10px;
+    border-radius: 4px;
 }
 
 ThresholdSetter QSlider::sub-page:horizontal#short, WheelThresholdSetter QSlider::sub-page:horizontal {
-	background: #0e0;
-	border: 1px solid #777;
-	height: 10px;
-	border-radius: 4px;
+    background: #0e0;
+    border: 1px solid #777;
+    height: 10px;
+    border-radius: 4px;
 }
 
 ThresholdSetter QSlider::handle:horizontal, WheelThresholdSetter QSlider::handle:horizontal {
-	background: #eee;
-	width: 10px;
-	height: 10px;
-	border: 1px solid #777;
-	border-radius: 4px;
+    background: #eee;
+    width: 10px;
+    height: 10px;
+    border: 1px solid #777;
+    border-radius: 4px;
 }
 
 ThresholdSetter QSlider::add-page:horizontal, WheelThresholdSetter QSlider::add-page:horizontal {
-	background: #fff;
-	border: 1px solid #777;
-	height: 10px;
-	border-radius: 4px;
+    background: #fff;
+    border: 1px solid #777;
+    height: 10px;
+    border-radius: 4px;
 }
 
 ThresholdSetter QSlider::handle:horizontal, WheelThresholdSetter QSlider::handle:horizontal {
-	background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
-	    stop:0 #eee, stop:1 #ccc);
-	border: 1px solid #777;
-	width: 10px;
-	margin-top: -2px;
-	margin-bottom: -2px;
-	border-radius: 4px;
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
+        stop:0 #eee, stop:1 #ccc);
+    border: 1px solid #777;
+    width: 10px;
+    margin-top: -2px;
+    margin-bottom: -2px;
+    border-radius: 4px;
 }
 
 ColorTab QSlider::groove:horizontal {
-	background-image: url('assets/color-groove.png');
+    background-image: url('assets/color-groove.png');
 }
 
 ColorTab QSlider::handle:horizontal {
-	width: 9px;
-	height: 30px;
-	margin-top: 12px;
-	background-image: url('assets/color-slider.png');
-	background-repeat: no-repeat;
-	background-position: center;
+    width: 9px;
+    height: 30px;
+    margin-top: 12px;
+    background-image: url('assets/color-slider.png');
+    background-repeat: no-repeat;
+    background-position: center;
 }
 

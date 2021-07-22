@@ -1,5 +1,7 @@
 build*
+Release*
 *.pro*
 *.autosave
+Installer/**/*.exe
+Installer/**/*.7z
 Pla_GUI/compile_commands.json
-

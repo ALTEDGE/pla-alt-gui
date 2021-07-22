@@ -38,10 +38,11 @@ public slots:
     void stopRecording(void);
 
 protected:
-    bool eventFilter(QObject *watched, QEvent *event);
+    bool eventFilter(QObject *watched, QEvent *event) override;
 
 private:
-    void showEvent(QShowEvent *event);
+    void showEvent(QShowEvent *event) override;
+    void hideEvent(QHideEvent *event) override;
 
     // "Record your macro; press \"STOP\" when finished."
     QLabel lInstructions;

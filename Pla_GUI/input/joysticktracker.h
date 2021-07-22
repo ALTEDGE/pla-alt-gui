@@ -27,7 +27,7 @@
  *         5   4   3
  *     13     12      11
  */
-class JoystickTracker : public Joystick, public KeySender<17>
+class JoystickTracker : public Joystick, public KeySender
 {
 public:
     /**
@@ -53,6 +53,14 @@ public:
      */
     void setDiagonals(bool enable);
 
+    inline void setButtonSticky(bool yes) {
+        isButtonSticky = yes;
+    }
+
+    inline void setEnabled(bool yes) {
+        isEnabled = yes;
+    }
+
     /**
      * Checks if the vector sequencer is enabled.
      * @return True if sequencing is enabled
@@ -66,6 +74,9 @@ public:
      */
     inline bool getDiagonals(void) const
     { return useDiagonals; }
+
+    inline bool getButtonSticky(void) const
+    { return isButtonSticky; }
 
     /**
      * Updates the tracker with the given values, and fires an action if
@@ -89,15 +100,17 @@ public:
     // "Equal" comparison overload, needed for Editing objects
     bool operator==(const JoystickTracker& other) const {
         return KeySender::operator==(other) &&
+            useSequencing == other.useSequencing &&
             useDiagonals == other.useDiagonals &&
-            useSequencing == other.useSequencing;
+            isButtonSticky == other.isButtonSticky;
     }
 
     // "Not Equal" comparison overload, needed for Editing objects
     bool operator!=(const JoystickTracker& other) const {
         return KeySender::operator!=(other) ||
+            useSequencing != other.useSequencing ||
             useDiagonals != other.useDiagonals ||
-            useSequencing != other.useSequencing;
+            isButtonSticky != other.isButtonSticky;
     }
 
     /**
@@ -116,17 +129,21 @@ public:
 
 private:
     // The previous X and Y position, for tracking velocity.
-    int lastX;
-    int lastY;
-    int lastPressed;
+    int lastX = 0;
+    int lastY = 0;
+    int lastPressed = 0;
 
     // If true, vector sequencing is enabled.
-    bool useSequencing;
+    bool useSequencing = false;
 
     // If true, diagonal actions are disabled.
     // Instead, a diagonal movement triggers the two adjacent actions (e.g. up
     // and left).
-    bool useDiagonals;
+    bool useDiagonals = false;
+
+    bool isButtonSticky = false;
+    bool stickyState = false;
+    bool isEnabled = true;
 
     /**
      * Converts a raw axis value to a 'state'.

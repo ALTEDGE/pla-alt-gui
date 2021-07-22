@@ -7,10 +7,12 @@
 #include <QtConcurrent/QtConcurrent>
 #include <QPainter>
 
+#include <atomic>
 #include <chrono>
 using namespace std::chrono_literals;
 
 constexpr int mapSize = 90;
+static std::atomic<JoystickTracker *> currentJoy = nullptr;
 
 ThresholdSetter::ThresholdSetter(QWidget *parent, QWidget *mainwindow) :
     QDialog(parent),
@@ -33,8 +35,9 @@ ThresholdSetter::ThresholdSetter(QWidget *parent, QWidget *mainwindow) :
     joyMapLabel(this),
     shouldUpdate(false)
 {
-    setWindowTitle("Threshold Settings");
+    setWindowTitle("Trigger Settings");
     setFixedSize(340, 240);
+    setModal(true);
 
     // Set geometries
     lCurrentPosition.setGeometry(20, 10, 180, 20);
@@ -69,22 +72,25 @@ void ThresholdSetter::showEvent(QShowEvent *event)
 {
     shouldUpdate.store(true);
 
+    auto nameL = joyName.load()[0];
+    auto joy = nameL == 'L' ? &Controller::Left
+            : (nameL == 'R' ? &Controller::Right
+                            : &Controller::Primary);
+    shortThreshold.setValue(joy->getShortThreshold());
+    farThreshold.setValue(joy->getFarThreshold());
+    currentJoy.store(joy);
+
     // Start the joystick monitoring thread
     joyThread = QThread::create([this] {
-        auto nameL = joyName.load()[0];
-        JoystickTracker& joy = nameL == 'L' ? Controller::Left
-                            : (nameL == 'R' ? Controller::Right
-                                            : Controller::Primary);
-
-        // Set sliders to current settings
-        shortThreshold.setValue(joy.getShortThreshold());
-        farThreshold.setValue(joy.getFarThreshold());
-
+        Controller::setEnabled(true);
+        Controller::setOperating(false);
         while (shouldUpdate.load()) {
-            joyPosition = joy.getPosition();
+            joyPosition = currentJoy.load()->getPosition();
             updateMap();
             QThread::msleep(50);
         }
+        Controller::setOperating(true);
+        Controller::setEnabled(false);
     });
     joyThread->start();
 
@@ -104,30 +110,43 @@ void ThresholdSetter::hideEvent(QHideEvent *event)
 
 void ThresholdSetter::setJoystick(QString _name)
 {
-    if (_name == "LEFT")
+    if (_name == "LEFT") {
         joyName.store("LEFT");
-    else if (_name == "RIGHT")
+        currentJoy.store(&Controller::Left);
+    } else if (_name == "RIGHT") {
         joyName.store("RIGHT");
-    else
+        currentJoy.store(&Controller::Right);
+    } else {
         joyName.store("PRIMARY");
+        currentJoy.store(&Controller::Primary);
+    }
     lCurrentPosition.setText(_name + " POSITION");
 }
 
 void ThresholdSetter::updateMap(void)
 {
     QPainter pen (&joyMap);
+    QPen linePen;
     long double dist = sqrt(static_cast<long double>(joyPosition.first * joyPosition.first) +
         static_cast<long double>(joyPosition.second * joyPosition.second));
-
-    pen.fillRect(0, 0, mapSize, mapSize, dist > farThreshold.value() ? Qt::red : Qt::white);
-    auto rs = shortThreshold.value() / 32767. * static_cast<double>(mapSize / 2.);
     auto rf = farThreshold.value() / 32767. * static_cast<double>(mapSize / 2.);
-    pen.setPen(Qt::red);
+    auto rs = shortThreshold.value() / 32767. * static_cast<double>(mapSize / 2.);
+
+    pen.fillRect(0, 0, mapSize, mapSize, dist > farThreshold.value() ? Qt::red : Qt::black);
+    linePen.setWidth(2);
+    linePen.setColor(Qt::white);
+    pen.setPen(linePen);
+    pen.drawRect(0, 0, mapSize, mapSize);
+
+    linePen.setColor(Qt::red);
     pen.setBrush(dist > shortThreshold.value() && dist < farThreshold.value() ?
-        Qt::green : Qt::white);
+        Qt::green : Qt::black);
+    pen.setPen(linePen);
     pen.drawEllipse(QPointF(mapSize / 2, mapSize / 2), rf, rf);
-    pen.setPen(Qt::green);
-    pen.setBrush(Qt::white);
+
+    linePen.setColor(Qt::green);
+    pen.setBrush(Qt::black);
+    pen.setPen(linePen);
     pen.drawEllipse(QPointF(mapSize / 2, mapSize / 2), rs, rs);
 
     pen.setPen(Qt::gray);
@@ -137,8 +156,8 @@ void ThresholdSetter::updateMap(void)
     pen.drawLine(0, mapSize / 4, mapSize, mapSize * 3 / 4);
     pen.drawLine(0, mapSize * 3 / 4, mapSize, mapSize / 4);
 
-    pen.setPen(Qt::black);
-    pen.setBrush(Qt::black);
+    pen.setPen(Qt::white);
+    pen.setBrush(Qt::white);
     pen.drawEllipse(QPointF((joyPosition.first + 32767) / 65536. * static_cast<double>(mapSize),
         mapSize - ((joyPosition.second + 32767) / 65536. * static_cast<double>(mapSize))), 3, 3);
 

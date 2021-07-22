@@ -7,82 +7,111 @@
 ProgramTab::ProgramTab(QWidget *parent) :
     SavableTab(parent),
     lSelectJoystick("SELECT JOYSTICK", this),
-    lSelectedPG("", this),
-    lEnterKeyOrMacro("ENTER KEY OR MACRO COMMAND", this),
-    lVector1("VECTOR 1 COMMAND", this),
-    lVector2("VECTOR 2 COMMAND", this),
-    lButton("BUTTON ACTION:", this),
+    lEnterKeyOrMacro("ENTER KEY\nOR\nMACRO COMMAND", this),
+    lVector1("VECTOR 1 COMMANDS", this),
+    lVector2("VECTOR 2 COMMANDS", this),
+    lJoystick("JOYSTICK", this),
+    lSequencer("X2 VECTOR\nSEQUENCER", this),
+    lButtonAction("JOYSTICK\nBUTTON ACTION", this),
+    separator(this),
     lJoystickGuide(this),
     pixJoystick("assets/joystick.png"),
-    pixPJoystick("assets/pjoystick.png"),
+    pixPJoystick("assets/joystick-large.png"),
+    pixArrow("assets/arrow.png"),
+    lArrowDown(this),
+    pixArrowDown("assets/arrow-down.png"),
     useLeftJoystick("LEFT AUX JOYSTICK", this),
     useRightJoystick("RIGHT AUX JOYSTICK", this),
     usePrimaryJoystick("PRIMARY JOYSTICK", this),
     pgButtons(this),
     joystickButton(this),
-    useDiagonals("ENABLE DIAGONAL\nMOVEMENT", this),
+    useDiagonals("ENABLE DIAGONAL MOVEMENT\n *STEER WITH JOYSTICK", this),
     useSequencer("ENABLE SEQUENCER", this),
+    useLatch("TOGGLE On-Off", this),
     configSave("SAVE", this),
     configCancel("CANCEL", this),
-    configThreshold("THRESHOLD SETTINGS", this),
+    configThreshold("TRIGGER SETTINGS", this),
     leftData(Controller::Left),
     rightData(Controller::Right),
     primaryData(Controller::Primary),
     keyAssignDialog(this),
     thresholdDialog(this, parent)
 {
-    lJoystickGuide.setPixmap(pixJoystick);
-
     // Control placement
-    lJoystickGuide.setGeometry(150, 40, 108, 117);
-    lSelectJoystick.setGeometry(150, 180, 150, 20);
-    usePrimaryJoystick.setGeometry(150, 210, 150, 24);
-    useLeftJoystick.setGeometry(150, 235, 150, 24);
-    useRightJoystick.setGeometry(150, 260, 150, 24);
-    useSequencer.setGeometry(150, 290, 150, 20);
-    useDiagonals.setGeometry(150, 315, 150, 30);
-    configThreshold.setGeometry(150, 355, 150, 20);
-    lSelectedPG.setGeometry(440, 40, 60, 20);
-    lEnterKeyOrMacro.setGeometry(520, 40, 250, 20);
-    lVector1.setGeometry(460, 70, 140, 20);
-    lVector2.setGeometry(610, 70, 140, 20);
-    configSave.setGeometry(365, 400, 80, 20);
-    configCancel.setGeometry(455, 400, 80, 20);
+    lSelectJoystick.setGeometry(133, 140, 150, 20);
+    usePrimaryJoystick.setGeometry(133, 170, 150, 24);
+    useLeftJoystick.setGeometry(40, 210, 150, 24);
+    useRightJoystick.setGeometry(220, 210, 150, 24);
+    configThreshold.setGeometry(140, 250, 140, 24);
+    useSequencer.setGeometry(142, 305, 150, 20);
+    joystickButton.setGeometry(140, 353, 140, 24);
+    useLatch.setGeometry(154, 381, 140, 30);
+    useDiagonals.setGeometry(116, 423, 200, 30);
+    configSave.setGeometry(695, 430, 80, 20);
+    configCancel.setGeometry(785, 430, 80, 20);
+    separator.setGeometry(0, 134, 900, 1);
+    separator.setStyleSheet("background: #777");
 
     // Additional visual setups
-    lVector1.setAlignment(Qt::AlignCenter);
-    lVector2.setAlignment(Qt::AlignCenter);
+    lSelectJoystick.setAlignment(Qt::AlignCenter);
+    lSelectJoystick.setStyleSheet("font-size: 13px");
     useLeftJoystick.setLayoutDirection(Qt::RightToLeft);
     useRightJoystick.setLayoutDirection(Qt::RightToLeft);
     usePrimaryJoystick.setLayoutDirection(Qt::RightToLeft);
 
-    // Set up PG buttons
+    lJoystick.setGeometry(5, 235, 102, 50);
+    lSequencer.setGeometry(5, 290, 102, 50);
+    lButtonAction.setGeometry(5, 351, 102, 50);
+    lJoystick.setAlignment(Qt::AlignCenter);
+    lSequencer.setAlignment(Qt::AlignCenter);
+    lButtonAction.setAlignment(Qt::AlignCenter);
+    for (int i = 0; i < 3; ++i) {
+        lArrow[i].setParent(this);
+        lArrow[i].setPixmap(pixArrow);
+        lArrow[i].setGeometry(98, 247 + i * 53, 30, 32);
+    }
+    lArrowDown.setPixmap(pixArrowDown);
+    lArrowDown.setGeometry(200, 378, 20, 10);
+
+    // Set up PG buttons and joystick images
+    lEnterKeyOrMacro.setGeometry(400, 145, 112, 60);
+    lEnterKeyOrMacro.setAlignment(Qt::AlignCenter);
+    lJoystickGuide.setPixmap(pixPJoystick);
+    lJoystickGuide.setGeometry(410, 205, 108, 117);
     for (int i = 0; i < 8; i++) {
         auto button = new QPushButton(QString("MAP PG_") + static_cast<char>('1' + i), this);
-        button->setGeometry(330, 35 + 22 * i, 80, 20);
+        button->setGeometry(11 + 114 * i, 10, 80, 20);
         button->setCheckable(true);
         pgButtons.addButton(button, i);
+
+        lPGJoystick[i].setParent(this);
+        lPGJoystick[i].setPixmap(pixJoystick);
+        lPGJoystick[i].setGeometry(7 + 114 * i, 28, 108, 117);
     }
     pgButtons.setExclusive(true);
 
     for (int i = 0; i < 8; i++) {
-        lKeySlots[i] = new QLabel(QString(std::to_string(i + 1).c_str()), this);
-        lKeySlots[i]->setGeometry(440, 100 + 28 * i, 20, 24);
+        lKeySlots[i].setParent(this);
+        lKeySlots[i].setText(std::to_string(i + 1).c_str());
+        lKeySlots[i].setGeometry(530, 171 + 28 * i, 20, 24);
+
+        lKeySlots2[i].setParent(this);
+        lKeySlots2[i].setText(std::to_string(i + 1).c_str());
+        lKeySlots2[i].setGeometry(705, 171 + 28 * i, 20, 24);
     }
 
     // Set up key slots
+    lVector1.setGeometry(550, 145, 140, 25);
+    lVector2.setGeometry(725, 145, 140, 25);
+    lVector1.setAlignment(Qt::AlignCenter);
+    lVector2.setAlignment(Qt::AlignCenter);
     for (int i = 0; i < 16; i++) {
         auto button = new QPushButton("", this);
-        button->setGeometry(i < 8 ? 460 : 610, 100 + 28 * (i < 8 ? i : i - 8), 140, 24);
+        button->setGeometry(i < 8 ? 550 : 725, 170 + 28 * (i % 8), 140, 24);
         button->setStyleSheet("text-align: left; padding: 2px");
         button->setProperty("i", i);
         keySlots.addButton(button, i);
     }
-
-    lButton.setGeometry(460, 350, 140, 24);
-    lButton.setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-    // TODO match v.seq. buttons (align)
-    joystickButton.setGeometry(610, 350, 140, 24);
 
     // Connect signals/slots
     connect(&pgButtons, SIGNAL(buttonClicked(int)), this, SLOT(updateControls()));
@@ -93,6 +122,7 @@ ProgramTab::ProgramTab(QWidget *parent) :
     connect(&usePrimaryJoystick, SIGNAL(released()), this, SLOT(updateControls()));
     connect(&useDiagonals, SIGNAL(toggled(bool)), this, SLOT(setDiagonals(bool)));
     connect(&useSequencer, SIGNAL(toggled(bool)), this, SLOT(setSequencer(bool)));
+    connect(&useLatch, SIGNAL(toggled(bool)), this, SLOT(setButtonSticky(bool)));
     connect(&keyAssignDialog, SIGNAL(keyPressed(Key)), this, SLOT(keyPressed(Key)));
     connect(&configSave, SIGNAL(released()), this, SLOT(saveSettings()));
     connect(&configCancel, SIGNAL(released()), this, SLOT(loadSettings()));
@@ -148,13 +178,11 @@ void ProgramTab::updateControls(void)
     // Hide PG buttons if primary joystick isn't selected
     bool primary = usePrimaryJoystick.isChecked();
     for (auto& button : pgButtons.buttons())
-        button->setVisible(primary);
+        button->setEnabled(primary);
 
     // Set key slots and diagonal check
     if (primary) {
-        //lJoystickGuide.setPixmap(pixPJoystick);
         thresholdDialog.setJoystick("PRIMARY");
-        lSelectedPG.setText(QString("MAP PG_") + static_cast<char>(pgButtons.checkedId() + '1'));
         for (int i = 0; i < 16; i++) {
             auto text = primaryData->getText(pgButtons.checkedId(), i);
             keySlots.button(i)->setText(text);
@@ -166,12 +194,12 @@ void ProgramTab::updateControls(void)
 
         useDiagonals.setChecked(primaryData->getDiagonals());
         useSequencer.setChecked(primaryData->getSequencing());
+        useLatch.setChecked(primaryData->getButtonSticky());
         setDiagonals(primaryData->getDiagonals());
         setSequencer(primaryData->getSequencing());
+        setButtonSticky(primaryData->getButtonSticky());
     } else if (useLeftJoystick.isChecked()) {
-        //lJoystickGuide.setPixmap(pixJoystick);
         thresholdDialog.setJoystick("LEFT");
-        lSelectedPG.setText("L. AUX.");
 
         for (int i = 0; i < 16; i++) {
             auto text = leftData->getText(i);
@@ -185,12 +213,12 @@ void ProgramTab::updateControls(void)
         bool diag = leftData->getDiagonals();
         useDiagonals.setChecked(diag);
         useSequencer.setChecked(leftData->getSequencing());
+        useLatch.setChecked(leftData->getButtonSticky());
         setDiagonals(diag);
         setSequencer(leftData->getSequencing());
+        setButtonSticky(leftData->getButtonSticky());
     } else {
-        //lJoystickGuide.setPixmap(pixJoystick);
         thresholdDialog.setJoystick("RIGHT");
-        lSelectedPG.setText("R. AUX.");
 
         for (int i = 0; i < 16; i++) {
             auto text = rightData->getText(i);
@@ -204,8 +232,10 @@ void ProgramTab::updateControls(void)
         bool diag = rightData->getDiagonals();
         useDiagonals.setChecked(diag);
         useSequencer.setChecked(rightData->getSequencing());
+        useLatch.setChecked(rightData->getButtonSticky());
         setDiagonals(diag);
         setSequencer(rightData->getSequencing());
+        setButtonSticky(rightData->getButtonSticky());
     }
 
     // Set tool tips in case key slot can't fit text
@@ -236,6 +266,8 @@ void ProgramTab::setSequencer(bool enabled)
 
     lVector1.setVisible(enabled);
     lVector2.setVisible(enabled);
+    for (int i = 0; i < 8; ++i)
+        lKeySlots2[i].setVisible(enabled && lKeySlots[i].isVisible());
 }
 
 void ProgramTab::setDiagonals(bool enabled)
@@ -256,9 +288,22 @@ void ProgramTab::setDiagonals(bool enabled)
     // Hide diagonal key slots if diagonals are enabled
     for (int i = 1; i < (seq ? 16 : 8); i += 2) {
         keySlots.button(i)->setVisible(!enabled);
-        if (i < 8)
-            lKeySlots[i]->setVisible(!enabled);
+        if (i < 8) {
+            lKeySlots[i].setVisible(!enabled);
+            if (lVector1.isVisible())
+                lKeySlots2[i].setVisible(!enabled);
+        }
     }
+}
+
+void ProgramTab::setButtonSticky(bool enabled)
+{
+    if (usePrimaryJoystick.isChecked())
+        primaryData->setButtonSticky(enabled);
+    else if (useLeftJoystick.isChecked())
+        leftData->setButtonSticky(enabled);
+    else
+        rightData->setButtonSticky(enabled);
 }
 
 void ProgramTab::assignButton(void)
@@ -270,14 +315,12 @@ void ProgramTab::assignSlot(int index)
 {
     // Remember what slot was selected
     assigningSlot = index;
-    Controller::setEnabled(false);
     keyAssignDialog.show();
 }
 
 void ProgramTab::keyPressed(Key key)
 {
     // Set the key
-    Controller::setEnabled(true);
     if (usePrimaryJoystick.isChecked())
         primaryData->setPGKey(pgButtons.checkedId(), assigningSlot, key);
     else if (useLeftJoystick.isChecked())

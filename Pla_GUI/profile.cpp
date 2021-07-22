@@ -75,6 +75,9 @@ void Profile::remove(void)
 
 void Profile::rename(const QString &newName)
 {
+    if (settingsName == newName)
+        return;
+
     settings->sync();
     delete settings;
     settings = nullptr;

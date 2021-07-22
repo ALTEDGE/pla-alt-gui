@@ -20,13 +20,14 @@ WheelThresholdSetter::WheelThresholdSetter(QWidget *parent, QWidget *mainwindow)
     mapLabel(this),
     shouldUpdate(true)
 {
-    setWindowTitle("Threshold Settings");
+    setWindowTitle("Trigger Settings");
     setFixedSize(240, 150);
 
     // Set geometries
     lMap.setGeometry(0, 10, 240, 20);
     lMap.setAlignment(Qt::AlignCenter);
     mapLabel.setGeometry(10, 30, 220, 30);
+    mapLabel.setStyleSheet("border: 2px solid white");
     lThresh.setGeometry(0, 70, 240, 20);
     lThresh.setAlignment(Qt::AlignCenter);
     threshold.setGeometry(10, 90, 220, 10);
@@ -48,11 +49,15 @@ void WheelThresholdSetter::showEvent(QShowEvent *event)
 
     // Start the joystick monitoring thread
     joyThread = QtConcurrent::run([&] {
+        Controller::setEnabled(true);
+        Controller::setOperating(false);
         while (shouldUpdate) {
             position = Controller::Steering.getPosition();
             updateMap();
             QThread::msleep(100);
         }
+        Controller::setOperating(true);
+        Controller::setEnabled(false);
         return 0;
     });
 
@@ -73,15 +78,18 @@ void WheelThresholdSetter::updateMap(void)
 {
     QPainter pen (&map);
 
-    pen.fillRect(0, 0, 220, 30, abs(position) > threshold.value() ? Qt::green : Qt::white);
-    pen.setPen(Qt::green);
-    pen.setBrush(Qt::white);
-    int width = static_cast<int>(threshold.value() / 32767. * 220);
-    pen.drawRect(110 - width / 2, -1, width, 31);
-    pen.setPen(Qt::black);
+    // Background
+    pen.fillRect(0, 0, 220, 30, abs(position) > threshold.value() ? Qt::green : Qt::black);
+    // Threshold
+    pen.setPen([]{QPen pen; pen.setWidth(2); pen.setColor(Qt::green); return pen; }());
     pen.setBrush(Qt::black);
+    int width = static_cast<int>(threshold.value() / 32767. * 220);
+    pen.drawRect(110 - width / 2, -1, width, 30);
+    // Position
+    pen.setPen(Qt::white);
+    pen.setBrush(Qt::white);
     int x = std::min(std::max(110 + static_cast<int>(position / 32767. * 110), 0), 220);
-    pen.drawRect(x, 0, 1, 30);
+    pen.drawRect(x - 1, 4, 2, 21);
 
     mapLabel.setPixmap(QPixmap::fromImage(map));
 }

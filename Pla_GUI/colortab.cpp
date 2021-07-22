@@ -38,8 +38,8 @@ ColorTab::ColorTab(QWidget *parent) :
     lLedOff.setAlignment(Qt::AlignCenter);
     colorBrightness.setOrientation(Qt::Horizontal);
 
-    // Brightness range from 0 to 100
-    colorBrightness.setRange(0, 100);
+    // Brightness range from 0 to 50 (high brightness looks bad)
+    colorBrightness.setRange(0, 50);
 
     colorPicker.setCursor(Qt::CrossCursor);
     updateTimer.setSingleShot(true);
@@ -88,7 +88,7 @@ void ColorTab::disableLeds(void)
 
 void ColorTab::updateBrightness(int level)
 {
-    Controller::ColorBrightness = level / 2;
+    Controller::ColorBrightness = level;
     if (!updateTimer.isActive())
         updateTimer.start(100);
 }

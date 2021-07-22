@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package>
-    <DisplayName>PLA GUI</DisplayName>
-    <Description>The PLA GUI program and required files.</Description>
-    <Version>0.2</Version>
-    <ReleaseDate>2019-08-18</ReleaseDate>
+    <DisplayName>PLA ALT</DisplayName>
+    <Description>The PLA ALT program and required files.</Description>
+    <Version>0.5</Version>
+    <ReleaseDate>2021-07-16</ReleaseDate>
     <ForcedInstallation>true</ForcedInstallation>
     <Script>installscript.qs</Script>
 </Package>

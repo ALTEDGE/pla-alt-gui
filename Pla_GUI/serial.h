@@ -5,7 +5,8 @@
 #ifndef SERIAL_H
 #define SERIAL_H
 
-#ifdef _WIN64
+#ifdef PLA_WINDOWS
+typedef struct IUnknown IUnknown;
 #include <Windows.h>
 #endif
 
@@ -56,11 +57,11 @@ public:
     static void sendLights(bool on);
 
 private:
-#ifdef _WIN64
+#ifdef PLA_WINDOWS
     static HANDLE hComPort;
 #else
     static int comFd;
-#endif // _WIN64
+#endif // PLA_WINDOWS
     static unsigned char colorBuffer[4];
 
     static std::string nativeOpen(void);

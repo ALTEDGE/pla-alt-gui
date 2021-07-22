@@ -10,6 +10,7 @@
 
 #include "controller.h"
 
+#include <QApplication>
 #include <QMessageBox>
 
 QSystemTrayIcon *MainWindow::trayIcon;
@@ -24,17 +25,19 @@ MainWindow::MainWindow(QWidget *parent) :
     done(false)
 {
     // Keep the window at a fixed size.
+    setWindowTitle("PLA ALT");
     setFixedSize(900, 588);
+    installEventFilter(this);
 
     trayIcon = QSystemTrayIcon::isSystemTrayAvailable() ?
-        new QSystemTrayIcon(QIcon("icon.png")) : nullptr;
+        new QSystemTrayIcon(QIcon("assets/icon.ico")) : nullptr;
 
     if (trayIcon) {
         // Create the context menu for the system tray icon
         auto systemTrayMenu = new QMenu();
         profileMenu = systemTrayMenu->addMenu("Set profile...");
         systemTrayMenu->addSeparator();
-        auto quitAction = systemTrayMenu->addAction("Exit Pla GUI");
+        auto quitAction = systemTrayMenu->addAction("Exit PLA ALT");
 
         connect(quitAction, SIGNAL(triggered(bool)), this, SLOT(handleQuit(bool)));
 
@@ -71,11 +74,11 @@ void MainWindow::closeEvent(QCloseEvent *event)
     if (!done) {
         if (trayIcon) {
             event->ignore();
-            trayIcon->showMessage("GUI Hidden", "Re-open PLA GUI by clicking the tray icon.",
+            trayIcon->showMessage("PLA ALT Hidden", "Re-open PLA ALT by clicking the tray icon.",
                 QSystemTrayIcon::Information, 4000);
             hide();
         } else {
-            auto choice = QMessageBox::warning(this, "Exit PLA GUI",
+            auto choice = QMessageBox::warning(this, "Exit PLA ALT",
                                                "Are you sure you want to quit?",
                                                QMessageBox::Ok | QMessageBox::Cancel);
             if (choice != QMessageBox::Ok)
@@ -83,10 +86,28 @@ void MainWindow::closeEvent(QCloseEvent *event)
         }
     } else {
 #endif
+        trayIcon->hide();
         event->accept();
 #ifdef KEEP_OPEN_IN_TRAY
     }
 #endif
+}
+
+bool MainWindow::eventFilter(QObject *, QEvent *event)
+{
+    switch (event->type()) {
+    case QEvent::WindowActivate:
+        Controller::setEnabled(false);
+        break;
+    case QEvent::WindowDeactivate:
+        if (QApplication::activeWindow() == nullptr)
+            Controller::setEnabled(true);
+        break;
+    default:
+        break;
+    }
+
+    return false;
 }
 
 void MainWindow::changeTab(int index)

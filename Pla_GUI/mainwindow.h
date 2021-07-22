@@ -30,6 +30,8 @@ public:
         return trayIcon;
     }
 
+    bool eventFilter(QObject *object, QEvent *event) override;
+
 signals:
     void exitingProgram(void);
 
@@ -59,7 +61,7 @@ private:
      * Closes the window, and exits the program if minimizing to the tray is
      * disabled.
      */
-    void closeEvent(QCloseEvent *event);
+    void closeEvent(QCloseEvent *event) override;
 
     static QSystemTrayIcon *trayIcon;
 

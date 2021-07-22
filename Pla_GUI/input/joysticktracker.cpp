@@ -5,9 +5,7 @@
 #include <iostream>
 
 JoystickTracker::JoystickTracker(bool ts, bool ad) :
-    lastX(0),
-    lastY(0),
-    lastPressed(0),
+    KeySender(17),
     useSequencing(ts),
     useDiagonals(ad)
 {
@@ -136,8 +134,8 @@ void JoystickTracker::update(int x, int y, int pressed)
     lastY = y;
     auto dist = std::sqrt(dx * dx + dy * dy);
 
-    // Don't act if we're moving too quick
-    if (dist > config::JoystickSpeedThreshold)
+    // Don't act if we're moving too quick (or are disabled)
+    if (dist > config::JoystickSpeedThreshold || !isEnabled)
         return;
 
     // Get the current action index and fire that action
@@ -172,7 +170,12 @@ void JoystickTracker::update(int x, int y, int pressed)
     }
 
     if (lastPressed != pressed) {
-        sendKey(16, pressed);
+        if (!isButtonSticky) {
+            sendKey(16, pressed);
+        } else if (pressed) {
+            stickyState ^= true;
+            sendKey(16, stickyState);
+        }
         lastPressed = pressed;
     }
 }
@@ -184,6 +187,7 @@ void JoystickTracker::save(QSettings &settings) const
 
     settings.setValue("sequencer", useSequencing);
     settings.setValue("diagonals", useDiagonals);
+    settings.setValue("sticky", isButtonSticky);
 }
 
 void JoystickTracker::load(QSettings &settings)
@@ -193,4 +197,5 @@ void JoystickTracker::load(QSettings &settings)
 
     useSequencing = settings.value("sequencer").toBool();
     useDiagonals = settings.value("diagonals").toBool();
+    isButtonSticky = settings.value("sticky", false).toBool();
 }

@@ -49,13 +49,14 @@ protected:
      * Upon capture, fires the keyPressed signal with the key data.
      * @see keyPressed()
      */
-    bool eventFilter(QObject *watched, QEvent *event);
+    bool eventFilter(QObject *watched, QEvent *event) override;
 
 private:
     /**
      * Reloads the macro list on every call to show().
      */
-    void showEvent(QShowEvent *event);
+    void showEvent(QShowEvent *event) override;
+    void hideEvent(QHideEvent *event) override;
 
     // "Press a key (or combination), or select a macro."
     QLabel lInstructions;

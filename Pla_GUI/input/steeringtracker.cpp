@@ -1,7 +1,8 @@
 #include "steeringtracker.h"
 
 SteeringTracker::SteeringTracker(bool d) :
-        digital(d)
+    KeySender(2),
+    digital(d)
 {
 
 }
@@ -20,10 +21,9 @@ bool SteeringTracker::getDigital(void) const
 void SteeringTracker::update(int pos) {
     lastPosition = pos;
 
-    if (!digital)
+    if (!digital || !isEnabled)
         return;
 
-    // Quirky steering wheel returns 32767 if the wire is loose
     if (pos > shortThreshold) {
         sendKey(1, true); // right
     } else if (pos < -shortThreshold) {

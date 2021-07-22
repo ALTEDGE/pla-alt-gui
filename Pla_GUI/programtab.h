@@ -51,6 +51,8 @@ private slots:
      */
     void setSequencer(bool enabled);
 
+    void setButtonSticky(bool enabled);
+
     /**
      * Assigns the given key slot for the currently selected joystick.
      * @param index Index of the key slot
@@ -86,22 +88,24 @@ private slots:
 private:
     void showEvent(QShowEvent *event);
 
-    // "SELECT JOYSTICK"
     QLabel lSelectJoystick;
-    // e.g. "MAP_PG4", or "L. AUX"
-    QLabel lSelectedPG;
-    // "ENTER KEY OR MACRO COMMAND"
     QLabel lEnterKeyOrMacro;
-    // "VECTOR 1 COMMAND"
     QLabel lVector1;
-    // "VECTOR 2 COMMAND"
     QLabel lVector2;
-
-    QLabel lButton;
+    QLabel lJoystick;
+    QLabel lSequencer;
+    QLabel lButtonAction;
+    QLabel separator;
 
     QLabel lJoystickGuide;
+    QLabel lPGJoystick[8];
     QPixmap pixJoystick;
     QPixmap pixPJoystick;
+
+    QLabel lArrow[3];
+    QPixmap pixArrow;
+    QLabel lArrowDown;
+    QPixmap pixArrowDown;
 
     QRadioButton useLeftJoystick;
     QRadioButton useRightJoystick;
@@ -110,10 +114,12 @@ private:
     QButtonGroup pgButtons;
     QPushButton joystickButton;
     QButtonGroup keySlots;
-    QLabel *lKeySlots[8];
+    QLabel lKeySlots[8];
+    QLabel lKeySlots2[8];
 
     QCheckBox useDiagonals;
     QCheckBox useSequencer;
+    QCheckBox useLatch;
 
     QPushButton configSave;
     QPushButton configCancel;

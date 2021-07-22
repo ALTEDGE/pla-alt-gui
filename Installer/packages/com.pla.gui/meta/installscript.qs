@@ -10,16 +10,17 @@ Component.prototype.createOperations = function()
 {
 	component.createOperations();
     component.addOperation("CreateShortcut",
-                           "@TargetDir@\\PLA_GUI.exe",
-                           "@DesktopDir@\\PLA GUI.lnk",
+                           "@TargetDir@\\PLA_ALT.exe",
+                           "@DesktopDir@\\PLA ALT.lnk",
                            "workingDirectory=@TargetDir@");
 
     component.addOperation("CreateShortcut",
-                           "@TargetDir@\\PLA_GUI.exe",
-                           "@StartMenuDir@\\PLA GUI.lnk",
+                           "@TargetDir@\\PLA_ALT.exe",
+                           "@StartMenuDir@\\PLA ALT.lnk",
                            "workingDirectory=@TargetDir@");
 		
-	component.addOperation("Execute", ["@TargetDir@\\driver\\dpinst-amd64.exe"]);
+	component.addOperation("Execute", "@TargetDir@\\drivers\\dpinst-amd64.exe");
+	component.addOperation("Execute", "@TargetDir@\\drivers\\vc_redist.x64.exe", "/quiet", "/norestart");
 }
 
 Component.prototype.installerLoaded = function()
@@ -29,7 +30,7 @@ Component.prototype.installerLoaded = function()
 
     targetDirectoryPage = gui.pageWidgetByObjectName("DynamicTargetWidget");
     targetDirectoryPage.windowTitle = "Choose Installation Directory";
-    targetDirectoryPage.description.setText("Please select where PLA GUI will be installed:");
+    targetDirectoryPage.description.setText("Please select where PLA ALT will be installed:");
     targetDirectoryPage.targetDirectory.textChanged.connect(this, this.targetDirectoryChanged);
     targetDirectoryPage.targetDirectory.setText(installer.value("TargetDir"));
     targetDirectoryPage.targetChooser.released.connect(this, this.targetChooserClicked);

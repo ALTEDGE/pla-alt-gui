@@ -6,6 +6,7 @@
 
 #include <QMessageBox>
 
+#include <algorithm>
 #include <thread>
 
 MacroTab::MacroTab(QWidget *parent) :
@@ -52,15 +53,15 @@ MacroTab::MacroTab(QWidget *parent) :
     delayNone.setGeometry(70, 275, 200, 20);
     delayBeginRecord.setGeometry(70, 305, 200, 20);
     lDelayPrompt.setGeometry(70, 305, 200, 20);
-    delayValue.setGeometry(70, 325, 200, 20);
+    delayValue.setGeometry(70, 340, 200, 20);
     actionEdit.setGeometry(320, 40, 90, 20);
     actionRemove.setGeometry(460, 40, 90, 20);
     actionUp.setGeometry(600, 40, 90, 20);
     actionDown.setGeometry(740, 40, 90, 20);
     actionList.setGeometry(320, 70, 510, 255);
     actionInsert.setGeometry(750, 335, 80, 20);
-    configSave.setGeometry(365, 400, 80, 20);
-    configCancel.setGeometry(455, 400, 80, 20);
+    configSave.setGeometry(660, 400, 80, 20);
+    configCancel.setGeometry(750, 400, 80, 20);
 
     // Enforce minimum 5ms delay
     delayValue.setValidator(new QIntValidator(5, INT32_MAX));
@@ -207,7 +208,6 @@ void MacroTab::loadMacro(const QString& name)
     delayRecord.setChecked(currentDelay == Macro::RecordedDelay);
 
     // Show appropriate controls
-    delayBeginRecord.setVisible(delayRecord.isChecked());
     lDelayPrompt.setVisible(delayFixed.isChecked());
     delayValue.setVisible(delayFixed.isChecked());
 
@@ -325,25 +325,18 @@ void MacroTab::delayChange(void)
     currentDelay = delayNone.isChecked() ? Macro::NoDelay :
         (delayFixed.isChecked() ? Macro::FixedDelay : Macro::RecordedDelay);
 
-    delayBeginRecord.setVisible(delayRecord.isChecked());
     lDelayPrompt.setVisible(delayFixed.isChecked());
     delayValue.setVisible(delayFixed.isChecked());
-
-    if (!delayRecord.isChecked()) {
-        auto delay = std::chrono::milliseconds(
-            delayFixed.isChecked() ? delayValue.text().toInt() : 0);
-        for (auto& k : currentMacro)
-            k.delay = delay;
-    }
-
-    reloadMacro();
+    applyDelayValue();
 }
 
 void MacroTab::applyDelayValue(void)
 {
-    if (delayFixed.isChecked()) {
-        for (auto& k : currentMacro)
-            k.delay = std::chrono::milliseconds(delayValue.text().toInt());
+    if (!delayRecord.isChecked()) {
+        auto delay = std::chrono::milliseconds(
+            delayFixed.isChecked() ? delayValue.text().toInt() : 0);
+        std::for_each(currentMacro.begin(), currentMacro.end(),
+                      [delay](auto& k) { k.delay = delay; });
     }
 
     reloadMacro();
@@ -357,6 +350,5 @@ void MacroTab::beginRecord(void)
 void MacroTab::finishedRecording(ActionList &ks)
 {
     currentMacro = ks;
-
-    reloadMacro();
+    applyDelayValue();
 }
