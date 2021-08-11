@@ -12,17 +12,6 @@ JoystickTracker::JoystickTracker(bool ts, bool ad) :
 
 }
 
-int JoystickTracker::toState(int v) const
-{
-    int s = 0;
-    if (v > shortThreshold)
-        s += (v > farThreshold) + 1;
-    else if (v < -shortThreshold)
-        s -= (v < -farThreshold) + 1;
-
-    return s;
-}
-
 int JoystickTracker::getActionBits(int hstate, int vstate) const
 {
     int bits = 0;
@@ -119,31 +108,50 @@ void JoystickTracker::setDiagonals(bool enable)
     useDiagonals = enable;
 }
 
-void JoystickTracker::dumpState(char id) const
-{
-    std::cout << "J" << id << ": (" << lastX << ", " << lastY << "): "
-        << getActionIndex(toState(lastX), toState(lastY)) << std::endl;
-}
+//void JoystickTracker::dumpState(char id) const
+//{
+//    std::cout << "J" << id << ": (" << lastX << ", " << lastY << "): "
+//        << getActionIndex(toState(lastX), toState(lastY)) << std::endl;
+//}
 
 void JoystickTracker::update(int x, int y, int pressed)
 {
-    // Calculate speed/distance traveled
-    auto dx = x - lastX;
-    auto dy = y - lastY;
-    lastX = x;
-    lastY = y;
-    auto dist = std::sqrt(dx * dx + dy * dy);
+    // 1. Update lastX/Y, and check travel speed.
+    {
+        if (!isEnabled) {
+            lastX = x;
+            lastY = y;
+            return;
+        }
 
-    // Don't act if we're moving too quick (or are disabled)
-    if (dist > config::JoystickSpeedThreshold || !isEnabled)
-        return;
+        auto dx = x - lastX;
+        auto dy = y - lastY;
+        lastX = x;
+        lastY = y;
 
-    // Get the current action index and fire that action
-    // If the joystick is centered getActionIndex() will return -1,
-    // and sendKey() will do nothing.
-    auto vert = toState(y);
-    auto horz = toState(x);
+        // Don't act if we're moving too quick (or are disabled)
+        auto travelDistance = std::sqrt(dx * dx + dy * dy);
+        if (travelDistance > config::JoystickSpeedThreshold)
+            return;
+    }
 
+    // 2. Convert joystick position to action positions.
+    //    These range -2 to 2: +-2 for far threshold,
+    //    +-1 for short, 0 for no action.
+    int vert, horz;
+    auto dist = std::sqrt(x * x + y * y);
+    if (dist < shortThreshold) {
+        vert = 0;
+        horz = 0;
+    } else {
+        int mult = dist < farThreshold ? 1 : 2;
+        auto ang = std::atan2(y, x);
+
+        vert = mult * std::round(std::sin(ang));
+        horz = mult * std::round(std::cos(ang));
+    }
+
+    // 3. Use action positions to determine presses and releases.
     if (useDiagonals) {
         Qt::KeyboardModifiers releasedMods = Qt::NoModifier;
         int bits = getActionBits(horz, vert);

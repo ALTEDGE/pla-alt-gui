@@ -125,7 +125,7 @@ public:
      * Dumps the joystick state to standard output.
      * @param id Character id to include in the dump (useful for identification)
      */
-    void dumpState(char id) const;
+    //void dumpState(char id) const;
 
 private:
     // The previous X and Y position, for tracking velocity.
@@ -144,18 +144,6 @@ private:
     bool isButtonSticky = false;
     bool stickyState = false;
     bool isEnabled = true;
-
-    /**
-     * Converts a raw axis value to a 'state'.
-     * @param v The value to convert
-     * @return The value's 'state'
-     *
-     * If state zero, the axis hasn't moved enough to trigger an action.
-     * State +/- 1: Axis has passed the lowest action threshold.
-     * State +/- 2: Axis has passed the higher threshold (used for two-
-     *     stage mode)
-     */
-    int toState(int v) const;
 
     /**
      * Gets the index of an action to trigger, based on the axes' states.
