@@ -260,7 +260,7 @@ void MacroTab::moveKeyUp(void)
 {
     // Move data
     auto row = getCurrentActionListRow();
-    if (row < currentMacro.size())
+    if (row > 0 && row < currentMacro.size())
         std::swap(currentMacro[row], currentMacro[row - 1]);
 
     actionList.moveCurrentUp();
@@ -270,7 +270,7 @@ void MacroTab::moveKeyDown(void)
 {
     // Move data
     auto row = getCurrentActionListRow();
-    if (row < currentMacro.size())
+    if (row + 1 < currentMacro.size())
         std::swap(currentMacro[row], currentMacro[row + 1]);
 
     actionList.moveCurrentDown();
