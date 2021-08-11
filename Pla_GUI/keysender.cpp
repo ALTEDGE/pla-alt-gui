@@ -74,11 +74,19 @@ void KeySender::load(QSettings &settings)
 
 bool KeySender::operator==(const KeySender& other) const
 {
-    return keys == other.keys;
+    if (keys.size() != other.keys.size())
+        return false;
+
+    for (auto i = 0u; i < keys.size(); ++i) {
+        if (keys[i].first != other.keys[i].first)
+            return false;
+    }
+
+    return true;
 }
 
 bool KeySender::operator!=(const KeySender& other) const
 {
-    return keys != other.keys;
+    return !(*this == other);
 }
 

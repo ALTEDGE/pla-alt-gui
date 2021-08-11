@@ -114,6 +114,7 @@ ProgramTab::ProgramTab(QWidget *parent) :
     }
 
     // Connect signals/slots
+    connect(Profile::instance(), SIGNAL(profileChanged()), this, SLOT(loadSettings()));
     connect(&pgButtons, SIGNAL(buttonClicked(int)), this, SLOT(updateControls()));
     connect(&keySlots, SIGNAL(buttonClicked(int)), this, SLOT(assignSlot(int)));
     connect(&joystickButton, SIGNAL(released()), this, SLOT(assignButton()));
@@ -145,6 +146,7 @@ void ProgramTab::showEvent(QShowEvent *event)
 
 bool ProgramTab::isModified(void) const
 {
+    primaryData->saveCurrentPG();
     return primaryData.isModified() || leftData.isModified() ||
         rightData.isModified();
 }
@@ -153,6 +155,7 @@ void ProgramTab::saveSettings(void)
 {
     leftData.save();
     rightData.save();
+    primaryData->saveCurrentPG();
     primaryData.save();
     Controller::save(Profile::current());
 }
@@ -181,85 +184,48 @@ void ProgramTab::updateControls(void)
         button->setEnabled(primary);
 
     // Set key slots and diagonal check
+    JoystickTracker *keys = nullptr;
     if (primary) {
         thresholdDialog.setJoystick("PRIMARY");
-        for (int i = 0; i < 16; i++) {
-            auto text = primaryData->getText(pgButtons.checkedId(), i);
-            keySlots.button(i)->setText(text);
-            keySlots.button(i)->setToolTip(text);
-        }
-        auto text = primaryData->getText(pgButtons.checkedId(), 16);
-        joystickButton.setText(text);
-        joystickButton.setToolTip(text);
-
-        useDiagonals.setChecked(primaryData->getDiagonals());
-        useSequencer.setChecked(primaryData->getSequencing());
-        useLatch.setChecked(primaryData->getButtonSticky());
-        setDiagonals(primaryData->getDiagonals());
-        setSequencer(primaryData->getSequencing());
-        setButtonSticky(primaryData->getButtonSticky());
+        primaryData->saveCurrentPG();
+        primaryData->setPG(pgButtons.checkedId());
+        keys = primaryData.get();
     } else if (useLeftJoystick.isChecked()) {
         thresholdDialog.setJoystick("LEFT");
-
-        for (int i = 0; i < 16; i++) {
-            auto text = leftData->getText(i);
-            keySlots.button(i)->setText(text);
-            keySlots.button(i)->setToolTip(text);
-        }
-        auto text = leftData->getText(16);
-        joystickButton.setText(text);
-        joystickButton.setToolTip(text);
-
-        bool diag = leftData->getDiagonals();
-        useDiagonals.setChecked(diag);
-        useSequencer.setChecked(leftData->getSequencing());
-        useLatch.setChecked(leftData->getButtonSticky());
-        setDiagonals(diag);
-        setSequencer(leftData->getSequencing());
-        setButtonSticky(leftData->getButtonSticky());
+        keys = leftData.get();
     } else {
         thresholdDialog.setJoystick("RIGHT");
-
-        for (int i = 0; i < 16; i++) {
-            auto text = rightData->getText(i);
-            keySlots.button(i)->setText(text);
-            keySlots.button(i)->setToolTip(text);
-        }
-        auto text = rightData->getText(16);
-        joystickButton.setText(text);
-        joystickButton.setToolTip(text);
-
-        bool diag = rightData->getDiagonals();
-        useDiagonals.setChecked(diag);
-        useSequencer.setChecked(rightData->getSequencing());
-        useLatch.setChecked(rightData->getButtonSticky());
-        setDiagonals(diag);
-        setSequencer(rightData->getSequencing());
-        setButtonSticky(rightData->getButtonSticky());
+        keys = rightData.get();
     }
 
-    // Set tool tips in case key slot can't fit text
-    for (int i = 0; i < 16; i++)
-        keySlots.button(i)->setToolTip(keySlots.button(i)->text());
+    for (int i = 0; i < 16; i++) {
+        auto text = keys->getText(i);
+        keySlots.button(i)->setText(text);
+        keySlots.button(i)->setToolTip(text);
+    }
+    auto text = keys->getText(16);
+    joystickButton.setText(text);
+    joystickButton.setToolTip(text);
+
+    bool diag = keys->getDiagonals();
+    bool seq = keys->getSequencing();
+    bool stick = keys->getButtonSticky();
+    useDiagonals.setChecked(diag);
+    useSequencer.setChecked(seq);
+    useLatch.setChecked(stick);
+    setDiagonals(diag);
+    setSequencer(seq);
+    setButtonSticky(stick);
 }
 
 void ProgramTab::setSequencer(bool enabled)
 {
+    auto joy = getEditingJoystick();
+    bool diag = joy->getDiagonals();
+    joy->setSequencing(enabled);
+
     // Use inc to skip showing diagonal key slots if we're using diagonal
     // movement instead.
-    bool diag;
-
-    if (usePrimaryJoystick.isChecked()) {
-        diag = primaryData->getDiagonals();
-        primaryData->setSequencing(enabled);
-    } else if (useLeftJoystick.isChecked()) {
-        diag = leftData->getDiagonals();
-        leftData->setSequencing(enabled);
-    } else {
-        diag = rightData->getDiagonals();
-        rightData->setSequencing(enabled);
-    }
-
     unsigned int inc = 1 + (enabled & diag);
     for (int i = 8; i < 16; i += inc)
         keySlots.button(i)->setVisible(enabled);
@@ -272,18 +238,30 @@ void ProgramTab::setSequencer(bool enabled)
 
 void ProgramTab::setDiagonals(bool enabled)
 {
-    bool seq;
+    auto joy = getEditingJoystick();
 
-    if (usePrimaryJoystick.isChecked()) {
-        seq = primaryData->getSequencing();
-        primaryData->setDiagonals(enabled);
-    } else if (useLeftJoystick.isChecked()) {
-        seq = leftData->getSequencing();
-        leftData->setDiagonals(enabled);
-    } else {
-        seq = rightData->getSequencing();
-        rightData->setDiagonals(enabled);
+    if (enabled) {
+        bool notDefault = false;
+        for (int i = 0; i < 16; ++i) {
+            notDefault = joy->getKey(i).isValid();
+            if (notDefault)
+                break;
+        }
+
+        if (!notDefault) {
+            assigningSlot = 0;
+            keyPressed(Qt::Key_W);
+            assigningSlot = 2;
+            keyPressed(Qt::Key_D);
+            assigningSlot = 4;
+            keyPressed(Qt::Key_S);
+            assigningSlot = 6;
+            keyPressed(Qt::Key_A);
+        }
     }
+
+    bool seq = joy->getSequencing();
+    joy->setDiagonals(enabled);
 
     // Hide diagonal key slots if diagonals are enabled
     for (int i = 1; i < (seq ? 16 : 8); i += 2) {
@@ -298,12 +276,7 @@ void ProgramTab::setDiagonals(bool enabled)
 
 void ProgramTab::setButtonSticky(bool enabled)
 {
-    if (usePrimaryJoystick.isChecked())
-        primaryData->setButtonSticky(enabled);
-    else if (useLeftJoystick.isChecked())
-        leftData->setButtonSticky(enabled);
-    else
-        rightData->setButtonSticky(enabled);
+    getEditingJoystick()->setButtonSticky(enabled);
 }
 
 void ProgramTab::assignButton(void)
@@ -320,13 +293,7 @@ void ProgramTab::assignSlot(int index)
 
 void ProgramTab::keyPressed(Key key)
 {
-    // Set the key
-    if (usePrimaryJoystick.isChecked())
-        primaryData->setPGKey(pgButtons.checkedId(), assigningSlot, key);
-    else if (useLeftJoystick.isChecked())
-        leftData->setKey(assigningSlot, key);
-    else
-        rightData->setKey(assigningSlot, key);
+    getEditingJoystick()->setKey(assigningSlot, key);
 
     // Update key slot text
     if (assigningSlot == 16) {
@@ -336,4 +303,14 @@ void ProgramTab::keyPressed(Key key)
         keySlots.button(assigningSlot)->setText(key.toString());
         keySlots.button(assigningSlot)->setToolTip(key.toString());
     }
+}
+
+JoystickTracker *ProgramTab::getEditingJoystick()
+{
+    if (usePrimaryJoystick.isChecked())
+        return primaryData.get();
+    else if (useLeftJoystick.isChecked())
+        return leftData.get();
+    else
+        return rightData.get();
 }

@@ -127,11 +127,13 @@ private:
 
     Editing<JoystickTracker> leftData;
     Editing<JoystickTracker> rightData;
-    Editing<PrimaryJoystickTracker> primaryData;
+    mutable Editing<PrimaryJoystickTracker> primaryData;
 
     KeyGrabber keyAssignDialog;
     ThresholdSetter thresholdDialog;
     int assigningSlot;
+
+    JoystickTracker *getEditingJoystick();
 };
 
 #endif // PROGRAMTAB_H

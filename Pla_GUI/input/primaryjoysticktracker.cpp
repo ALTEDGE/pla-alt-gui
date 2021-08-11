@@ -3,23 +3,15 @@
 PrimaryJoystickTracker::PrimaryJoystickTracker(bool s, bool d) :
     JoystickTracker(s, d)
 {
+    for (auto& g : groups)
+        g = JoystickTracker(s, d);
+
     setPG(0);
 }
 
-void PrimaryJoystickTracker::setPGKey(int pg, int index, Key key)
+void PrimaryJoystickTracker::saveCurrentPG()
 {
-    //static_assert (pg < 8 && pg >= 0, "PG bounds check");
-    //static_assert (index < 16 && index >= 0, "Index bounds check");
-
-    // Validate arguments
-    if (pg >= 8 || index >= 17)
-        return;
-
-    groups[pg][index] = key;
-
-    // Update the base class' (KeySender) keys
-    if (pg == currentPG)
-        keys[index].first = groups[pg][index];
+    groups[currentPG] = *this;
 }
 
 void PrimaryJoystickTracker::setPG(int pg)
@@ -28,56 +20,42 @@ void PrimaryJoystickTracker::setPG(int pg)
         return;
 
     currentPG = pg;
-
-    // Update the base class' (KeySender) keys
-    for (unsigned int i = 0; i < 17; i++)
-        keys[i].first = groups[pg][i];
-}
-
-QString PrimaryJoystickTracker::getText(int pg, int index) const
-{
-    if (pg >= 8 || index >= 17)
-        return QString();
-
-    return groups[pg][index].toString();
+    *dynamic_cast<JoystickTracker *>(this) = groups[pg];
 }
 
 void PrimaryJoystickTracker::save(QSettings& settings) const
 {
-    JoystickTracker::save(settings);
+    //JoystickTracker::save(settings);
 
     // For each PG
     for (unsigned int i = 0; i < 8; i++) {
-        settings.beginGroup("pg" + QString::fromStdString(std::to_string(i)));
-
-        // For each action
-        for (unsigned int j = 0; j < 17; j++) {
-            settings.beginGroup(QString::fromStdString(std::to_string(j)));
-            groups[i][j].save(settings);
-            settings.endGroup();
-        }
-
+        settings.beginGroup(QString("pg%1").arg(i));
+        groups[i].save(settings);
         settings.endGroup();
     }
 }
 
 void PrimaryJoystickTracker::load(QSettings& settings)
 {
-    JoystickTracker::load(settings);
+    //JoystickTracker::load(settings);
 
     // For each PG
     for (unsigned int i = 0; i < 8; i++) {
-        settings.beginGroup("pg" + QString::fromStdString(std::to_string(i)));
-
-        // For each action
-        for (unsigned int j = 0; j < 17; j++) {
-            settings.beginGroup(QString::fromStdString(std::to_string(j)));
-            groups[i][j] = Key(settings);
-            settings.endGroup();
-        }
-
+        settings.beginGroup(QString("pg%1").arg(i));
+        groups[i].load(settings);
         settings.endGroup();
     }
 
     setPG(currentPG);
 }
+
+bool PrimaryJoystickTracker::operator==(const PrimaryJoystickTracker& other)
+{
+    return groups == other.groups;
+}
+
+bool PrimaryJoystickTracker::operator!=(const PrimaryJoystickTracker& other)
+{
+    return groups != other.groups;
+}
+

@@ -38,8 +38,8 @@ public:
      */
     Key(const QSettings& settings);
 
-    // "Equal" comparison, for Editing
     bool operator==(const Key& other) const;
+    bool operator!=(const Key& other) const;
 
     /**
      * Checks if this is a valid key, meaning that it represents a valid key.

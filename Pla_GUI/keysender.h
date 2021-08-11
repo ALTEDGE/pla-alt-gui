@@ -39,6 +39,13 @@ public:
         keys[index].first = Key(args...);
     }
 
+    const Key& getKey(int index) const {
+        static Key dummy;
+        if (index < 0 || index >= static_cast<int>(keys.size()))
+            return dummy;
+        return keys[index].first;
+    }
+
     /**
      * Returns a string to describe the index'th key.
      * @param index The index to read

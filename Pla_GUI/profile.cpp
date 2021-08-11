@@ -10,6 +10,8 @@
 static const QString profileFolderPath = (QStandardPaths::writableLocation(QStandardPaths::StandardLocation::ConfigLocation) + "/PLA/profiles/");
 static const QString profileExtension (".ini");
 
+static Profile profileInstance;
+
 QString profileFile(const QString& name)
 {
     return name + profileExtension;
@@ -27,6 +29,16 @@ QSettings* profileObject(const QString& name)
 
 QSettings *Profile::settings = nullptr;
 QString Profile::settingsName;
+
+Profile *Profile::instance()
+{
+    return &profileInstance;
+}
+
+void Profile::emitProfileChanged()
+{
+    emit profileChanged();
+}
 
 void Profile::open(const QString &name)
 {
@@ -50,6 +62,8 @@ void Profile::open(const QString &name)
 
     Controller::load(*settings);
     Macro::load(*settings);
+
+    profileInstance.emitProfileChanged();
 }
 
 void Profile::openFirst(void)

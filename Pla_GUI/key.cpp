@@ -59,6 +59,11 @@ bool Key::operator==(const Key& other) const
 	return key == other.key && mod == other.mod && macro == other.macro;
 }
 
+bool Key::operator!=(const Key& other) const
+{
+    return !(*this == other);
+}
+
 bool Key::isValid(void) const
 {
 	// Only valid if a key is set but no macro, or a macro is set but no key

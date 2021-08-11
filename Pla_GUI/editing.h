@@ -36,6 +36,10 @@ public:
         return &object;
     }
 
+    T* get(void) {
+        return &object;
+    }
+
     /**
      * Checks if the data object has changed since its last saved state.
      * @return True if modified

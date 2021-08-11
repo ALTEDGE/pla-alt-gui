@@ -113,6 +113,15 @@ public:
             isButtonSticky != other.isButtonSticky;
     }
 
+    JoystickTracker& operator=(const JoystickTracker& other) {
+        *dynamic_cast<KeySender *>(this) = other;
+        *dynamic_cast<Joystick *>(this) = other;
+        useSequencing = other.useSequencing;
+        useDiagonals = other.useDiagonals;
+        isButtonSticky = other.isButtonSticky;
+        return *this;
+    }
+
     /**
      * Gets the last position of the joystick.
      * @return A pair of the x/y position

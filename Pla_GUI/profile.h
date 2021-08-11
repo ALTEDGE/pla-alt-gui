@@ -11,7 +11,7 @@
  * @class Profile
  * @brief Manages profiles that contain joystick configurations.
  */
-class Profile
+class Profile : public QObject
 {
 public:
     /**
@@ -62,9 +62,18 @@ public:
      */
     static QStringList list(void);
 
+    static Profile *instance();
+
+signals:
+    void profileChanged();
+
 private:
     static QSettings *settings;
     static QString settingsName;
+
+    void emitProfileChanged();
+
+    Q_OBJECT
 };
 
 #endif // PROFILE_H
