@@ -72,7 +72,8 @@ void ThresholdSetter::showEvent(QShowEvent *event)
 {
     shouldUpdate.store(true);
 
-    auto nameL = joyName.load()[0];
+    auto name = joyName.load();
+    auto nameL = name ? name[0] : 'P';
     auto joy = nameL == 'L' ? &Controller::Left
             : (nameL == 'R' ? &Controller::Right
                             : &Controller::Primary);
@@ -151,10 +152,13 @@ void ThresholdSetter::updateMap(void)
 
     pen.setPen(Qt::gray);
     pen.setBrush(Qt::gray);
-    pen.drawLine(mapSize / 4, 0, mapSize * 3 / 4, mapSize);
-    pen.drawLine(mapSize * 3 / 4, 0, mapSize / 4, mapSize);
-    pen.drawLine(0, mapSize / 4, mapSize, mapSize * 3 / 4);
-    pen.drawLine(0, mapSize * 3 / 4, mapSize, mapSize / 4);
+
+    constexpr int div1 = static_cast<int>(mapSize * 0.29f);
+    constexpr int div2 = static_cast<int>(mapSize * 0.71f);
+    pen.drawLine(0, div2, mapSize, div1);
+    pen.drawLine(0, div1, mapSize, div2);
+    pen.drawLine(div1, 0, div2, mapSize);
+    pen.drawLine(div1, mapSize, div2, 0);
 
     pen.setPen(Qt::white);
     pen.setBrush(Qt::white);

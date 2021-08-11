@@ -28,12 +28,6 @@ int JoystickTracker::getActionBits(int hstate, int vstate) const
     else if (vstate < 0)
         bits |= (useSequencing && vstate == -2) ? (1 << 12) : (1 << 4);
 
-    // some axis is at vector 2
-    //if (bits & 0xFF00) {
-    //    bits |= (bits << 8) & 0xFF00;
-    //    bits &= ~(0xFF);
-    //}
-
     return bits;
 }
 
@@ -203,7 +197,7 @@ void JoystickTracker::load(QSettings &settings)
     KeySender::load(settings);
     loadThresholds(settings);
 
-    useSequencing = settings.value("sequencer").toBool();
-    useDiagonals = settings.value("diagonals").toBool();
+    useSequencing = settings.value("sequencer", false).toBool();
+    useDiagonals = settings.value("diagonals", false).toBool();
     isButtonSticky = settings.value("sticky", false).toBool();
 }

@@ -65,12 +65,12 @@ namespace config
     /**
      * Default threshold value for vector 1 / normal actions.
      */
-    constexpr int JoystickDefaultShortThreshold = 10000;
+    constexpr int JoystickDefaultShortThreshold = static_cast<int>(32767 * 0.6f);
 
     /**
      * Default threshold value for vector 2.
      */
-    constexpr int JoystickDefaultFarThreshold = 30000;
+    constexpr int JoystickDefaultFarThreshold = static_cast<int>(32767 * 0.9f);
 
     /**
      * Time to show tray messages, in milliseconds.
