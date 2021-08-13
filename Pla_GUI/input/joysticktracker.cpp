@@ -158,8 +158,6 @@ void JoystickTracker::update(int x, int y, int pressed)
             if (!(bits & (1 << i)))
                 sendKey(i, false);
         }
-        //if (bits == 0)
-        //    noPressedKeys();
     } else {
         int index = getActionIndex(horz, vert);
 

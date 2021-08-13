@@ -18,7 +18,7 @@ namespace config
     /**
      * Version string to show in bottom right of the main window.
      */
-    constexpr const char *versionString = "v0.5.2";
+    constexpr const char *versionString = "v0.6";
 
 
 
