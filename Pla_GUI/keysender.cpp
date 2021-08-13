@@ -1,59 +1,43 @@
 #include "keysender.h"
 
-std::vector<std::pair<Key, int>> KeySender::pressedKeys;
+#include <iostream>
+
+std::map<Qt::Key, int> KeySender::pressedKeys;
 
 KeySender::KeySender(unsigned int count) :
     keys(count, {Key(), false}) {}
 
-Qt::KeyboardModifiers KeySender::sendKey(int index, bool press, Qt::KeyboardModifiers mods)
+void KeySender::sendKey(int index, bool press)
 {
     if (index < 0 || index >= static_cast<int>(keys.size()))
-        return Qt::NoModifier;
-    if (keys[index].second == press && (keys[index].first.getModifiers() & mods) == 0)
-        return Qt::NoModifier;
+        return;
+    if (keys[index].second == press)
+        return;
 
     keys[index].second = press;
+
+    auto tryKeyAction =
+        [&](Qt::Key K) {
+            if (!press)
+                --pressedKeys[K];
+            if (pressedKeys[K] == 0)
+                Key(K).fire(press);
+            if (press)
+                ++pressedKeys[K];
+        };
+
     const auto& key = keys[index].first;
+    auto mods = key.getModifiers();
+    if (mods & Qt::ShiftModifier)
+        tryKeyAction(Qt::Key_Shift);
+    if (mods & Qt::ControlModifier)
+        tryKeyAction(Qt::Key_Control);
+    if (mods & Qt::AltModifier)
+        tryKeyAction(Qt::Key_Alt);
+    if (mods & Qt::MetaModifier)
+        tryKeyAction(Qt::Key_Meta);
 
-    if (press) {
-        // Only send keystroke if this is the first press of it
-        for (auto& k : pressedKeys) {
-            if (k.first == key) {
-                //++k.second;
-                return Qt::NoModifier;
-            }
-        }
-        // First press:
-        pressedKeys.emplace_back(key, 1);
-        key.fire(press);
-        return key.getModifiers();
-    } else {
-        // Check other keys, only release if last instance of the keystroke.
-        for (auto k = pressedKeys.begin();
-             k != pressedKeys.end();
-             ++k)
-        {
-            if (k->first == key) {
-                if (--k->second == 0) {
-                    pressedKeys.erase(k);
-                    key.fire(press);
-                    return key.getModifiers();
-                }
-                break;
-            }
-        }
-
-        return Qt::NoModifier;
-    }
-}
-
-void KeySender::noPressedKeys()
-{
-    if (pressedKeys.size() > 0) {
-        for (auto& k : pressedKeys)
-            k.first.fire(false);
-        pressedKeys.clear();
-    }
+    tryKeyAction(static_cast<Qt::Key>(key.getKey()));
 }
 
 QString KeySender::getText(int index) const

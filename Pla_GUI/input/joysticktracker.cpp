@@ -147,21 +147,19 @@ void JoystickTracker::update(int x, int y, int pressed)
 
     // 3. Use action positions to determine presses and releases.
     if (useDiagonals) {
-        Qt::KeyboardModifiers releasedMods = Qt::NoModifier;
         int bits = getActionBits(horz, vert);
 
         // Set bits get pressed, unset bits get released
-        // Send releases first.
-        for (int i = 0; i < 16; i++) {
-            if (!(bits & (1 << i)))
-                releasedMods |= sendKey(i, false);
-        }
         for (int i = 0; i < 16; i++) {
             if (bits & (1 << i))
-                sendKey(i, true, releasedMods);
+                sendKey(i, true);
         }
-        if (bits == 0)
-            noPressedKeys();
+        for (int i = 0; i < 16; i++) {
+            if (!(bits & (1 << i)))
+                sendKey(i, false);
+        }
+        //if (bits == 0)
+        //    noPressedKeys();
     } else {
         int index = getActionIndex(horz, vert);
 

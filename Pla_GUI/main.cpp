@@ -38,14 +38,14 @@ int main(int argc, char *argv[])
     a.setQuitOnLastWindowClosed(true);
 
     // Check if an instance is already running
-    QSharedMemory runGuard ("PLA_ALT_runGuardKey");
+    /*QSharedMemory runGuard ("PLA_ALT_runGuardKey");
     if (!runGuard.create(1)) {
         QMessageBox::information(nullptr, "PLA ALT",
             "PLA ALT is already running.\n"
             "The program may be accessed through the system tray.",
             QMessageBox::Ok);
         return 0;
-    }
+    }*/
 
     // Load controller settings
     Profile::openFirst();

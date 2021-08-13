@@ -13,7 +13,7 @@
 using namespace std::chrono_literals;
 
 constexpr int mapSize = 90;
-static std::atomic<JoystickTracker *> currentJoy = nullptr;
+static std::atomic<JoystickTracker *> currentJoy (nullptr);
 
 ThresholdSetter::ThresholdSetter(QWidget *parent, QWidget *mainwindow) :
     QDialog(parent),

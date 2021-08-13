@@ -7,8 +7,7 @@
 
 #include "key.h"
 
-#include <tuple>
-#include <vector>
+#include <map>
 
 /**
  * @class KeySender
@@ -25,7 +24,7 @@ public:
      * @param index The index of the key to send
      * @param press True for press, false for release
      */
-    Qt::KeyboardModifiers sendKey(int index, bool press, Qt::KeyboardModifiers mods = Qt::NoModifier);
+    void sendKey(int index, bool press);
 
     /**
      * Sets the index'th key, given arguments for one of Key's constructors.
@@ -45,8 +44,6 @@ public:
             return dummy;
         return keys[index].first;
     }
-
-    void noPressedKeys();
 
     /**
      * Returns a string to describe the index'th key.
@@ -78,7 +75,7 @@ protected:
     std::vector<std::pair<Key, bool>> keys;
 
 private:
-    static std::vector<std::pair<Key, int>> pressedKeys;
+    static std::map<Qt::Key, int> pressedKeys;
 };
 
 #endif // KEYSENDER_H

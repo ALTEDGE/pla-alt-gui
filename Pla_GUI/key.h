@@ -76,6 +76,17 @@ public:
     inline Qt::KeyboardModifiers getModifiers(void) const {
         return mod;
     }
+    inline Key withoutModifiers(Qt::KeyboardModifiers mask) const {
+        Key copy = *this;
+        copy.mod &= ~mask;
+        return copy;
+    }
+    inline Key withoutModifiers() const {
+        Key copy = *this;
+        copy.mod = Qt::NoModifier;
+        return copy;
+    }
+    inline int getKey() const { return key; }
 
 private:
     int key;
