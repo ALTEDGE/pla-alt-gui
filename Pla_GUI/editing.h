@@ -27,17 +27,19 @@ public:
      * @param obj The data object to keep track of
      */
     Editing(T& obj)
-        : object(obj), original(object) {}
+        : object(&obj), original(object) {}
+    Editing()
+        : object(nullptr), original() {}
 
     /**
      * Provides access to the object, so that it can be modified.
      */
     T* operator->(void) {
-        return &object;
+        return object;
     }
 
     T* get(void) {
-        return &object;
+        return object;
     }
 
     /**
@@ -45,7 +47,7 @@ public:
      * @return True if modified
      */
     bool isModified(void) const {
-        return object != original;
+        return *object != original;
     }
 
     /**
@@ -56,19 +58,19 @@ public:
      */
     void save(void) {
         // Get original copy up-to-date
-        original = object;
+        original = *object;
     }
 
     /**
      * Reverts the data object to its last saved state.
      */
     void revert(void) {
-        object = original;
+        *object = original;
     }
 
 private:
     // A reference to the data object
-    T& object;
+    T* object = nullptr;
 
     // A copy of the data object
     T original;

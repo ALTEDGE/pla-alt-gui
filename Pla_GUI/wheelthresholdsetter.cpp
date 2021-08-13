@@ -4,6 +4,7 @@
 #include "joysticktracker.h"
 #include "profile.h"
 
+#include <QApplication>
 #include <QtConcurrent/QtConcurrent>
 #include <QPainter>
 
@@ -48,6 +49,7 @@ void WheelThresholdSetter::showEvent(QShowEvent *event)
     threshold.setValue(Controller::Steering.getShortThreshold());
 
     // Start the joystick monitoring thread
+    installEventFilter(this);
     joyThread = QtConcurrent::run([&] {
         Controller::setEnabled(true);
         Controller::setOperating(false);
@@ -70,8 +72,26 @@ void WheelThresholdSetter::hideEvent(QHideEvent *event)
     // Bring back the monitor thread
     shouldUpdate = false;
     joyThread.result();
+    removeEventFilter(this);
     if (event != nullptr)
         event->accept();
+}
+
+bool WheelThresholdSetter::eventFilter(QObject *, QEvent *event)
+{
+    switch (event->type()) {
+    case QEvent::WindowActivate:
+        Controller::setOperating(false);
+        break;
+    case QEvent::WindowDeactivate:
+        if (QApplication::activeWindow() == nullptr)
+            Controller::setOperating(true);
+        break;
+    default:
+        break;
+    }
+
+    return false;
 }
 
 void WheelThresholdSetter::updateMap(void)

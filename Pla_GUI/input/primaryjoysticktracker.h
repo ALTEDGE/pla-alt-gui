@@ -8,45 +8,42 @@
 #include "joysticktracker.h"
 
 #include <array>
+#include <atomic>
 
 /**
  * @class PrimaryJoystickTracker
  * @brief Builds upon JoystickTracker to handle programmable groups (PGs).
  */
-class PrimaryJoystickTracker : public JoystickTracker {
+class PrimaryJoystickTracker {
 public:
-    PrimaryJoystickTracker(bool sequencer = false, bool diagonal = false);
+    PrimaryJoystickTracker();
 
-    /**
-     * Sets the current PG.
-     * @param pg The new PG, 0-7
-     */
     void setPG(int pg);
+    JoystickTracker& getPG(int pg = -1);
 
-    void saveCurrentPG();
+    int getCurrentPG() const { return currentPG; }
 
     /**
      * Saves all actions to the given configuration file
      * @param settings The settings object to write to
      */
-    void save(QSettings &settings) const final;
+    void save(QSettings &settings) const;
 
     /**
      * Loads all actions from the given configuration file
      * @param settings The settings object to read from
      */
-    void load(QSettings &settings) final;
+    void load(QSettings &settings);
 
     bool operator==(const PrimaryJoystickTracker& other);
     bool operator!=(const PrimaryJoystickTracker& other);
 
 private:
     // Stores each PG's configuration.
-    // Stores actions for all eight PGs.
     std::array<JoystickTracker, 8> groups;
 
     // Stores the current PG.
-    int currentPG;
+    std::atomic_int currentPG;
 };
 
 #endif // PRIMARYJOYSTICKTRACKER_H

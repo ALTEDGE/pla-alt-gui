@@ -4,6 +4,7 @@
 #include "joysticktracker.h"
 #include "profile.h"
 
+#include <QApplication>
 #include <QtConcurrent/QtConcurrent>
 #include <QPainter>
 
@@ -76,12 +77,13 @@ void ThresholdSetter::showEvent(QShowEvent *event)
     auto nameL = name ? name[0] : 'P';
     auto joy = nameL == 'L' ? &Controller::Left
             : (nameL == 'R' ? &Controller::Right
-                            : &Controller::Primary);
+                            : &Controller::Primary.getPG());
     shortThreshold.setValue(joy->getShortThreshold());
     farThreshold.setValue(joy->getFarThreshold());
     currentJoy.store(joy);
 
     // Start the joystick monitoring thread
+    installEventFilter(this);
     joyThread = QThread::create([this] {
         Controller::setEnabled(true);
         Controller::setOperating(false);
@@ -105,8 +107,26 @@ void ThresholdSetter::hideEvent(QHideEvent *event)
     shouldUpdate.store(false);
     joyThread->wait();
     joyThread->terminate();
+    removeEventFilter(this);
     if (event != nullptr)
         event->accept();
+}
+
+bool ThresholdSetter::eventFilter(QObject *, QEvent *event)
+{
+    switch (event->type()) {
+    case QEvent::WindowActivate:
+        Controller::setOperating(false);
+        break;
+    case QEvent::WindowDeactivate:
+        if (QApplication::activeWindow() == nullptr)
+            Controller::setOperating(true);
+        break;
+    default:
+        break;
+    }
+
+    return false;
 }
 
 void ThresholdSetter::setJoystick(QString _name)
@@ -119,7 +139,7 @@ void ThresholdSetter::setJoystick(QString _name)
         currentJoy.store(&Controller::Right);
     } else {
         joyName.store("PRIMARY");
-        currentJoy.store(&Controller::Primary);
+        currentJoy.store(&Controller::Primary.getPG());
     }
     lCurrentPosition.setText(_name + " POSITION");
 }
@@ -179,8 +199,8 @@ void ThresholdSetter::saveSettings(void)
         Controller::Right.setShortThreshold(shortThreshold.value());
         Controller::Right.setFarThreshold(farThreshold.value());
     } else if (nameL == 'P') {
-        Controller::Primary.setShortThreshold(shortThreshold.value());
-        Controller::Primary.setFarThreshold(farThreshold.value());
+        Controller::Primary.getPG().setShortThreshold(shortThreshold.value());
+        Controller::Primary.getPG().setFarThreshold(farThreshold.value());
     }
     Controller::save(Profile::current());
     Profile::save();
@@ -193,10 +213,10 @@ void ThresholdSetter::saveSettingsAll(void)
     int s = shortThreshold.value(), f = farThreshold.value();
     Controller::Left.setShortThreshold(s);
     Controller::Right.setShortThreshold(s);
-    Controller::Primary.setShortThreshold(s);
+    Controller::Primary.getPG().setShortThreshold(s);
     Controller::Left.setFarThreshold(f);
     Controller::Right.setFarThreshold(f);
-    Controller::Primary.setFarThreshold(f);
+    Controller::Primary.getPG().setFarThreshold(f);
     Controller::save(Profile::current());
     Profile::save();
 

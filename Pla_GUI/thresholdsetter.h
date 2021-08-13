@@ -37,6 +37,8 @@ public:
      */
     void setJoystick(QString _name);
 
+    bool eventFilter(QObject *object, QEvent *event) override;
+
 private slots:
     /**
      * Saves the threshold values.

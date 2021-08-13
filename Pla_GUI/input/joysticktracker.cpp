@@ -133,7 +133,7 @@ void JoystickTracker::update(int x, int y, int pressed)
     //    These range -2 to 2: +-2 for far threshold,
     //    +-1 for short, 0 for no action.
     int vert, horz;
-    auto dist = std::sqrt(x * x + y * y);
+    auto dist = std::min(std::sqrt(x * x + y * y), 32767.);
     if (dist < shortThreshold) {
         vert = 0;
         horz = 0;
@@ -160,6 +160,8 @@ void JoystickTracker::update(int x, int y, int pressed)
             if (bits & (1 << i))
                 sendKey(i, true, releasedMods);
         }
+        if (bits == 0)
+            noPressedKeys();
     } else {
         int index = getActionIndex(horz, vert);
 

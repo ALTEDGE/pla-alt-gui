@@ -19,7 +19,7 @@ Qt::KeyboardModifiers KeySender::sendKey(int index, bool press, Qt::KeyboardModi
         // Only send keystroke if this is the first press of it
         for (auto& k : pressedKeys) {
             if (k.first == key) {
-                ++k.second;
+                //++k.second;
                 return Qt::NoModifier;
             }
         }
@@ -44,6 +44,15 @@ Qt::KeyboardModifiers KeySender::sendKey(int index, bool press, Qt::KeyboardModi
         }
 
         return Qt::NoModifier;
+    }
+}
+
+void KeySender::noPressedKeys()
+{
+    if (pressedKeys.size() > 0) {
+        for (auto& k : pressedKeys)
+            k.first.fire(false);
+        pressedKeys.clear();
     }
 }
 

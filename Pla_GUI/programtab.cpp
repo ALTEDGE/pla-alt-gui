@@ -33,7 +33,6 @@ ProgramTab::ProgramTab(QWidget *parent) :
     configThreshold("TRIGGER SETTINGS", this),
     leftData(Controller::Left),
     rightData(Controller::Right),
-    primaryData(Controller::Primary),
     keyAssignDialog(this),
     thresholdDialog(this, parent)
 {
@@ -132,8 +131,6 @@ ProgramTab::ProgramTab(QWidget *parent) :
     // Assign default states
     usePrimaryJoystick.setChecked(true);
     pgButtons.button(0)->setChecked(true);
-
-    loadSettings();
 }
 
 void ProgramTab::showEvent(QShowEvent *event)
@@ -146,8 +143,7 @@ void ProgramTab::showEvent(QShowEvent *event)
 
 bool ProgramTab::isModified(void) const
 {
-    primaryData->saveCurrentPG();
-    return primaryData.isModified() || leftData.isModified() ||
+    return primaryPgData.isModified() || leftData.isModified() ||
         rightData.isModified();
 }
 
@@ -155,8 +151,7 @@ void ProgramTab::saveSettings(void)
 {
     leftData.save();
     rightData.save();
-    primaryData->saveCurrentPG();
-    primaryData.save();
+    primaryPgData.save();
     Controller::save(Profile::current());
 }
 
@@ -165,7 +160,7 @@ void ProgramTab::loadSettings(void)
     if (isModified()) {
         leftData.revert();
         rightData.revert();
-        primaryData.revert();
+        primaryPgData.revert();
     }
 
     showEvent(nullptr);
@@ -187,9 +182,9 @@ void ProgramTab::updateControls(void)
     JoystickTracker *keys = nullptr;
     if (primary) {
         thresholdDialog.setJoystick("PRIMARY");
-        primaryData->saveCurrentPG();
-        primaryData->setPG(pgButtons.checkedId());
-        keys = primaryData.get();
+        auto id = pgButtons.checkedId();
+        primaryPgData = Editing<JoystickTracker>(Controller::Primary.getPG(id));
+        keys = primaryPgData.get();
     } else if (useLeftJoystick.isChecked()) {
         thresholdDialog.setJoystick("LEFT");
         keys = leftData.get();
@@ -308,7 +303,7 @@ void ProgramTab::keyPressed(Key key)
 JoystickTracker *ProgramTab::getEditingJoystick()
 {
     if (usePrimaryJoystick.isChecked())
-        return primaryData.get();
+        return primaryPgData.get();
     else if (useLeftJoystick.isChecked())
         return leftData.get();
     else

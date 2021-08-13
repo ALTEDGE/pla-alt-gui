@@ -82,6 +82,15 @@ void Serial::sendLights(bool on)
     nativeWrite(&code, 1);
 }
 
+int Serial::getPg()
+{
+    unsigned char code = 'p';
+    nativeWrite(&code, 1);
+    unsigned char buf = 0;
+    nativeRead(&buf, 1);
+    return buf;
+}
+
 void Serial::nativeWrite(unsigned char *array, unsigned int count)
 {
 #ifdef PLA_WINDOWS
@@ -95,9 +104,24 @@ void Serial::nativeWrite(unsigned char *array, unsigned int count)
 #endif
 }
 
+void Serial::nativeRead(unsigned char *array, unsigned int count)
+{
+#ifdef PLA_WINDOWS
+    if (hComPort != INVALID_HANDLE_VALUE) {
+        DWORD read = 0;
+        ReadFile(hComPort, array, count, &read, nullptr);
+    }
+#else
+    if (comFd != -1)
+        ::read(comFd, array, count);
+#endif
+}
+
 std::string Serial::nativeOpen(void)
 {
 #ifdef PLA_WINDOWS
+    std::string comName;
+
     // Load a handle to access all connected devices
     auto hDevInfo = SetupDiGetClassDevs(nullptr, nullptr, nullptr,
         DIGCF_ALLCLASSES | DIGCF_PRESENT);
@@ -107,7 +131,6 @@ std::string Serial::nativeOpen(void)
 
     auto *devInfo = new SP_DEVINFO_DATA();
     std::string data (1024, '\0');
-    int comPort = -1;
 
     std::memset(devInfo, 0, sizeof(SP_DEVINFO_DATA));
     devInfo->cbSize = sizeof(SP_DEVINFO_DATA);
@@ -138,38 +161,42 @@ std::string Serial::nativeOpen(void)
         // Look for the COM number
         auto comIndex = data.rfind("(COM");
         if (comIndex != std::string::npos) {
-            // Device and port found
-            comPort = std::stoi(data.substr(comIndex + 4));
-            break;
+            // Attempt to open the serial port
+            ++comIndex;
+            auto comIndexEnd = data.find(')', comIndex);
+            comName = std::string("\\\\.\\") + data.substr(comIndex, comIndexEnd - comIndex);
+            hComPort = CreateFileA(comName.data(), GENERIC_READ | GENERIC_WRITE,
+                                   0, nullptr,
+                                   OPEN_EXISTING, FILE_FLAG_WRITE_THROUGH, nullptr);
+
+            // TODO could check error with GetLastError()
+            if (hComPort != INVALID_HANDLE_VALUE) {
+                // Set connection parameters to what we need
+                DCB params {};
+                params.DCBlength = sizeof(DCB);
+                GetCommState(hComPort, &params);
+                //params.BaudRate = CBR_9600; // Do not need to specify.
+                params.ByteSize = 8;
+                params.StopBits = ONESTOPBIT;
+                params.Parity = ODDPARITY;
+                SetCommState(hComPort, &params);
+
+                // Send 'i' identification command
+                unsigned char cmd = 'i';
+                nativeWrite(&cmd, 1);
+                char buf[3];
+                nativeRead(reinterpret_cast<unsigned char *>(buf), 3);
+
+                if (strncmp(buf, "PLA", 3) == 0) {
+                    break;
+                } else {
+                    CloseHandle(hComPort);
+                }
+            }
         }
     }
 
     delete devInfo;
-
-    if (comPort == -1)
-        return "";
-
-    // Attempt to open the serial port
-    std::string comName ("\\\\.\\COM");
-    comName += std::to_string(comPort);
-    hComPort = CreateFileA(comName.data(), GENERIC_READ | GENERIC_WRITE, 0, nullptr,
-        OPEN_EXISTING, FILE_FLAG_WRITE_THROUGH, nullptr);
-
-    // TODO could check error with GetLastError()
-    if (hComPort == INVALID_HANDLE_VALUE)
-        return "";
-
-    // Set connection parameters to what we need
-    DCB params {};
-    params.DCBlength = sizeof(DCB);
-    GetCommState(hComPort, &params);
-    //params.BaudRate = CBR_9600; // 9600 baud
-    params.ByteSize = 8;
-    params.StopBits = ONESTOPBIT;
-    params.Parity = ODDPARITY;
-    SetCommState(hComPort, &params);
-
-    // All set
     return comName;
 #else
     char portBuffer[13] = "/dev/ttyACM\0";
@@ -179,10 +206,10 @@ std::string Serial::nativeOpen(void)
         comFd = ::open(portBuffer, O_RDWR | O_NOCTTY | O_SYNC);
 
         if (comFd != -1) {
-            char buf[4];
+            char buf[3];
             auto w = ::write(comFd, "i", 1);
-            auto r = ::read(comFd, buf, 4);
-            if (w == 1 && r == 4 && strncmp(buf, "PLA\n", 4) == 0)
+            auto r = ::read(comFd, buf, 3);
+            if (w == 1 && r == 3 && strncmp(buf, "PLA", 3) == 0)
                 break;
             else
                 ::close(comFd);
@@ -191,5 +218,4 @@ std::string Serial::nativeOpen(void)
 
     return connected() ? portBuffer : "";
 #endif
-
 }

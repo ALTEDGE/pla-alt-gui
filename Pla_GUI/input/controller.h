@@ -51,15 +51,13 @@ public:
     static bool connected(void);
 
     /**
-     * Enables or disables triggering actions (used when setting bindings).
-     * @param enable True to enable action triggering
+     * If false, controller updates are paused entirely.
      */
     static inline void setEnabled(bool enable) {
         disableController.store(!enable);
     }
     /**
-     * If false, only joy positions are updated.
-     * If true, keystrokes can be fired.
+     * If false, joystick actions are not fired (only X/Y updates).
      */
     static void setOperating(bool enable);
 

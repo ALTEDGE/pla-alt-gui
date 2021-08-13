@@ -29,6 +29,8 @@ class WheelThresholdSetter : public QDialog
 public:
     WheelThresholdSetter(QWidget *parent, QWidget *mainwindow);
 
+    bool eventFilter(QObject *object, QEvent *event) override;
+
 private slots:
     /**
      * Saves the threshold values.

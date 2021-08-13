@@ -56,6 +56,8 @@ public:
      */
     static void sendLights(bool on);
 
+    static int getPg();
+
 private:
 #ifdef PLA_WINDOWS
     static HANDLE hComPort;
@@ -67,6 +69,7 @@ private:
     static std::string nativeOpen(void);
 
     static void nativeWrite(unsigned char *array, unsigned int count);
+    static void nativeRead(unsigned char *array, unsigned int count);
 
 };
 

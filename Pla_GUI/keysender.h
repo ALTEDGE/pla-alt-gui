@@ -46,6 +46,8 @@ public:
         return keys[index].first;
     }
 
+    void noPressedKeys();
+
     /**
      * Returns a string to describe the index'th key.
      * @param index The index to read

@@ -152,7 +152,7 @@ void Controller::setOperating(bool enable)
 {
     Left.setEnabled(enable);
     Right.setEnabled(enable);
-    Primary.setEnabled(enable);
+    Primary.getPG().setEnabled(enable);
     Steering.setEnabled(enable);
 }
 
@@ -183,7 +183,7 @@ void Controller::handleController(void)
                 SDL_JoystickGetButton(js, 2));
             Right.update(-SDL_JoystickGetAxis(js, 2), SDL_JoystickGetAxis(js, 5),
                 SDL_JoystickGetButton(js, 0));
-            Primary.update(-SDL_JoystickGetAxis(js, 0), SDL_JoystickGetAxis(js, 1),
+            Primary.getPG().update(-SDL_JoystickGetAxis(js, 0), SDL_JoystickGetAxis(js, 1),
                 SDL_JoystickGetButton(js, 1));
 
             // Add slight dead-zone to the wheel
@@ -208,6 +208,7 @@ void Controller::handleConnections(void)
                     joystick.store(SDL_JoystickOpen(event.jdevice.which));
                     Serial::open();
                     Serial::sendLights(true);
+                    Primary.setPG(Serial::getPg());
                     updateColor();
                 }
                 break;

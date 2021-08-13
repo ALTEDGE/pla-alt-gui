@@ -76,10 +76,10 @@ public:
 
 private:
     // When true, digital steering is enabled.
-    bool digital;
+    bool digital = true;
     bool isEnabled = true;
 
-    int lastPosition;
+    int lastPosition = 0;
 };
 
 

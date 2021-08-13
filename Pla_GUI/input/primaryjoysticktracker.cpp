@@ -1,32 +1,23 @@
 #include "primaryjoysticktracker.h"
 
-PrimaryJoystickTracker::PrimaryJoystickTracker(bool s, bool d) :
-    JoystickTracker(s, d)
-{
-    for (auto& g : groups)
-        g = JoystickTracker(s, d);
+PrimaryJoystickTracker::PrimaryJoystickTracker() :
+    currentPG(0) {}
 
-    setPG(0);
-}
-
-void PrimaryJoystickTracker::saveCurrentPG()
+JoystickTracker& PrimaryJoystickTracker::getPG(int pg)
 {
-    groups[currentPG] = *this;
+    if (pg == -1)
+        pg = currentPG.load();
+    return groups.at(pg);
 }
 
 void PrimaryJoystickTracker::setPG(int pg)
 {
-    if (pg >= 8)
-        return;
-
-    currentPG = pg;
-    *dynamic_cast<JoystickTracker *>(this) = groups[pg];
+    if (pg >= 0 && pg < 8)
+        currentPG.store(pg);
 }
 
 void PrimaryJoystickTracker::save(QSettings& settings) const
 {
-    //JoystickTracker::save(settings);
-
     // For each PG
     for (unsigned int i = 0; i < 8; i++) {
         settings.beginGroup(QString("pg%1").arg(i));
@@ -37,8 +28,6 @@ void PrimaryJoystickTracker::save(QSettings& settings) const
 
 void PrimaryJoystickTracker::load(QSettings& settings)
 {
-    //JoystickTracker::load(settings);
-
     // For each PG
     for (unsigned int i = 0; i < 8; i++) {
         settings.beginGroup(QString("pg%1").arg(i));

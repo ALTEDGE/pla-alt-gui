@@ -127,7 +127,7 @@ private:
 
     Editing<JoystickTracker> leftData;
     Editing<JoystickTracker> rightData;
-    mutable Editing<PrimaryJoystickTracker> primaryData;
+    Editing<JoystickTracker> primaryPgData;
 
     KeyGrabber keyAssignDialog;
     ThresholdSetter thresholdDialog;
