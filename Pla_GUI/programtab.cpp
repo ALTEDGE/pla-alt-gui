@@ -4,6 +4,8 @@
 #include "profile.h"
 #include "thresholdsetter.h"
 
+JoystickTracker dummy;
+
 ProgramTab::ProgramTab(QWidget *parent) :
     SavableTab(parent),
     lSelectJoystick("SELECT JOYSTICK", this),
@@ -158,9 +160,11 @@ void ProgramTab::saveSettings(void)
 void ProgramTab::loadSettings(void)
 {
     if (isModified()) {
-        leftData.revert();
-        rightData.revert();
-        primaryPgData.revert();
+        leftData = Editing<JoystickTracker>(Controller::Left);
+        rightData = Editing<JoystickTracker>(Controller::Right);
+        auto id = pgButtons.checkedId();
+        auto& jt = id >= 0 ? Controller::Primary.getPG(id) : dummy;
+        primaryPgData = Editing<JoystickTracker>(jt);
     }
 
     showEvent(nullptr);
@@ -183,7 +187,8 @@ void ProgramTab::updateControls(void)
     if (primary) {
         thresholdDialog.setJoystick("PRIMARY");
         auto id = pgButtons.checkedId();
-        primaryPgData = Editing<JoystickTracker>(Controller::Primary.getPG(id));
+        auto& jt = id >= 0 ? Controller::Primary.getPG(id) : dummy;
+        primaryPgData = Editing<JoystickTracker>(jt);
         keys = primaryPgData.get();
     } else if (useLeftJoystick.isChecked()) {
         thresholdDialog.setJoystick("LEFT");

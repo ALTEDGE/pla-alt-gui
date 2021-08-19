@@ -36,6 +36,7 @@ WheelTab::WheelTab(QWidget *parent) :
     //steerAnalog.setLayoutDirection(Qt::RightToLeft);
 
     // Connect signals/slots
+    connect(Profile::instance(), SIGNAL(profileChanged()), this, SLOT(loadSettings()));
     connect(&leftAction, SIGNAL(released()), this, SLOT(assignLeft()));
     connect(&rightAction, SIGNAL(released()), this, SLOT(assignRight()));
     connect(&keyGrabber, SIGNAL(keyPressed(Key)), this, SLOT(keyPressed(Key)));
@@ -82,7 +83,7 @@ bool WheelTab::isModified(void) const
 void WheelTab::loadSettings(void)
 {
     if (steerData.isModified())
-        steerData.revert();
+        steerData = Editing<SteeringTracker>(Controller::Steering);
 
     showEvent(nullptr);
 }

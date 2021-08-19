@@ -19,7 +19,7 @@ public:
      * Creates a tracker with the given digital/analog state.
      * @param d True for digital mode, false for analog
      */
-    SteeringTracker(bool d = true);
+    SteeringTracker(bool d = false);
     virtual ~SteeringTracker(void) = default;
 
     /**

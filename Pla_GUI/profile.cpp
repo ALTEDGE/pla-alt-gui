@@ -51,7 +51,8 @@ void Profile::open(const QString &name)
     }
 
     QFile file (profilePath(name));
-    if (!file.exists()) {
+    bool newProfile = !file.exists();
+    if (newProfile) {
         file.open(QFile::WriteOnly);
         file.write("\n");
         file.close();
@@ -62,6 +63,9 @@ void Profile::open(const QString &name)
 
     Controller::load(*settings);
     Macro::load(*settings);
+
+    if (newProfile)
+        save();
 
     profileInstance.emitProfileChanged();
 }

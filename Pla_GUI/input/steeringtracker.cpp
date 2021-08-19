@@ -43,7 +43,7 @@ void SteeringTracker::save(QSettings &settings) const
 
 void SteeringTracker::load(QSettings &settings)
 {
-    digital = settings.value("digital").toBool();
+    digital = settings.value("digital", false).toBool();
     KeySender::load(settings);
     loadThresholds(settings);
 }

@@ -70,6 +70,7 @@ MacroTab::MacroTab(QWidget *parent) :
     actionList.setToolTip("Double click to toggle press/release");
 
     // Connect signals/slots
+    connect(Profile::instance(), SIGNAL(profileChanged()), this, SLOT(loadSettings()));
     connect(&keyGrabber, SIGNAL(keyPressed(Key)), this, SLOT(keyPressed(Key)));
     connect(&macroAdd, SIGNAL(released()), this, SLOT(createNewMacro()));
     connect(&macroDelete, SIGNAL(released()), this, SLOT(deleteMacro()));
