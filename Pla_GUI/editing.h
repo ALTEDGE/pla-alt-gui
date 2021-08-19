@@ -27,7 +27,7 @@ public:
      * @param obj The data object to keep track of
      */
     Editing(T& obj)
-        : object(&obj), original(object) {}
+        : object(&obj), original(obj) {}
     Editing()
         : object(nullptr), original() {}
 
@@ -47,7 +47,7 @@ public:
      * @return True if modified
      */
     bool isModified(void) const {
-        return *object != original;
+        return object ? *object != original : false;
     }
 
     /**
@@ -58,14 +58,16 @@ public:
      */
     void save(void) {
         // Get original copy up-to-date
-        original = *object;
+        if (object)
+            original = *object;
     }
 
     /**
      * Reverts the data object to its last saved state.
      */
     void revert(void) {
-        *object = original;
+        if (object)
+            *object = original;
     }
 
 private:
