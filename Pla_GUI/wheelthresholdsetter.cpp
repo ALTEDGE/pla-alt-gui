@@ -23,6 +23,7 @@ WheelThresholdSetter::WheelThresholdSetter(QWidget *parent, QWidget *mainwindow)
 {
     setWindowTitle("Trigger Settings");
     setFixedSize(240, 150);
+    setModal(true);
 
     // Set geometries
     lMap.setGeometry(0, 10, 240, 20);
