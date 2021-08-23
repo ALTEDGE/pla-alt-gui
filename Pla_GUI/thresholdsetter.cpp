@@ -20,6 +20,7 @@ ThresholdSetter::ThresholdSetter(QWidget *parent, QWidget *mainwindow) :
     joyName("PRIMARY"),
     lShortThresh("DEFAULT / VECTOR 1 THRESHOLD", this),
     lFarThresh("VECTOR 2 THRESHOLD", this),
+    lPrimaryWidth("PRIMARY DIRECTION WIDTH", this),
     lCurrentPosition("PRIMARY POSITION", this),
     lInstruction(
         "Passing green threshold\n"
@@ -29,6 +30,7 @@ ThresholdSetter::ThresholdSetter(QWidget *parent, QWidget *mainwindow) :
         "and passing red triggers Vector 2.", this),
     shortThreshold(this),
     farThreshold(this),
+    primaryWidth(this),
     //currentPrimary(this),
     configSave("SAVE", this),
     configSaveAll("SAVE ALL", this),
@@ -37,7 +39,7 @@ ThresholdSetter::ThresholdSetter(QWidget *parent, QWidget *mainwindow) :
     shouldUpdate(false)
 {
     setWindowTitle("Trigger Settings");
-    setFixedSize(340, 240);
+    setFixedSize(340, 300);
     setModal(true);
 
     // Set geometries
@@ -48,24 +50,33 @@ ThresholdSetter::ThresholdSetter(QWidget *parent, QWidget *mainwindow) :
     shortThreshold.setGeometry(20, 150, 300, 10);
     lFarThresh.setGeometry(20, 170, 300, 20);
     farThreshold.setGeometry(20, 190, 300, 10);
-    configSave.setGeometry(100, 210, 60, 20);
-    configSaveAll.setGeometry(180, 210, 60, 20);
+    lPrimaryWidth.setGeometry(20, 210, 300, 20);
+    primaryWidth.setGeometry(20, 230, 300, 10);
+    configSave.setGeometry(100, 270, 60, 20);
+    configSaveAll.setGeometry(180, 270, 60, 20);
 
     lShortThresh.setAlignment(Qt::AlignCenter);
     lFarThresh.setAlignment(Qt::AlignCenter);
+    lPrimaryWidth.setAlignment(Qt::AlignCenter);
     lInstruction.setAlignment(Qt::AlignLeft | Qt::AlignTop);
     //lCurrentPosition.setAlignment(Qt::AlignCenter);
     shortThreshold.setOrientation(Qt::Horizontal);
     farThreshold.setOrientation(Qt::Horizontal);
+    primaryWidth.setOrientation(Qt::Horizontal);
 
     // Set slider ranges
-    shortThreshold.setRange(100, 32767);
-    farThreshold.setRange(100, 32767);
+    shortThreshold.setRange(4000, 31000);
+    farThreshold.setRange(4000, 31000);
+    primaryWidth.setRange(43, 113); // rad * 100
     shortThreshold.setObjectName("short");
     farThreshold.setObjectName("far");
+    primaryWidth.setObjectName("zone");
 
     connect(&configSave, SIGNAL(released()), this, SLOT(saveSettings()));
     connect(&configSaveAll, SIGNAL(released()), this, SLOT(saveSettingsAll()));
+    connect(&shortThreshold, SIGNAL(valueChanged(int)), this, SLOT(onThresholdsChanged(int)));
+    connect(&farThreshold, SIGNAL(valueChanged(int)), this, SLOT(onThresholdsChanged(int)));
+    connect(&primaryWidth, SIGNAL(valueChanged(int)), this, SLOT(onPrimaryWidthChanged(int)));
     connect(mainwindow, SIGNAL(exitingProgram()), this, SLOT(close()));
 }
 
@@ -81,6 +92,7 @@ void ThresholdSetter::showEvent(QShowEvent *event)
     shortThreshold.setValue(joy->getShortThreshold());
     farThreshold.setValue(joy->getFarThreshold());
     currentJoy.store(joy);
+    primaryWidth.setValue(std::round(joy->getPrimaryAngle() * 100));
 
     // Start the joystick monitoring thread
     installEventFilter(this);
@@ -129,6 +141,26 @@ bool ThresholdSetter::eventFilter(QObject *, QEvent *event)
     return false;
 }
 
+void ThresholdSetter::onThresholdsChanged(int)
+{
+    int sval = shortThreshold.value();
+    if (farThreshold.value() - sval < 1000)
+        farThreshold.setValue(sval + 1000);
+}
+
+void ThresholdSetter::onPrimaryWidthChanged(int value)
+{
+    auto joy = currentJoy.load();
+    if (joy) {
+        double angle = value / 100.;
+        joy->setPrimaryAngle(angle);
+
+        auto offset = std::tan(angle / 2.) / 2.;
+        mapLineDivs.first = static_cast<int>(std::round((0.5 - offset) * mapSize));
+        mapLineDivs.second = static_cast<int>(std::round((0.5 + offset) * mapSize));
+    }
+}
+
 void ThresholdSetter::setJoystick(QString _name)
 {
     if (_name == "LEFT") {
@@ -173,12 +205,10 @@ void ThresholdSetter::updateMap(void)
     pen.setPen(Qt::gray);
     pen.setBrush(Qt::gray);
 
-    constexpr int div1 = static_cast<int>(mapSize * 0.29f);
-    constexpr int div2 = static_cast<int>(mapSize * 0.71f);
-    pen.drawLine(0, div2, mapSize, div1);
-    pen.drawLine(0, div1, mapSize, div2);
-    pen.drawLine(div1, 0, div2, mapSize);
-    pen.drawLine(div1, mapSize, div2, 0);
+    pen.drawLine(0, mapLineDivs.second, mapSize, mapLineDivs.first);
+    pen.drawLine(0, mapLineDivs.first, mapSize, mapLineDivs.second);
+    pen.drawLine(mapLineDivs.first, 0, mapLineDivs.second, mapSize);
+    pen.drawLine(mapLineDivs.first, mapSize, mapLineDivs.second, 0);
 
     pen.setPen(Qt::white);
     pen.setBrush(Qt::white);

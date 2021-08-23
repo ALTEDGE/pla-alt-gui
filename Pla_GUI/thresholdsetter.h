@@ -51,6 +51,9 @@ private slots:
      */
     void saveSettingsAll(void);
 
+    void onPrimaryWidthChanged(int);
+    void onThresholdsChanged(int);
+
 public:
     /**
      * Starts the primary joystick monitoring thread, to provide a sense of
@@ -71,16 +74,15 @@ private:
 
     std::atomic<const char *> joyName;
 
-    // "DEFAULT / VECTOR 1 THRESHOLD"
     QLabel lShortThresh;
-    // "VECTOR 2 THRESHOLD"
     QLabel lFarThresh;
-    // "CURRENT POSITION"
+    QLabel lPrimaryWidth;
     QLabel lCurrentPosition;
     QLabel lInstruction;
 
     QSlider shortThreshold;
     QSlider farThreshold;
+    QSlider primaryWidth;
 
     QPushButton configSave;
     QPushButton configSaveAll;
@@ -91,6 +93,7 @@ private:
     std::pair<int, int> joyPosition;
     std::atomic_bool shouldUpdate;
     QThread *joyThread;
+    std::pair<int, int> mapLineDivs;
 };
 
 #endif // THRESHOLDSETTER_H

@@ -141,8 +141,44 @@ void JoystickTracker::update(int x, int y, int pressed)
         int mult = dist < farThreshold ? 1 : 2;
         auto ang = std::atan2(y, x);
 
-        vert = mult * std::round(std::sin(ang));
-        horz = mult * std::round(std::cos(ang));
+        if (std::isnan(ang)) {
+            vert = 0;
+            horz = 0;
+        } else {
+            auto absang = std::abs(ang);
+            do {
+                if (absang < primaryAngle / 2) {
+                    // Right
+                    vert = 0;
+                    horz = mult;
+                    break;
+                }
+                absang -= primaryAngle / 2;
+                if (absang < 1.570796 - primaryAngle) {
+                    // Up/down right
+                    vert = mult * (ang < 0 ? -1 : 1);
+                    horz = mult;
+                    break;
+                }
+                absang -= 1.570796 - primaryAngle;
+                if (absang < primaryAngle) {
+                    // Up/down
+                    vert = mult * (ang < 0 ? -1 : 1);
+                    horz = 0;
+                    break;
+                }
+                absang -= primaryAngle;
+                if (absang < 1.570796 - primaryAngle) {
+                    // Up/down left
+                    vert = mult * (ang < 0 ? -1 : 1);
+                    horz = -mult;
+                    break;
+                }
+                // Left
+                vert = 0;
+                horz = -mult;
+            } while (false);
+        }
     }
 
     // 3. Use action positions to determine presses and releases.
@@ -188,6 +224,7 @@ void JoystickTracker::save(QSettings &settings) const
     settings.setValue("sequencer", useSequencing);
     settings.setValue("diagonals", useDiagonals);
     settings.setValue("sticky", isButtonSticky);
+    settings.setValue("pangle", primaryAngle);
 }
 
 void JoystickTracker::load(QSettings &settings)
@@ -198,4 +235,5 @@ void JoystickTracker::load(QSettings &settings)
     useSequencing = settings.value("sequencer", false).toBool();
     useDiagonals = settings.value("diagonals", false).toBool();
     isButtonSticky = settings.value("sticky", false).toBool();
+    primaryAngle = settings.value("pangle", 0.7853982).toDouble();
 }

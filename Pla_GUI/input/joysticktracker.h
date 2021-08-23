@@ -61,6 +61,12 @@ public:
         isEnabled = yes;
     }
 
+    inline void setPrimaryAngle(double angle) {
+        primaryAngle = angle;
+    }
+    inline double getPrimaryAngle() const
+    { return primaryAngle; }
+
     /**
      * Checks if the vector sequencer is enabled.
      * @return True if sequencing is enabled
@@ -102,7 +108,8 @@ public:
         return KeySender::operator==(other) &&
             useSequencing == other.useSequencing &&
             useDiagonals == other.useDiagonals &&
-            isButtonSticky == other.isButtonSticky;
+            isButtonSticky == other.isButtonSticky &&
+            primaryAngle == other.primaryAngle;
     }
 
     // "Not Equal" comparison overload, needed for Editing objects
@@ -110,7 +117,8 @@ public:
         return KeySender::operator!=(other) ||
             useSequencing != other.useSequencing ||
             useDiagonals != other.useDiagonals ||
-            isButtonSticky != other.isButtonSticky;
+            isButtonSticky != other.isButtonSticky ||
+            primaryAngle != other.primaryAngle;
     }
 
     JoystickTracker& operator=(const JoystickTracker& other) {
@@ -119,6 +127,7 @@ public:
         useSequencing = other.useSequencing;
         useDiagonals = other.useDiagonals;
         isButtonSticky = other.isButtonSticky;
+        primaryAngle = other.primaryAngle;
         return *this;
     }
 
@@ -144,13 +153,14 @@ private:
 
     // If true, vector sequencing is enabled.
     bool useSequencing = false;
-
     // If true, diagonal actions are disabled.
     // Instead, a diagonal movement triggers the two adjacent actions (e.g. up
     // and left).
     bool useDiagonals = false;
 
     bool isButtonSticky = false;
+    double primaryAngle = 0.7853982;
+
     bool stickyState = false;
     bool isEnabled = true;
 

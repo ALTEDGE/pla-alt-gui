@@ -28,7 +28,7 @@ WheelThresholdSetter::WheelThresholdSetter(QWidget *parent, QWidget *mainwindow)
     // Set geometries
     lMap.setGeometry(0, 10, 240, 20);
     lMap.setAlignment(Qt::AlignCenter);
-    mapLabel.setGeometry(10, 30, 220, 30);
+    mapLabel.setGeometry(8, 30, 224, 30);
     mapLabel.setStyleSheet("border: 2px solid white");
     lThresh.setGeometry(0, 70, 240, 20);
     lThresh.setAlignment(Qt::AlignCenter);
@@ -36,7 +36,7 @@ WheelThresholdSetter::WheelThresholdSetter(QWidget *parent, QWidget *mainwindow)
     configSave.setGeometry(90, 120, 60, 20);
 
     threshold.setOrientation(Qt::Horizontal);
-    threshold.setRange(100, 32767);
+    threshold.setRange(3000, 30000);
 
     connect(&configSave, SIGNAL(released()), this, SLOT(saveSettings()));
     connect(mainwindow, SIGNAL(exitingProgram()), this, SLOT(close()));
@@ -105,11 +105,11 @@ void WheelThresholdSetter::updateMap(void)
     pen.setPen([]{QPen pen; pen.setWidth(2); pen.setColor(Qt::green); return pen; }());
     pen.setBrush(Qt::black);
     int width = static_cast<int>(threshold.value() / 32767. * 220);
-    pen.drawRect(110 - width / 2, -1, width, 30);
+    pen.drawRect(109 - width / 2, -1, width + 1, 30);
     // Position
     pen.setPen(Qt::white);
     pen.setBrush(Qt::white);
-    int x = std::min(std::max(110 + static_cast<int>(position / 32767. * 110), 0), 220);
+    int x = std::min(std::max(109 + static_cast<int>(position / 32767. * 110), 0), 220);
     pen.drawRect(x - 1, 4, 2, 21);
 
     mapLabel.setPixmap(QPixmap::fromImage(map));
