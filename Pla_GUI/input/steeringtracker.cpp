@@ -24,11 +24,11 @@ void SteeringTracker::update(int pos) {
     if (!digital || !isEnabled)
         return;
 
-    if (pos > shortThreshold) {
+    if (pos > shortThreshold * 1.025) {
         sendKey(1, true); // right
-    } else if (pos < -shortThreshold) {
+    } else if (pos < -shortThreshold * 1.025) {
         sendKey(0, true); // left
-    } else {
+    } else if (std::abs(pos) < shortThreshold * 0.975) {
         sendKey(0, false);
         sendKey(1, false);
     }

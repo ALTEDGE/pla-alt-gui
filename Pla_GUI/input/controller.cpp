@@ -11,8 +11,6 @@
 
 using namespace std::chrono_literals;
 
-constexpr int WHEEL_DEADZONE = 0.1f * 32767;
-
 int Controller::currentPG = 0;
 std::atomic<SDL_Joystick *> Controller::joystick;
 std::atomic_bool Controller::runThreads;
@@ -185,10 +183,7 @@ void Controller::handleController(void)
                 SDL_JoystickGetButton(js, 0));
             Primary.getPG().update(-SDL_JoystickGetAxis(js, 0), SDL_JoystickGetAxis(js, 1),
                 SDL_JoystickGetButton(js, 1));
-
-            // Add slight dead-zone to the wheel
-            auto w = SDL_JoystickGetAxis(js, 6);
-            Steering.update(std::abs(w) >= WHEEL_DEADZONE ? w : 0);
+            Steering.update(SDL_JoystickGetAxis(js, 6));
 
             std::this_thread::sleep_for(config::InputUpdateFrequency);
         }
