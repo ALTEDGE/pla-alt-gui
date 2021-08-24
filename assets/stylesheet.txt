@@ -153,6 +153,13 @@ ThresholdSetter QSlider::sub-page:horizontal#far {
     border-radius: 4px;
 }
 
+ThresholdSetter QSlider::sub-page:horizontal#zone {
+    background: #00d6dd;
+    border: 1px solid #777;
+    height: 10px;
+    border-radius: 4px;
+}
+
 ThresholdSetter QSlider::sub-page:horizontal#short, WheelThresholdSetter QSlider::sub-page:horizontal {
     background: #0e0;
     border: 1px solid #777;
