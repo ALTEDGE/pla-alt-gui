@@ -257,11 +257,17 @@ void MacroTab::deleteMacro(void)
     reloadMacroList();
 }
 
+int MacroTab::getCurrentActionListRow(void) const
+{
+    auto idx = actionList.currentIndex();
+    return idx.isValid() ? idx.row() : -1;
+}
+
 void MacroTab::moveKeyUp(void)
 {
     // Move data
-    auto row = getCurrentActionListRow();
-    if (row > 0 && row < currentMacro.size())
+    int row = getCurrentActionListRow();
+    if (row > 0 && row < static_cast<int>(currentMacro.size()))
         std::swap(currentMacro[row], currentMacro[row - 1]);
 
     actionList.moveCurrentUp();
@@ -270,8 +276,8 @@ void MacroTab::moveKeyUp(void)
 void MacroTab::moveKeyDown(void)
 {
     // Move data
-    auto row = getCurrentActionListRow();
-    if (row + 1 < currentMacro.size())
+    int row = getCurrentActionListRow();
+    if (row >= 0 && row + 1 < static_cast<int>(currentMacro.size()))
         std::swap(currentMacro[row], currentMacro[row + 1]);
 
     actionList.moveCurrentDown();
@@ -280,18 +286,19 @@ void MacroTab::moveKeyDown(void)
 void MacroTab::insertKey(void)
 {
     // Get the macro's key list
-    auto row = getCurrentActionListRow();
-    int index = row < currentMacro.size() ? static_cast<int>(row) : 0;
+    int row = getCurrentActionListRow();
+    if (row < 0 || row >= static_cast<int>(currentMacro.size()))
+        row = 0;
 
     // Add a new key
-    currentMacro.emplace(currentMacro.begin() + index);
-    actionList.insertItem(index, currentMacro[index].key.toString());
+    currentMacro.emplace(currentMacro.begin() + row);
+    actionList.insertItem(row, currentMacro[row].key.toString());
 }
 
 void MacroTab::removeKey(void)
 {
-    auto row = getCurrentActionListRow();
-    if (row < currentMacro.size())
+    int row = getCurrentActionListRow();
+    if (row >= 0 && row < static_cast<int>(currentMacro.size()))
         currentMacro.erase(currentMacro.begin() + row);
 
     actionList.removeCurrent();
@@ -299,8 +306,8 @@ void MacroTab::removeKey(void)
 
 void MacroTab::editKey(void)
 {
-    auto row = getCurrentActionListRow();
-    if (row < currentMacro.size()) {
+    int row = getCurrentActionListRow();
+    if (row >= 0 && row < static_cast<int>(currentMacro.size())) {
         currentMacro.at(row).press ^= true;
         reloadMacro();
     }
@@ -308,13 +315,15 @@ void MacroTab::editKey(void)
 
 void MacroTab::editKeybind(void)
 {
-    keyGrabber.show();
+    int row = getCurrentActionListRow();
+    if (row >= 0 && row < static_cast<int>(currentMacro.size()))
+        keyGrabber.show();
 }
 
 void MacroTab::keyPressed(Key key)
 {
-    auto row = getCurrentActionListRow();
-    if (row < currentMacro.size()) {
+    int row = getCurrentActionListRow();
+    if (row >= 0 && row < static_cast<int>(currentMacro.size())) {
         currentMacro[row].key = key;
         actionList.item(row)->setText(key.toString());
         reloadMacro();

@@ -131,9 +131,7 @@ private:
     void reloadMacroList(void);
 
     // Simplifies code in some member functions
-    inline unsigned int getCurrentActionListRow(void) {
-        return static_cast<unsigned int>(actionList.currentIndex().row());
-    }
+    int getCurrentActionListRow(void) const;
 
     // "MACRO"
     QLabel lMacro;
