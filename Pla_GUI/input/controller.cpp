@@ -125,7 +125,7 @@ void Controller::load(QSettings& settings)
     Color.setRed(settings.value("red", 0x03).toInt());
     Color.setGreen(settings.value("green", 0xF7).toInt());
     Color.setBlue(settings.value("blue", 0xFF).toInt());
-    ColorBrightness = settings.value("brightness", 50).toInt();
+    ColorBrightness = settings.value("brightness", 25).toInt();
     ColorEnable = settings.value("enabled", true).toBool();
     updateColor();
 
@@ -199,12 +199,13 @@ void Controller::handleConnections(void)
             switch (event.type) {
             case SDL_JOYDEVICEADDED:
                 if (joystick.load() == nullptr && checkGUID(event.jdevice.which)) {
-                    tray->show("PLA", "Controller connected!");
-                    joystick.store(SDL_JoystickOpen(event.jdevice.which));
-                    Serial::open();
-                    Serial::sendLights(true);
-                    Primary.setPG(Serial::getPg());
-                    updateColor();
+                    if (Serial::open()) {
+                        tray->show("PLA", "Controller connected!");
+                        joystick.store(SDL_JoystickOpen(event.jdevice.which));
+                        Serial::sendLights(true);
+                        Primary.setPG(Serial::getPg());
+                        updateColor();
+                    }
                 }
                 break;
             case SDL_JOYDEVICEREMOVED:
@@ -237,9 +238,13 @@ void Controller::handleConnections(void)
 bool Controller::checkGUID(int id)
 {
         auto guid = SDL_JoystickGetDeviceGUID(id);
-        constexpr auto deviceGUID = config::DeviceGUID;
-        return (guid.data[4] == deviceGUID[0] &&
-            guid.data[5] == deviceGUID[1] &&
-            guid.data[8] == deviceGUID[2] &&
-            guid.data[9] == deviceGUID[3]);
+        return (guid.data[4] == config::DeviceGUID[0][0] &&
+                guid.data[5] == config::DeviceGUID[0][1] &&
+                guid.data[8] == config::DeviceGUID[0][2] &&
+                guid.data[9] == config::DeviceGUID[0][3])
+               ||
+               (guid.data[4] == config::DeviceGUID[1][0] &&
+                guid.data[5] == config::DeviceGUID[1][1] &&
+                guid.data[8] == config::DeviceGUID[1][2] &&
+                guid.data[9] == config::DeviceGUID[1][3]);
 }

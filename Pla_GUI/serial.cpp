@@ -149,8 +149,10 @@ std::string Serial::nativeOpen(void)
         // Attempt to load the device's hardware ID
         // and check if the ID matches the controller's
         // TODO ID is hard-coded...
-        if (!getProperty(SPDRP_HARDWAREID) ||
-            data.find(config::WindowsDeviceGUID) == std::string::npos)
+        if (!getProperty(SPDRP_HARDWAREID))
+            continue;
+        if (data.find(config::WindowsDeviceGUID[0]) == std::string::npos &&
+            data.find(config::WindowsDeviceGUID[1]) == std::string::npos)
             continue;
 
         // If we get to here, this should be our device.

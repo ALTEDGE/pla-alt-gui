@@ -20,7 +20,7 @@ ThresholdSetter::ThresholdSetter(QWidget *parent, QWidget *mainwindow) :
     joyName("PRIMARY"),
     lShortThresh("DEFAULT / VECTOR 1 THRESHOLD", this),
     lFarThresh("VECTOR 2 THRESHOLD", this),
-    lPrimaryWidth("PRIMARY DIRECTION WIDTH", this),
+    lPrimaryWidth("CUSTOM VECTOR DIMENSIONING", this),
     lCurrentPosition("PRIMARY POSITION", this),
     lInstruction(
         "Passing green threshold\n"
