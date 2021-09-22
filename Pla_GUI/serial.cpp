@@ -91,6 +91,15 @@ int Serial::getPg()
     return buf;
 }
 
+void Serial::setPg(unsigned int pg)
+{
+    unsigned char buf[2] = {
+        'P',
+        static_cast<unsigned char>(pg)
+    };
+    nativeWrite(buf, sizeof(buf));
+}
+
 void Serial::nativeWrite(unsigned char *array, unsigned int count)
 {
 #ifdef PLA_WINDOWS

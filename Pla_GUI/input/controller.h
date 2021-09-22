@@ -61,6 +61,8 @@ public:
      */
     static void setOperating(bool enable);
 
+    static void selectPG(unsigned int pg);
+
     /**
      * Saves all settings to the given settings handler.
      * @param settings Where to save settings to

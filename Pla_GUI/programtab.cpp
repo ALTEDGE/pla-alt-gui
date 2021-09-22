@@ -2,6 +2,7 @@
 
 #include "controller.h"
 #include "profile.h"
+#include "serial.h"
 #include "thresholdsetter.h"
 
 JoystickTracker dummy;
@@ -187,8 +188,13 @@ void ProgramTab::updateControls(void)
     if (primary) {
         thresholdDialog.setJoystick("PRIMARY");
         auto id = pgButtons.checkedId();
-        auto& jt = id >= 0 ? Controller::Primary.getPG(id) : dummy;
-        primaryPgData = Editing<JoystickTracker>(jt);
+        if (id >= 0) {
+            primaryPgData = Controller::Primary.getPG(id);
+            Controller::selectPG(id);
+            Serial::setPg(id);
+        } else {
+            primaryPgData = Editing<JoystickTracker>(dummy);
+        }
         keys = primaryPgData.get();
     } else if (useLeftJoystick.isChecked()) {
         thresholdDialog.setJoystick("LEFT");

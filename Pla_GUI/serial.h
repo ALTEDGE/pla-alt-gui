@@ -58,6 +58,8 @@ public:
 
     static int getPg();
 
+    static void setPg(unsigned int pg);
+
 private:
 #ifdef PLA_WINDOWS
     static HANDLE hComPort;

@@ -57,6 +57,14 @@ bool Controller::connected(void)
     return joystick.load() != nullptr;
 }
 
+void Controller::selectPG(unsigned int pg)
+{
+    if (pg < 8) {
+        currentPG = pg;
+        Primary.setPG(pg);
+    }
+}
+
 void Controller::save(QSettings& settings)
 {
     settings.beginGroup("keys");
@@ -159,7 +167,7 @@ void Controller::handleController(void)
     while (runThreads.load()) {
         // Only update if a joystick is connected
         auto* js = joystick.load();
-        if (js == nullptr || disableController.load()) {
+        if (js == nullptr) {
             std::this_thread::sleep_for(config::ConnectionCheckFrequency);
         } else {
             SDL_JoystickUpdate();
@@ -175,15 +183,17 @@ void Controller::handleController(void)
                 }
             }
 
-            // Update the joystick objects with their respective axes
-            // Y-axis is inverted because joysticks on prototype are upside-down
-            Left.update(-SDL_JoystickGetAxis(js, 3), SDL_JoystickGetAxis(js, 4),
-                SDL_JoystickGetButton(js, 2));
-            Right.update(-SDL_JoystickGetAxis(js, 2), SDL_JoystickGetAxis(js, 5),
-                SDL_JoystickGetButton(js, 0));
-            Primary.getPG().update(-SDL_JoystickGetAxis(js, 0), SDL_JoystickGetAxis(js, 1),
-                SDL_JoystickGetButton(js, 1));
-            Steering.update(SDL_JoystickGetAxis(js, 6));
+            if (!disableController.load()) {
+                // Update the joystick objects with their respective axes
+                // Y-axis is inverted because joysticks on prototype are upside-down
+                Left.update(-SDL_JoystickGetAxis(js, 3), SDL_JoystickGetAxis(js, 4),
+                    SDL_JoystickGetButton(js, 2));
+                Right.update(-SDL_JoystickGetAxis(js, 2), SDL_JoystickGetAxis(js, 5),
+                    SDL_JoystickGetButton(js, 0));
+                Primary.getPG().update(-SDL_JoystickGetAxis(js, 0), SDL_JoystickGetAxis(js, 1),
+                    SDL_JoystickGetButton(js, 1));
+                Steering.update(SDL_JoystickGetAxis(js, 6));
+            }
 
             std::this_thread::sleep_for(config::InputUpdateFrequency);
         }
@@ -203,7 +213,7 @@ void Controller::handleConnections(void)
                         tray->show("PLA", "Controller connected!");
                         joystick.store(SDL_JoystickOpen(event.jdevice.which));
                         Serial::sendLights(true);
-                        Primary.setPG(Serial::getPg());
+                        selectPG(Serial::getPg());
                         updateColor();
                     }
                 }
