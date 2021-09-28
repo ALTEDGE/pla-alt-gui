@@ -88,11 +88,11 @@ QString Key::toString(void) const
             text += "Shift + ";
 
         if (key == Qt::Key_Control)
-            text += "Ctrl";
+            text += "L Ctrl";
         else if (key == Qt::Key_Alt)
             text += "Alt";
         else if (key == Qt::Key_Shift)
-            text += "Shift";
+            text += "L Shift";
         else
             text += QKeySequence(key).toString();
     } else {
