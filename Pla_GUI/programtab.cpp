@@ -236,7 +236,7 @@ void ProgramTab::setSequencer(bool enabled)
     for (int i = 8; i < 16; i += inc)
         keySlots.button(i)->setVisible(enabled);
 
-    lVector1.setVisible(enabled);
+    //lVector1.setVisible(enabled);
     lVector2.setVisible(enabled);
     for (int i = 0; i < 8; ++i)
         lKeySlots2[i].setVisible(enabled && lKeySlots[i].isVisible());
@@ -274,7 +274,7 @@ void ProgramTab::setDiagonals(bool enabled)
         keySlots.button(i)->setVisible(!enabled);
         if (i < 8) {
             lKeySlots[i].setVisible(!enabled);
-            if (lVector1.isVisible())
+            if (lVector2.isVisible())
                 lKeySlots2[i].setVisible(!enabled);
         }
     }

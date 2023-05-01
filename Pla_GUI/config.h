@@ -18,7 +18,7 @@ namespace config
     /**
      * Version string to show in bottom right of the main window.
      */
-    constexpr const char *versionString = "v0.7.4";
+    constexpr const char *versionString = "v0.7.5";
 
     using namespace std::chrono_literals;
 
