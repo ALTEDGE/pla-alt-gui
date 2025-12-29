@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Installer>
-    <Name>PLA ALT</Name>
-    <Version>0.5</Version>
-    <Title>PLA ALT Installer</Title>
+    <Name>PLA FPS</Name>
+    <Version>0.7.6</Version>
+    <Title>PLA FPS Installer</Title>
     <Publisher>PLA</Publisher>
-    <StartMenuDir>PLA ALT</StartMenuDir>
-    <TargetDir>@ApplicationsDirX64@\PLA ALT</TargetDir>
+    <StartMenuDir>PLA FPS</StartMenuDir>
+    <TargetDir>@ApplicationsDirX64@\PLA FPS</TargetDir>
 </Installer>

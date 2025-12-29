@@ -7,7 +7,7 @@
 #include <QFileInfo>
 #include <QStandardPaths>
 
-static const QString profileFolderPath = (QStandardPaths::writableLocation(QStandardPaths::StandardLocation::ConfigLocation) + "/PLA/profiles/");
+static const QString profileFolderPath ("C:\\FPS_Profiles\\");
 static const QString profileExtension (".ini");
 
 static Profile profileInstance;
@@ -42,6 +42,8 @@ void Profile::emitProfileChanged()
 
 void Profile::open(const QString &name)
 {
+    bool newProfile = false;
+
     if (name == settingsName)
         return;
 
@@ -50,12 +52,21 @@ void Profile::open(const QString &name)
         delete settings;
     }
 
-    QFile file (profilePath(name));
-    bool newProfile = !file.exists();
-    if (newProfile) {
-        file.open(QFile::WriteOnly);
-        file.write("\n");
-        file.close();
+    {
+        QFile file (profilePath(name));
+
+        newProfile = !file.exists();
+        if (newProfile) {
+            QFile def (profilePath("default"));
+
+            if (def.exists()) {
+                def.copy(profilePath(name));
+            } else {
+                file.open(QFile::WriteOnly);
+                file.write("\n");
+                file.close();
+            }
+        }
     }
 
     settingsName = name;
@@ -145,7 +156,7 @@ QStringList Profile::list(void)
 
     auto list = profiles.entryInfoList();
     for (QFileInfo file : list) {
-        if (file.isFile())
+        if (file.isFile() && file.baseName() != "default")
             names.append(file.baseName());
     }
     return names;

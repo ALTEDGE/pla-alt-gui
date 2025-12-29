@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package>
-    <DisplayName>PLA ALT</DisplayName>
-    <Description>The PLA ALT program and required files.</Description>
-    <Version>0.5</Version>
-    <ReleaseDate>2021-07-16</ReleaseDate>
+    <DisplayName>PLA FPS</DisplayName>
+    <Description>The PLA FPS program and required files.</Description>
+    <Version>0.7.6</Version>
+    <ReleaseDate>2025-11-10</ReleaseDate>
     <ForcedInstallation>true</ForcedInstallation>
     <Script>installscript.qs</Script>
 </Package>

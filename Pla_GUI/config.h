@@ -13,12 +13,14 @@
  */
 #define KEEP_OPEN_IN_TRAY
 
+#define PROG_NAME "PLA FPS"
+
 namespace config
 {
     /**
      * Version string to show in bottom right of the main window.
      */
-    constexpr const char *versionString = "v0.7.5";
+    constexpr const char *versionString = "v0.7.6";
 
     using namespace std::chrono_literals;
 

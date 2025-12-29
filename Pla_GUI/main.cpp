@@ -1,4 +1,5 @@
 #include "mainwindow.h"
+#include "config.h"
 #include "controller.h"
 #include "macro.h"
 #include "profile.h"
@@ -29,7 +30,7 @@ int main(int argc, char *argv[])
     QFile styleSheet ("assets/stylesheet.txt");
 
     if (!styleSheet.open(QFile::ReadOnly)) {
-        QMessageBox::critical(nullptr, "PLA ALT",
+        QMessageBox::critical(nullptr, PROG_NAME,
             "Runtime files not found.", QMessageBox::Ok);
         return 0;
     }
@@ -38,10 +39,10 @@ int main(int argc, char *argv[])
     a.setQuitOnLastWindowClosed(true);
 
     // Check if an instance is already running
-    QSharedMemory runGuard ("PLA_ALT_runGuardKey");
+    QSharedMemory runGuard (PROG_NAME "_runGuardKey");
     if (!runGuard.create(1)) {
-        QMessageBox::information(nullptr, "PLA ALT",
-            "PLA ALT is already running.\n"
+        QMessageBox::information(nullptr, PROG_NAME,
+            PROG_NAME " is already running.\n"
             "The program may be accessed through the system tray.",
             QMessageBox::Ok);
         return 0;
@@ -56,7 +57,7 @@ int main(int argc, char *argv[])
     if (!Controller::init()) {
         // No controller
         QMessageBox::information(nullptr, "Controller Disconnected",
-             "Unable to find the PLA ALT controller. Please connect the controller "
+             "Unable to find the " PROG_NAME " controller. Please connect the controller "
              "to use it with this program.", QMessageBox::Ok);
     }
 

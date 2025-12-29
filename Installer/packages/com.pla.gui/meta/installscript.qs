@@ -10,17 +10,17 @@ Component.prototype.createOperations = function()
 {
 	component.createOperations();
     component.addOperation("CreateShortcut",
-                           "@TargetDir@\\PLA_ALT.exe",
-                           "@DesktopDir@\\PLA ALT.lnk",
+                           "@TargetDir@\\PLA_FPS.exe",
+                           "@DesktopDir@\\PLA FPS.lnk",
                            "workingDirectory=@TargetDir@");
 
     component.addOperation("CreateShortcut",
-                           "@TargetDir@\\PLA_ALT.exe",
-                           "@StartMenuDir@\\PLA ALT.lnk",
+                           "@TargetDir@\\PLA_FPS.exe",
+                           "@StartMenuDir@\\PLA FPS.lnk",
                            "workingDirectory=@TargetDir@");
 		
-	component.addOperation("Execute", "@TargetDir@\\drivers\\dpinst-amd64.exe");
-	component.addOperation("Execute", "@TargetDir@\\drivers\\vc_redist.x64.exe", "/quiet", "/norestart");
+	component.addOperation("Execute", "cmd", "/C", "@TargetDir@\\drivers\\dpinst-amd64.exe", "/Q", "||", "ver");
+	component.addOperation("Execute", "cmd", "/C", "@TargetDir@\\drivers\\vc_redist.x64.exe", "/quiet", "/norestart", "||", "ver");
 }
 
 Component.prototype.installerLoaded = function()
@@ -30,7 +30,7 @@ Component.prototype.installerLoaded = function()
 
     targetDirectoryPage = gui.pageWidgetByObjectName("DynamicTargetWidget");
     targetDirectoryPage.windowTitle = "Choose Installation Directory";
-    targetDirectoryPage.description.setText("Please select where PLA ALT will be installed:");
+    targetDirectoryPage.description.setText("Please select where PLA FPS will be installed:");
     targetDirectoryPage.targetDirectory.textChanged.connect(this, this.targetDirectoryChanged);
     targetDirectoryPage.targetDirectory.setText(installer.value("TargetDir"));
     targetDirectoryPage.targetChooser.released.connect(this, this.targetChooserClicked);
