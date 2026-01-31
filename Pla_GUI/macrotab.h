@@ -18,7 +18,7 @@
 #include <QPushButton>
 #include <QRadioButton>
 #include <QShowEvent>
-#include <wwWidgets/QwwListWidget>
+#include "qwwlistwidget.h"
 
 /**
  * @class MacroTab

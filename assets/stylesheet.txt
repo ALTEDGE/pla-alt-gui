@@ -127,16 +127,58 @@ QCheckBox::indicator::checked {
     background-image: url('assets/check-on.png');
 }
 
-QRadioButton::indicator::unchecked {
+MacroTab QRadioButton::indicator::unchecked {
     background-image: url('assets/macro-radio-off.png');
 }
 
-QRadioButton::indicator::unchecked:hover {
+MacroTab QRadioButton::indicator::unchecked:hover {
     background-image: url('assets/macro-radio-off.png');
 }
 
-QRadioButton::indicator::checked {
+MacroTab QRadioButton::indicator::checked {
     background-image: url('assets/macro-radio-on.png');
+}
+
+WheelTab QRadioButton::indicator::unchecked {
+    background-image: url('assets/macro-radio-off.png');
+}
+
+WheelTab QRadioButton::indicator::unchecked:hover {
+    background-image: url('assets/macro-radio-off.png');
+}
+
+WheelTab QRadioButton::indicator::checked {
+    background-image: url('assets/macro-radio-on.png');
+}
+
+ProgramTab QRadioButton::indicator::unchecked {
+    background-image: url('assets/macro-radio-off.png');
+}
+
+ProgramTab QRadioButton::indicator::unchecked:hover {
+    background-image: url('assets/macro-radio-off.png');
+}
+
+ProgramTab QRadioButton::indicator::checked {
+    background-image: url('assets/macro-radio-on.png');
+}
+
+ColorTab QRadioButton::indicator::unchecked {
+	width: 25px;
+    height: 25px;
+    background-image: url('assets/leds-off.png');
+}
+
+ColorTab QRadioButton::indicator::unchecked:hover {
+	width: 25px;
+    height: 25px;
+    background-image: url('assets/leds-off.png');
+}
+
+ColorTab QRadioButton::indicator::checked {
+	width: 25px;
+    height: 25px;
+    background-image: url('assets/leds-on.png');
 }
 
 ThresholdSetter QSlider::groove:horizontal, WheelThresholdSetter QSlider::groove:horizontal {
@@ -198,9 +240,9 @@ ColorTab QSlider::groove:horizontal {
 
 ColorTab QSlider::handle:horizontal {
     width: 9px;
-    height: 30px;
-    margin-top: 12px;
-    background-image: url('assets/color-slider.png');
+    height: 47px;
+    margin-top: 5px;
+    background-image: url('assets/slider.png');
     background-repeat: no-repeat;
     background-position: center;
 }

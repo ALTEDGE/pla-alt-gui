@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Installer>
     <Name>PLA FPS</Name>
-    <Version>0.7.6</Version>
+    <Version>0.8.1</Version>
     <Title>PLA FPS Installer</Title>
     <Publisher>PLA</Publisher>
     <StartMenuDir>PLA FPS</StartMenuDir>

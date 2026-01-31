@@ -16,6 +16,8 @@ win32: DEFINES += PLA_WINDOWS
 
 SOURCES += \
     keysender.cpp \
+    qwwhuesatpicker.cpp \
+    qwwlistwidget.cpp \
     wheeltab.cpp \
     thresholdsetter.cpp \
     serial.cpp \
@@ -35,7 +37,8 @@ SOURCES += \
     input/joysticktracker.cpp \
     input/primaryjoysticktracker.cpp \
     input/steeringtracker.cpp \
-    wheelthresholdsetter.cpp
+    wheelthresholdsetter.cpp \
+    wwglobal_p.cpp
 
 HEADERS += \
     colortab.h \
@@ -49,8 +52,11 @@ HEADERS += \
     macrotab.h \
     mainwindow.h \
     profile.h \
+    profile_default.h \
     profiletab.h \
     programtab.h \
+    qwwhuesatpicker.h \
+    qwwlistwidget.h \
     savabletab.h \
     serial.h \
     thresholdsetter.h \
@@ -62,12 +68,13 @@ HEADERS += \
     input/primaryjoysticktracker.h \
     input/steeringtracker.h \
     wheelthresholdsetter.h \
-    runguard.h
+    runguard.h \
+    wwglobal_p.h
 
 INCLUDEPATH += input
 
-unix:!macx: LIBS += -lwwwidgets5 -lxdo -lSDL2main -lSDL2
+unix:!macx: LIBS += -lxdo -lSDL2main -lSDL2
 unix:!macx: QMAKE_CXXFLAGS += -Wall -Wextra -pedantic
-win32: LIBS += -L. -lwwwidgets5 -lSDL2 -lSDL2main -luser32 -lSetupAPI
+win32: LIBS += -L. -lSDL2 -lSDL2main -luser32 -lSetupAPI
 win32: RC_ICONS += ..\assets\icon.ico
 win32: QMAKE_CXXFLAGS += /std:c++latest

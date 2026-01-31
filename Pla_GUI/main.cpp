@@ -32,10 +32,11 @@ int main(int argc, char *argv[])
     if (!styleSheet.open(QFile::ReadOnly)) {
         QMessageBox::critical(nullptr, PROG_NAME,
             "Runtime files not found.", QMessageBox::Ok);
-        return 0;
+        //return 0;
+    } else {
+        a.setStyleSheet(QString(styleSheet.readAll()));
     }
 
-    a.setStyleSheet(QString(styleSheet.readAll()));
     a.setQuitOnLastWindowClosed(true);
 
     // Check if an instance is already running

@@ -21,7 +21,7 @@ HANDLE Serial::hComPort = INVALID_HANDLE_VALUE;
 int Serial::comFd = -1;
 #endif
 
-unsigned char Serial::colorBuffer[4] = "c";
+unsigned char Serial::colorBuffer[5] = "C";
 
 bool Serial::open(void)
 {
@@ -59,21 +59,22 @@ bool Serial::connected(void)
 #endif // PLA_WINDOWS
 }
 
-void Serial::sendColor(unsigned char r, unsigned char g, unsigned char b)
+void Serial::sendColor(int index, unsigned char r, unsigned char g, unsigned char b)
 {
     // A single 'c' character puts the controller into a color-receiving state
     // Expects a byte of red, green, and blue each
     // (500ms timeout to send the data)
-    colorBuffer[1] = r;
-    colorBuffer[2] = g;
-    colorBuffer[3] = b;
+    colorBuffer[1] = index & 0xFF;
+    colorBuffer[2] = r;
+    colorBuffer[3] = g;
+    colorBuffer[4] = b;
 
     sendColor();
 }
 
 void Serial::sendColor(void)
 {
-    nativeWrite(colorBuffer, 4);
+    nativeWrite(colorBuffer, sizeof(colorBuffer));
 }
 
 void Serial::sendLights(bool on)

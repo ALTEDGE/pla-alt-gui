@@ -5,6 +5,7 @@
 #ifndef CONTROLLERROUTINE_H
 #define CONTROLLERROUTINE_H
 
+#include <QColor>
 #include <QKeyEvent>
 #include <QObject>
 #include <QSettings>
@@ -18,6 +19,16 @@
 #include "primaryjoysticktracker.h"
 #include "steeringtracker.h"
 
+struct LEDSetting
+{
+    QColor color;
+    int brightness = 0;
+    bool enabled = false;
+
+    void save(QSettings& settings);
+    void load(QSettings& settings);
+};
+
 /**
  * @class Controller
  * @brief Handles all non-serial communication with the controller.
@@ -29,9 +40,8 @@ public:
     static JoystickTracker Right;
     static PrimaryJoystickTracker Primary;
     static SteeringTracker Steering;
-    static QColor Color;
-    static int ColorBrightness;
-    static bool ColorEnable;
+    static LEDSetting CaseColor;
+    static LEDSetting JoyColor;
 
     /**
      * Initializes SDL and searches for a connected controller.

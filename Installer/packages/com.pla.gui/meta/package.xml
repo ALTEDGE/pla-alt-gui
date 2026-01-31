@@ -2,8 +2,8 @@
 <Package>
     <DisplayName>PLA FPS</DisplayName>
     <Description>The PLA FPS program and required files.</Description>
-    <Version>0.7.6</Version>
-    <ReleaseDate>2025-11-10</ReleaseDate>
+    <Version>0.8.1</Version>
+    <ReleaseDate>2026-01-09</ReleaseDate>
     <ForcedInstallation>true</ForcedInstallation>
     <Script>installscript.qs</Script>
 </Package>

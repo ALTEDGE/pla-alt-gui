@@ -41,7 +41,7 @@ public:
      * @param g Green value, 0-255
      * @param b Blue value, 0-255
      */
-    static void sendColor(unsigned char r, unsigned char g, unsigned char b);
+    static void sendColor(int index, unsigned char r, unsigned char g, unsigned char b);
 
     /**
      * Sends the most recently sent color.
@@ -66,7 +66,7 @@ private:
 #else
     static int comFd;
 #endif // PLA_WINDOWS
-    static unsigned char colorBuffer[4];
+    static unsigned char colorBuffer[5];
 
     static std::string nativeOpen(void);
 

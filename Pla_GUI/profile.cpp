@@ -1,10 +1,12 @@
 #include "profile.h"
+#include "profile_default.h"
 #include "controller.h"
 #include "macro.h"
 #include "serial.h"
 
 #include <QDir>
 #include <QFileInfo>
+#include <QIODevice>
 #include <QStandardPaths>
 
 static const QString profileFolderPath ("C:\\FPS_Profiles\\");
@@ -42,8 +44,6 @@ void Profile::emitProfileChanged()
 
 void Profile::open(const QString &name)
 {
-    bool newProfile = false;
-
     if (name == settingsName)
         return;
 
@@ -55,17 +55,10 @@ void Profile::open(const QString &name)
     {
         QFile file (profilePath(name));
 
-        newProfile = !file.exists();
-        if (newProfile) {
-            QFile def (profilePath("default"));
-
-            if (def.exists()) {
-                def.copy(profilePath(name));
-            } else {
-                file.open(QFile::WriteOnly);
-                file.write("\n");
-                file.close();
-            }
+        if (!file.exists()) {
+            file.open(QIODevice::WriteOnly);
+            file.write(DefaultProfileIni);
+            file.close();
         }
     }
 
@@ -74,9 +67,6 @@ void Profile::open(const QString &name)
 
     Controller::load(*settings);
     Macro::load(*settings);
-
-    if (newProfile)
-        save();
 
     profileInstance.emitProfileChanged();
 }
@@ -156,7 +146,7 @@ QStringList Profile::list(void)
 
     auto list = profiles.entryInfoList();
     for (QFileInfo file : list) {
-        if (file.isFile() && file.baseName() != "default")
+        if (file.isFile())
             names.append(file.baseName());
     }
     return names;

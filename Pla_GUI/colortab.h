@@ -7,11 +7,14 @@
 
 #include <QWidget>
 #include <QLabel>
+#include <QRadioButton>
 #include <QShowEvent>
 #include <QSlider>
 #include <QTimer>
 #include <QPushButton>
-#include <wwWidgets/QwwHueSatPicker>
+
+#include "controller.h"
+#include "qwwhuesatpicker.h"
 
 /**
  * @class ColorTab
@@ -54,8 +57,13 @@ private slots:
      */
     void updateColor(void);
 
+    void caseChecked(bool);
+    void joyChecked(bool);
+
 private:
     void showEvent(QShowEvent *event);
+
+    LEDSetting led;
 
     // "DRAG CURSOR OVER COLOR"
     QLabel lColorPicker;
@@ -64,12 +72,17 @@ private:
 
     QLabel lLedOn;
     QLabel lLedOff;
+    QLabel lLedsCase;
+    QLabel lLedsJoy;
 
     QwwHueSatPicker colorPicker;
     QSlider colorBrightness;
 
     QPushButton ledOn;
     QPushButton ledOff;
+
+    QRadioButton ledsCase;
+    QRadioButton ledsJoy;
 
     QTimer updateTimer;
 };

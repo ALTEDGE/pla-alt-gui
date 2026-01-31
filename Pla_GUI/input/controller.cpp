@@ -22,9 +22,8 @@ JoystickTracker Controller::Left;
 JoystickTracker Controller::Right;
 PrimaryJoystickTracker Controller::Primary;
 SteeringTracker Controller::Steering;
-QColor Controller::Color;
-int Controller::ColorBrightness;
-bool Controller::ColorEnable;
+LEDSetting Controller::CaseColor;
+LEDSetting Controller::JoyColor;
 
 bool Controller::init(void)
 {
@@ -65,6 +64,24 @@ void Controller::selectPG(unsigned int pg)
     }
 }
 
+void LEDSetting::save(QSettings& settings)
+{
+    settings.setValue("red", color.red());
+    settings.setValue("green", color.green());
+    settings.setValue("blue", color.blue());
+    settings.setValue("brightness", brightness);
+    settings.setValue("enabled", enabled);
+}
+
+void LEDSetting::load(QSettings& settings)
+{
+    color.setRed(settings.value("red", 0x00).toInt());
+    color.setGreen(settings.value("green", 0x18).toInt());
+    color.setBlue(settings.value("blue", 0x19).toInt());
+    brightness = settings.value("brightness", 25).toInt();
+    enabled = settings.value("enabled", true).toBool();
+}
+
 void Controller::save(QSettings& settings)
 {
     settings.beginGroup("keys");
@@ -90,15 +107,13 @@ void Controller::save(QSettings& settings)
     settings.endGroup();
 
     settings.endGroup();
-    settings.beginGroup("color");
 
-    // Load colors
-    settings.setValue("red", Color.red());
-    settings.setValue("green", Color.green());
-    settings.setValue("blue", Color.blue());
-    settings.setValue("brightness", ColorBrightness);
-    settings.setValue("enabled", ColorEnable);
+    settings.beginGroup("casecolor");
+    CaseColor.save(settings);
+    settings.endGroup();
 
+    settings.beginGroup("joycolor");
+    JoyColor.save(settings);
     settings.endGroup();
 }
 
@@ -127,30 +142,52 @@ void Controller::load(QSettings& settings)
     settings.endGroup();
 
     settings.endGroup();
-    settings.beginGroup("color");
 
-    // Load colors
-    Color.setRed(settings.value("red", 0x03).toInt());
-    Color.setGreen(settings.value("green", 0xF7).toInt());
-    Color.setBlue(settings.value("blue", 0xFF).toInt());
-    ColorBrightness = settings.value("brightness", 25).toInt();
-    ColorEnable = settings.value("enabled", true).toBool();
-    updateColor();
-
+    settings.beginGroup("casecolor");
+    CaseColor.load(settings);
     settings.endGroup();
+
+    settings.beginGroup("joycolor");
+    JoyColor.load(settings);
+    settings.endGroup();
+
+    updateColor();
 }
 
 void Controller::updateColor(void)
 {
+    unsigned char r, g, b;
+
     if (connected()) {
-        if (ColorEnable) {
-            auto r = static_cast<unsigned char>(Color.red() * ColorBrightness / 100);
-            auto g = static_cast<unsigned char>(Color.green() * ColorBrightness / 100);
-            auto b = static_cast<unsigned char>(Color.blue() * ColorBrightness / 100);
-            Serial::sendColor(r, g, b);
+        if (CaseColor.enabled) {
+            const auto& color = CaseColor.color;
+            const float brightness = CaseColor.brightness / 100.f;
+            r = static_cast<unsigned char>(color.red() * brightness);
+            g = static_cast<unsigned char>(color.green() * brightness);
+            b = static_cast<unsigned char>(color.blue() * brightness);
         } else {
-            Serial::sendColor(0, 0, 0);
+            r = 0;
+            g = 0;
+            b = 0;
         }
+
+        for (int i = 6; i < 12; i++)
+            Serial::sendColor(i, r, g, b);
+
+        if (JoyColor.enabled) {
+            const auto& color = JoyColor.color;
+            const float brightness = JoyColor.brightness / 100.f;
+            r = static_cast<unsigned char>(color.red() * brightness);
+            g = static_cast<unsigned char>(color.green() * brightness);
+            b = static_cast<unsigned char>(color.blue() * brightness);
+        } else {
+            r = 0;
+            g = 0;
+            b = 0;
+        }
+
+        for (int i = 0; i < 6; i++)
+            Serial::sendColor(i, r, g, b);
     }
 }
 
