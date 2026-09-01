@@ -60,6 +60,8 @@ public:
 
     static void setPg(unsigned int pg);
 
+    static void recalibrateJoysticks();
+
 private:
 #ifdef PLA_WINDOWS
     static HANDLE hComPort;

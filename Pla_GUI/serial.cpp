@@ -101,6 +101,12 @@ void Serial::setPg(unsigned int pg)
     nativeWrite(buf, sizeof(buf));
 }
 
+void Serial::recalibrateJoysticks()
+{
+    unsigned char code = 'f';
+    nativeWrite(&code, 1);
+}
+
 void Serial::nativeWrite(unsigned char *array, unsigned int count)
 {
 #ifdef PLA_WINDOWS
@@ -220,6 +226,7 @@ std::string Serial::nativeOpen(void)
         if (comFd != -1) {
             char buf[3];
             auto w = ::write(comFd, "i", 1);
+            ::fsync(comFd);
             auto r = ::read(comFd, buf, 3);
             if (w == 1 && r == 3 && strncmp(buf, "PLA", 3) == 0)
                 break;

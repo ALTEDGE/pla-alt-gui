@@ -38,7 +38,7 @@ bool Controller::init(void)
     controllerThread = std::thread(handleController);
 
     // Allow time to find connected joystick
-    std::this_thread::sleep_for(2s);
+    std::this_thread::sleep_for(5s);
     return connected();
 }
 

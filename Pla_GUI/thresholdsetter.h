@@ -53,6 +53,7 @@ private slots:
 
     void onPrimaryWidthChanged(int);
     void onThresholdsChanged(int);
+    void onRecenter(void);
 
 public:
     /**
@@ -86,6 +87,7 @@ private:
 
     QPushButton configSave;
     QPushButton configSaveAll;
+    QPushButton configRecalibrate;
     QImage joyMap;
     QLabel joyMapLabel;
 

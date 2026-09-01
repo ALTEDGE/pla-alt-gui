@@ -3,6 +3,7 @@
 #include "controller.h"
 #include "joysticktracker.h"
 #include "profile.h"
+#include "serial.h"
 
 #include <QApplication>
 #include <QtConcurrent/QtConcurrent>
@@ -34,6 +35,7 @@ ThresholdSetter::ThresholdSetter(QWidget *parent, QWidget *mainwindow) :
     //currentPrimary(this),
     configSave("SAVE", this),
     configSaveAll("SAVE ALL", this),
+    configRecalibrate("RE-CENTER", this),
     joyMap(mapSize, mapSize, QImage::Format_ARGB32),
     joyMapLabel(this),
     shouldUpdate(false)
@@ -52,8 +54,10 @@ ThresholdSetter::ThresholdSetter(QWidget *parent, QWidget *mainwindow) :
     farThreshold.setGeometry(20, 190, 300, 10);
     lPrimaryWidth.setGeometry(20, 210, 300, 20);
     primaryWidth.setGeometry(20, 230, 300, 10);
-    configSave.setGeometry(100, 270, 60, 20);
-    configSaveAll.setGeometry(180, 270, 60, 20);
+
+    configSave.setGeometry(50, 270, 70, 20);
+    configSaveAll.setGeometry(140, 270, 70, 20);
+    configRecalibrate.setGeometry(230, 270, 70, 20);
 
     lShortThresh.setAlignment(Qt::AlignCenter);
     lFarThresh.setAlignment(Qt::AlignCenter);
@@ -74,6 +78,7 @@ ThresholdSetter::ThresholdSetter(QWidget *parent, QWidget *mainwindow) :
 
     connect(&configSave, SIGNAL(released()), this, SLOT(saveSettings()));
     connect(&configSaveAll, SIGNAL(released()), this, SLOT(saveSettingsAll()));
+    connect(&configRecalibrate, SIGNAL(released()), this, SLOT(onRecenter()));
     connect(&shortThreshold, SIGNAL(valueChanged(int)), this, SLOT(onThresholdsChanged(int)));
     connect(&farThreshold, SIGNAL(valueChanged(int)), this, SLOT(onThresholdsChanged(int)));
     connect(&primaryWidth, SIGNAL(valueChanged(int)), this, SLOT(onPrimaryWidthChanged(int)));
@@ -251,4 +256,9 @@ void ThresholdSetter::saveSettingsAll(void)
     Profile::save();
 
     close();
+}
+
+void ThresholdSetter::onRecenter(void)
+{
+    Serial::recalibrateJoysticks();
 }
