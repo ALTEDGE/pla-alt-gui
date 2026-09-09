@@ -171,7 +171,7 @@ void Controller::updateColor(void)
             b = 0;
         }
 
-        for (int i = 6; i < 12; i++)
+        for (int i = 6; i < 18; i++)
             Serial::sendColor(i, r, g, b);
 
         if (JoyColor.enabled) {
